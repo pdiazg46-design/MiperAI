@@ -551,7 +551,7 @@ export default function WizardPage() {
       <main className="flex-1 order-1 md:order-2 overflow-y-auto w-full flex flex-col relative h-[60vh] md:h-screen">
         
         {accumulatedTasks.length > 0 && (
-          <div className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 py-4 flex flex-col xl:flex-row items-center justify-between gap-4 shadow-sm w-full">
+          <div className="sticky top-0 z-[45] bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 py-4 xl:pr-[280px] flex flex-col xl:flex-row items-center justify-between gap-4 shadow-sm w-full">
             <div className="flex items-center gap-3 w-full xl:w-auto justify-center xl:justify-start">
                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center border border-blue-200 shrink-0">
                  <ShieldAlert className="w-5 h-5 text-blue-600" />
