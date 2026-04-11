@@ -42,5 +42,23 @@ El sistema ha abandonado el estadio de frontend pasivo y mock data. MiperAI pose
 *   **Esquema Central (\`schema.prisma\`):**
     *   La tabla `Project` consolida las Tareas y Riesgos como un objeto JSON masivo amarrado a un Procedimiento en su raíz.
     *   El modelo relacional `ASTLog` permite almacenar iteraciones de firma en terreno, adjuntando la captura nativa transaccional multimedial (fotos y audios) de Bitácoras de Terreno.
-*   **Pipelines de Endpoints Inteligentes:** Endpoints asíncronos en `/api/projects` reciben el empuje de matrices generadas. Estos nutren exclusivamente en tiempo real los visores operativos Móviles (`/ast`), imposibilitando que un trabajador opere una charla sobre proyectos inexistentes.
+*   **Pipelines de Endpoints Inteligentes:** Endpoints asíncronos en `/api/projects` reciben el empuje de matrices generadas. Estos nutren exclusivamente en tiempo real los visores operativos Móviles (`/ast` y `/inspeccion`), vinculando dinámicamente los menús selectores a los datos reales del usuario mediante NextAuth (`userId`).
 *   **Captura de Dispositivos (Device Access APIs):** Todo componente de inspección o AST móvil recurre a APIs del sistema para abrir periféricos nativos (Cámaras, Micrófonos), inyectando el material fotográfico/audio mediante cadenas Base64 hacia el pipeline Prisma (`ASTLog`) para posterior auditoría.
+
+## 6. Motor SaaS, Monetización y Paywall B2B
+MiperAI maneja múltiples suscripciones cruzadas en la base de datos para bloquear funciones de exportación oficiales sin perjudicar la experiencia core y formativa de retención (Modo FREE).
+
+*   **Pared de Pago (Paywall):** Los usuarios de nivel `FREE` y `BASICO` pueden generar, leer, auditar y **guardar** en la nube ilimitadamente (estrategia de Data Lock-In). Sin embargo, las descargas finales de producción de nivel industrial (docx/pdf) disparan *interceptores de capa media* que dirigen coercitivamente al `/checkout`.
+*   **Estructura de la Interfaz (La Huincha Naranja):** Los banners de alertas promocionales (e.g. "Días de Prueba Restantes") nunca usan `absolute` superpuesto que rompa y corte botones adyacentes. Se integran al DOM dictando un layout flex de columna superior, empujando todo el dashboard asimétricamente hacia abajo para mantener la visibilidad 100%.
+
+<br/>
+
+> [!WARNING]
+> **ESTADO CRÍTICO PENDIENTE (REANUDAR MAÑANA)**
+> 
+> **Bug de Redireccionamiento / Infinite Loop en Login**
+> - **Explicación:** Al intentar entrar a la URL viva de Vercel e iniciar sesión válidamente, NextAuth aparentemente falla al crear/desencriptar las cookies de sesión (probablemente un mismatch en `authOptions.secret`, ausencia de `pages: { signIn: '/login' }`, o colisión de tokens Vercel en la configuración) lo cual frena a `router.push('/wizard')` manteniéndose estático o redirigiendo ocultamente atrás a `/login`, causando que el `Loader` gire infinitamente sin imprimir red-box errors en pantalla.
+> - **Solución Inminente:** 
+>   1. Debemos re-construir `try/catch` avanzado interceptando un 504/401 directo.
+>   2. Declarar estrictamente el `secret` exportando todo en `NEXTAUTH_SECRET` con compatibilidad Edge.
+>   3. Definir `{ pages: { signIn: '/login'} }` en el route.ts de NextAuth para evitar caídas silenciosas a la build abstracta de api.

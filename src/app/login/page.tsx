@@ -23,18 +23,26 @@ export default function LoginPage() {
     setLoading(true);
 
     if (isLogin) {
-      const res = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
+      try {
+        const res = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
+        });
 
-      if (res?.error) {
-        setError(res.error);
+        if (res?.error) {
+          setError(res.error);
+          setLoading(false);
+        } else if (res?.ok) {
+          router.push("/wizard");
+          router.refresh();
+        } else {
+          setError("Error de red o servidor caído.");
+          setLoading(false);
+        }
+      } catch (err: any) {
+        setError(err?.message || "Ocurrió un error inesperado al iniciar sesión.");
         setLoading(false);
-      } else {
-        router.push("/wizard");
-        router.refresh();
       }
     } else {
       // Registro
