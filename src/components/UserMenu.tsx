@@ -23,13 +23,13 @@ export default function UserMenu() {
         </div>
         <div className="hidden sm:block text-left">
           <p className="text-sm font-semibold text-zinc-200">
-            {session.user.name || session.user.email?.split('@')[0]}
+            {(session.user as any).name || (session.user as any).email?.split('@')[0]}
           </p>
           <div className="flex items-center gap-1">
             <p className="text-[10px] uppercase font-bold text-orange-400">
-              {session.user.subscriptionTier || 'FREE'}
+              {(session.user as any).subscriptionTier || 'FREE'}
             </p>
-            {session.user.role === 'ADMIN' && (
+            {(session.user as any).role === 'ADMIN' && (
                <span className="text-[10px] uppercase font-extrabold text-blue-400">· STAFF</span>
             )}
           </div>
@@ -41,11 +41,11 @@ export default function UserMenu() {
         <div className="absolute right-0 mt-3 w-64 bg-zinc-900/95 backdrop-blur-2xl border border-zinc-700/50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] p-2">
           
           <div className="px-3 py-3 border-b border-zinc-800/50 mb-2">
-            <p className="text-sm font-medium text-white truncate">{session.user.email}</p>
-            <p className="text-xs text-zinc-400">Plan actual: {session.user.subscriptionTier}</p>
+            <p className="text-sm font-medium text-white truncate">{(session.user as any).email}</p>
+            <p className="text-xs text-zinc-400">Plan actual: {(session.user as any).subscriptionTier}</p>
           </div>
 
-          {session.user.role === 'ADMIN' && (
+          {(session.user as any).role === 'ADMIN' && (
              <Link href="/admin">
                <button className="w-full text-left flex items-center gap-3 px-3 py-2.5 text-sm text-blue-400 hover:bg-blue-500/10 rounded-xl transition-all font-semibold">
                  <ShieldAlert className="w-4 h-4" />
@@ -54,7 +54,7 @@ export default function UserMenu() {
              </Link>
           )}
 
-          {session.user.subscriptionTier === 'FREE' && (
+          {(session.user as any).subscriptionTier === 'FREE' && (
              <Link href="/checkout">
                 <button className="w-full mt-1 text-left flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-orange-400 hover:bg-orange-500/10 rounded-xl transition-all">
                   <Crown className="w-4 h-4" />

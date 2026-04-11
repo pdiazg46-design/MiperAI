@@ -63,6 +63,9 @@ export default function WizardPage() {
     }
   }, [session]);
 
+  const isExpired = trialDaysLeft !== null && trialDaysLeft < 0;
+  const [showPaywallAlert, setShowPaywallAlert] = useState(false);
+
   const [step, setStep] = useState(1);
   const [taskName, setTaskName] = useState('');
   const [altura, setAltura] = useState<string|null>(null);
@@ -184,6 +187,7 @@ export default function WizardPage() {
   };
 
   const runBulkExtraction = async () => {
+    if (isExpired) { setShowPaywallAlert(true); return; }
     if (procedimiento.length < 20) return;
     setIsBulkGenerating(true);
     
@@ -216,6 +220,7 @@ export default function WizardPage() {
   }
 
   const runAIAlgorithm = async () => {
+    if (isExpired) { setShowPaywallAlert(true); return; }
     setIsGenerating(true);
     setStep(3);
     
@@ -389,29 +394,29 @@ export default function WizardPage() {
     }
   };
 
-  const isExpired = trialDaysLeft !== null && trialDaysLeft < 0;
-
   if (status === 'loading') {
     return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-blue-500" /></div>;
   }
 
-  if (isExpired) {
-    return (
-       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-6 text-center select-none">
-          <ShieldAlert className="w-32 h-32 text-red-500 mb-6 drop-shadow-[0_0_20px_rgba(239,68,68,0.5)]" />
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Período de Prueba Finalizado</h1>
-          <p className="text-zinc-400 mb-10 max-w-lg text-lg">Han transcurrido los 15 días de tu prueba gratuita. Haz upgrade para seguir generando matrices.</p>
-          <Link href="/checkout">
-             <button className="bg-amber-500 hover:bg-amber-400 text-amber-950 px-10 py-5 rounded-2xl font-black text-xl shadow-[0_0_50px_rgba(245,158,11,0.5)] transition-all uppercase tracking-wide">
-                Activar Pase PRO Ahora
-             </button>
-          </Link>
-       </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col md:flex-row relative">
+      {showPaywallAlert && (
+         <div className="fixed inset-0 z-[999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-zinc-900 border border-zinc-700 p-8 rounded-3xl max-w-md w-full shadow-2xl flex flex-col items-center text-center">
+               <ShieldAlert className="w-16 h-16 text-red-500 mb-4 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+               <h3 className="text-2xl font-black text-white mb-2">Prueba Expirada</h3>
+               <p className="text-zinc-400 text-sm mb-6">Tus 15 días de prueba han terminado. Para continuar procesando matrices con la IA, requieres un Pase PRO.</p>
+               <Link href="/checkout" className="w-full">
+                 <button className="w-full bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                    Obtener Pase PRO
+                 </button>
+               </Link>
+               <button onClick={() => setShowPaywallAlert(false)} className="mt-4 text-xs font-semibold text-zinc-500 hover:text-white transition-colors">
+                 Cerrar (Modo Lectura)
+               </button>
+            </div>
+         </div>
+      )}
       {trialDaysLeft !== null && trialDaysLeft >= 0 && (
          <div className="absolute top-0 left-0 right-0 z-[100] bg-orange-600/90 backdrop-blur-md text-white px-4 py-2.5 flex flex-col sm:flex-row items-center justify-center gap-4 shadow-xl border-b border-orange-500">
             <span className="text-[13px] font-bold uppercase tracking-wide">⚠️ Período de Prueba Activo: Quedan {trialDaysLeft} Días</span>
