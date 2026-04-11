@@ -37,20 +37,19 @@ export default function AdminDashboard() {
     }
   };
 
-  const grantStarterPlan = async (userId: string) => {
-    if (!confirm("¿Regalar Plan BÁSICO a este usuario?")) return;
+  const changeUserTier = async (userId: string, newTier: string) => {
+    if (!confirm(`¿Actualizar el nivel de acceso a ${newTier}?`)) return;
     setProcessingId(userId);
     try {
       const res = await fetch('/api/admin/users', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, newTier: 'STARTER' })
+        body: JSON.stringify({ userId, newTier })
       });
       if (res.ok) {
-        setUsers(users.map(u => u.id === userId ? { ...u, subscriptionTier: 'STARTER' } : u));
-        alert("¡Plan Básico regalado con éxito!");
+        setUsers(users.map(u => u.id === userId ? { ...u, subscriptionTier: newTier } : u));
       } else {
-        alert("Fallo al regalar plan.");
+        alert("Fallo al actualizar plan.");
       }
     } catch (e) {
       alert("Error de red.");
@@ -134,15 +133,26 @@ export default function AdminDashboard() {
                         <span className="text-sm font-mono text-zinc-300">{u.queriesUsed || 0}</span>
                     </td>
                     <td className="p-4 text-right">
-                      {u.subscriptionTier === 'FREE' && u.role !== 'ADMIN' && (
-                        <button 
-                          disabled={processingId === u.id}
-                          onClick={() => grantStarterPlan(u.id)}
-                          className="inline-flex items-center gap-1.5 bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 hover:border-green-500/50 text-[11px] font-bold px-3 py-1.5 rounded-lg transition-all disabled:opacity-50"
-                        >
-                          {processingId === u.id ? <Loader2 className="w-3 h-3 animate-spin"/> : <Gift className="w-3 h-3" />}
-                          Regalar BÁSICO
-                        </button>
+                      {u.role !== 'ADMIN' && (
+                        <div className="flex items-center justify-end gap-2">
+                           {processingId === u.id && <Loader2 className="w-4 h-4 animate-spin text-blue-500" />}
+                           <div className="relative group inline-block">
+                             <select
+                                value={u.subscriptionTier}
+                                disabled={processingId === u.id}
+                                onChange={(e) => changeUserTier(u.id, e.target.value)}
+                                className="appearance-none bg-zinc-900 border border-zinc-800 hover:border-zinc-600 text-xs font-semibold px-4 py-2 pr-8 rounded-lg text-zinc-300 outline-none transition-colors cursor-pointer disabled:opacity-50"
+                             >
+                               <option value="FREE">Degradar a FREE</option>
+                               <option value="STARTER">Ascender a STARTER</option>
+                               <option value="PRO">Ascender a PRO</option>
+                               <option value="ENTERPRISE">Ascender a ENTERPRISE</option>
+                             </select>
+                             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-zinc-500 group-hover:text-zinc-300 transition-colors">
+                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                             </div>
+                           </div>
+                        </div>
                       )}
                     </td>
                   </tr>
