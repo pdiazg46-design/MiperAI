@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { ShieldAlert, Users, Crown, Loader2, Home, Gift } from 'lucide-react';
+import { ShieldAlert, Users, Crown, Loader2, Home, Gift, Zap, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdminDashboard() {
@@ -128,11 +128,17 @@ export default function AdminDashboard() {
                     </td>
                     <td className="p-5">
                       <div className="flex items-center gap-2">
-                        {u.subscriptionTier?.includes('PRO') || u.subscriptionTier === 'ENTERPRISE' ? (
-                           <Crown className="w-5 h-5 text-yellow-500" />
-                        ) : null}
-                        <span className={`text-sm font-black uppercase tracking-wide ${u.subscriptionTier?.includes('PRO') ? 'text-yellow-400' : 'text-zinc-300'}`}>
-                          {u.subscriptionTier}
+                        {u.subscriptionTier === 'ENTERPRISE' && <Crown className="w-5 h-5 text-amber-500" />}
+                        {u.subscriptionTier === 'PRO_ASESOR' && <Zap className="w-5 h-5 text-purple-500" />}
+                        {u.subscriptionTier === 'PRO_OBRA' && <Briefcase className="w-5 h-5 text-blue-500" />}
+                        {u.subscriptionTier === 'BASICO' && <ShieldAlert className="w-5 h-5 text-emerald-500" />}
+                        <span className={`text-sm font-black uppercase tracking-wide 
+                          ${u.subscriptionTier === 'ENTERPRISE' ? 'text-amber-400' : 
+                            u.subscriptionTier === 'PRO_ASESOR' ? 'text-purple-400' : 
+                            u.subscriptionTier === 'PRO_OBRA' ? 'text-blue-400' : 
+                            u.subscriptionTier === 'BASICO' ? 'text-emerald-400' : 
+                            'text-zinc-500'}`}>
+                          {u.subscriptionTier?.replace('_', ' ')}
                         </span>
                       </div>
                     </td>
