@@ -24,27 +24,22 @@ export default function LoginPage() {
 
     if (isLogin) {
       try {
-        // DIAGNÓSTICO PROFUNDO: Testeando Vercel POST nativo antes de NextAuth
+        // Ejecución B2G NATURA sin NextAuth signIn
         const rawRes = await fetch("/api/test-db", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password })
         });
         const rawData = await rawRes.json();
-        console.log("Raw DB Test Response:", rawData);
         
-        if (rawRes.status === 200) {
-           setError("[TEST-DB OK] DB funciona perfecto. NextAuth es el problema.");
+        if (rawRes.ok && rawData.success) {
+           router.push("/wizard");
+           router.refresh();
         } else {
-           setError(`[TEST-DB FALLA] ${rawData.error}`);
+           setError(rawData.error || "Error de red interno.");
+           setLoading(false);
         }
 
-        // Ejecución nativa sin 'redirect: false'
-        await signIn("credentials", {
-          email,
-          password,
-          callbackUrl: "/wizard"
-        });
       } catch (err: any) {
         let errorMsg = err?.message || "Ocurrió un error inesperado";
         if (errorMsg === "Failed to fetch") {
@@ -75,14 +70,18 @@ export default function LoginPage() {
           setError(data.message || "Error al crear la cuenta");
           setLoading(false);
         } else {
-          // Loguear automático tras registro
-          await signIn("credentials", {
-            redirect: false,
-            email,
-            password,
+          // Loguear automático tras registro usando el bypass NextAuth
+          const autoRes = await fetch("/api/test-db", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
           });
-          router.push("/wizard");
-          router.refresh();
+          if (autoRes.ok) {
+            router.push("/wizard");
+            router.refresh();
+          } else {
+             setError("Cuenta creada, inicie sesión manualmente");
+          }
         }
       } catch (err) {
         setError("Error de red.");
