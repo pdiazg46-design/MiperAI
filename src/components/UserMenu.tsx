@@ -9,7 +9,21 @@ export default function UserMenu() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
-  if (!session?.user) return null;
+  const { data: session } = useSession();
+  const [isOpen, setIsOpen] = useState(false);
+
+  if (!session?.user) {
+    return (
+      <div className="fixed top-4 right-4 z-[999]">
+        <Link href="/login">
+          <button className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white border border-blue-400/50 rounded-full px-5 py-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]">
+            <UserIcon className="w-4 h-4" />
+            <span className="text-sm font-bold">Acceder / Registro</span>
+          </button>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed top-4 right-4 z-[999]">
