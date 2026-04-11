@@ -53,12 +53,15 @@ MiperAI maneja múltiples suscripciones cruzadas en la base de datos para bloque
 
 <br/>
 
-> [!WARNING]
-> **ESTADO CRÍTICO PENDIENTE (REANUDAR MAÑANA)**
+## 7. Leyes de Estabilidad en Vercel Edge (NextAuth y Enrutamiento SPA)
+
+> [!CAUTION]
+> **HISTORIAL DE PRODUCCIÓN PROTEGIDO: EVASIÓN DEL COLAPSO EN VERCEL EDGE**
+>
+> Durante el pase a producción, el ecosistema sufrió una caída enmascarada como `Failed to fetch` ("Unexpected token '<'") seguida de un Infinite Loop en la UI. Todo Agente de IA que toque el Auth en el futuro debe atenerse a este diagnóstico clínico para no volver a quebrar la plataforma:
 > 
-> **Bug de Redireccionamiento / Infinite Loop en Login**
-> - **Explicación:** Al intentar entrar a la URL viva de Vercel e iniciar sesión válidamente, NextAuth aparentemente falla al crear/desencriptar las cookies de sesión (probablemente un mismatch en `authOptions.secret`, ausencia de `pages: { signIn: '/login' }`, o colisión de tokens Vercel en la configuración) lo cual frena a `router.push('/wizard')` manteniéndose estático o redirigiendo ocultamente atrás a `/login`, causando que el `Loader` gire infinitamente sin imprimir red-box errors en pantalla.
-> - **Solución Inminente:** 
->   1. Debemos re-construir `try/catch` avanzado interceptando un 504/401 directo.
->   2. Declarar estrictamente el `secret` exportando todo en `NEXTAUTH_SECRET` con compatibilidad Edge.
->   3. Definir `{ pages: { signIn: '/login'} }` en el route.ts de NextAuth para evitar caídas silenciosas a la build abstracta de api.
+> 1.  **La Incompatibilidad Serial de `jose` (JWT):** NextAuth enruta su firma JWT internamente a través de la librería criptográfica `jose`. Si el callback de `jwt()` expone campos físicos con atributos no-serializables puros (Ej: Los objetos `Date` nativos como `user.createdAt` generados por Prisma), Vercel Serverless Edge interceptará un error de serialización indescifrable (`500 Error` HTML) causando que el Fetch del Frontend colapse al hacer `.json()`.
+>     *   **Regla Institucional:** Está **rotundamente prohibido** almacenar objetos nativos de JavaScript (Dates, Funciones, Set) dentro del destilado `token` o `session` en `src/app/api/auth/[...nextauth]/route.ts`. Sólo se admiten Strings, Booleans o Números fijos (Ej: `user.id`, `user.role`, `user.subscriptionTier`).
+> 
+> 2.  **El Loop Silencioso del Soft Router (SPA):** Si el Frontend utiliza `router.push('/ruta_protegida')` tras el registro/login, Next.js emite un Soft Navigation Transition (obteniendo el RSC Payload). Si hubo alguna ligera inestabilidad de cookie o demora en la sincronización, el archivo `middleware.ts` rechazará el fetch de React abortando el RSC. Esto ocasiona que el usuario sea redirigido de vuelta al origen *sin cambiar físicamente la URL del Browser*, dejando un estado React local perpetuo (`loading === true`) que hace que los Spinners jamás se detengan.
+>     *   **Regla Institucional:** Tras un suceso de Login o Registro donde NextAuth emite una nueva jerarquía estructural (cookies firmadas con `NEXTAUTH_SECRET`), el frontend **debe** aplicar invariablemente `window.location.href = '/'` para ejecutar un Hard Reload en el browser. Esto limpia los contextos de React, asegura el flush del microtask queue y materializa sin fallos la persistencia universal de la aplicación al llegar al Dashboard Principal.
