@@ -128,10 +128,10 @@ export default function AdminDashboard() {
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
-                        {u.subscriptionTier === 'PRO' || u.subscriptionTier === 'ENTERPRISE' ? (
+                        {u.subscriptionTier?.includes('PRO') || u.subscriptionTier === 'ENTERPRISE' ? (
                            <Crown className="w-4 h-4 text-yellow-500" />
                         ) : null}
-                        <span className={`text-xs font-bold uppercase ${u.subscriptionTier === 'PRO' ? 'text-yellow-500' : 'text-zinc-400'}`}>
+                        <span className={`text-xs font-bold uppercase ${u.subscriptionTier?.includes('PRO') ? 'text-yellow-500' : 'text-zinc-400'}`}>
                           {u.subscriptionTier}
                         </span>
                       </div>
@@ -149,11 +149,11 @@ export default function AdminDashboard() {
                                 disabled={processingId === u.id}
                                 onChange={(e) => changeUserTier(u.id, e.target.value)}
                                 className="appearance-none bg-zinc-900 border border-zinc-800 hover:border-zinc-600 text-xs font-semibold px-4 py-2 pr-8 rounded-lg text-zinc-300 outline-none transition-colors cursor-pointer disabled:opacity-50"
-                             >
                                <option value="FREE">Degradar a FREE</option>
-                               <option value="STARTER">Ascender a STARTER</option>
-                               <option value="PRO">Ascender a PRO</option>
-                               <option value="ENTERPRISE">Ascender a ENTERPRISE</option>
+                               <option value="BASICO">Ascender a BÁSICO</option>
+                               <option value="PRO_OBRA">Ascender a PRO (Obra)</option>
+                               <option value="PRO_ASESOR">Ascender a PRO (Asesor)</option>
+                               <option value="ENTERPRISE">Ascender a EMPRESA</option>
                              </select>
                              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-zinc-500 group-hover:text-zinc-300 transition-colors">
                                 <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
