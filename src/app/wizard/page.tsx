@@ -434,26 +434,28 @@ export default function WizardPage() {
           <Link href="/" className="inline-flex font-semibold text-sm tracking-tight text-slate-500 hover:text-blue-600 transition-colors items-center gap-1 mb-4">
             <ArrowLeft className="w-4 h-4"/> Menú Principal
           </Link>
-          <div className="flex flex-col border border-blue-200 bg-blue-50/50 hover:bg-blue-50 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200 transition-all rounded-xl p-3 mb-4 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
-            <span className="text-[10px] uppercase font-black text-blue-600 tracking-wider mb-2 flex items-center gap-1.5 animate-pulse"><Edit3 className="w-3.5 h-3.5"/> Define tu Documento</span>
-            <div className="flex items-center gap-1">
+          <div className="flex flex-col mb-5 space-y-4 bg-slate-100/50 p-3 rounded-xl border border-slate-200">
+            <div>
+              <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">Define el Nombre del Proyecto</label>
               <input 
                 type="text" 
                 value={projectName}
                 onChange={(e)=>setProjectName(e.target.value)}
-                className="min-w-0 flex-1 font-extrabold text-lg text-slate-800 bg-transparent border-0 focus:ring-0 px-0 outline-none truncate"
-                placeholder="Nombre del Proyecto..."
+                className="w-full text-sm font-bold text-slate-800 bg-white border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-3 py-2.5 outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-400"
+                placeholder="Ej: Construcción Edificio B..."
               />
-              <span className="text-slate-400 font-bold text-sm shrink-0 pointer-events-none tracking-tight">- MiperAI</span>
             </div>
-            <input 
-              type="text" 
-              value={procedureName}
-              onChange={(e)=>setProcedureName(e.target.value)}
-              className="w-full text-xs font-bold text-slate-500 bg-white border border-transparent hover:border-slate-200 focus:border-blue-400 rounded px-2 py-1 mt-1 outline-none transition-colors truncate shadow-inner"
-              placeholder="Ej: Montaje de Andamios..."
-            />
+            
+            <div>
+              <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">Define el Nombre del Procedimiento</label>
+              <input 
+                type="text" 
+                value={procedureName}
+                onChange={(e)=>setProcedureName(e.target.value)}
+                className="w-full text-sm font-bold text-slate-800 bg-white border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-3 py-2.5 outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-400"
+                placeholder="Ej: Montaje de Andamios..."
+              />
+            </div>
           </div>
           <p className="text-xs text-slate-500 font-medium bg-slate-100 p-1.5 rounded-md inline-block">{accumulatedTasks.length} Maniobras evaluadas</p>
           
