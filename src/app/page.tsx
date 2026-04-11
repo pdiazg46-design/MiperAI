@@ -11,8 +11,14 @@ export default function Dashboard() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (session?.user?.image) {
-      setAvatarUrl(session.user.image);
+    if (session?.user) {
+      fetch('/api/user/avatar')
+        .then(res => res.json())
+        .then(data => {
+           if(data.image) setAvatarUrl(data.image);
+           else if (session.user?.image) setAvatarUrl(session.user.image);
+        })
+        .catch(() => {});
     }
   }, [session]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -36,8 +42,22 @@ export default function Dashboard() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const newUrl = URL.createObjectURL(file);
-      setAvatarUrl(newUrl);
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64 = reader.result as string;
+        setAvatarUrl(base64);
+
+        if (session?.user) {
+          try {
+            await fetch('/api/user/avatar', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ image: base64 })
+            });
+          } catch(err) { console.error('Error al subir avatar:', err) }
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 

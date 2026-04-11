@@ -37,18 +37,18 @@ export default function AdminDashboard() {
     }
   };
 
-  const grantProPlan = async (userId: string) => {
-    if (!confirm("¿Regalar Plan PRO a este usuario?")) return;
+  const grantStarterPlan = async (userId: string) => {
+    if (!confirm("¿Regalar Plan BÁSICO a este usuario?")) return;
     setProcessingId(userId);
     try {
       const res = await fetch('/api/admin/users', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, newTier: 'PRO' })
+        body: JSON.stringify({ userId, newTier: 'STARTER' })
       });
       if (res.ok) {
-        setUsers(users.map(u => u.id === userId ? { ...u, subscriptionTier: 'PRO' } : u));
-        alert("¡Plan PRO regalado con éxito!");
+        setUsers(users.map(u => u.id === userId ? { ...u, subscriptionTier: 'STARTER' } : u));
+        alert("¡Plan Básico regalado con éxito!");
       } else {
         alert("Fallo al regalar plan.");
       }
@@ -80,9 +80,9 @@ export default function AdminDashboard() {
               <p className="text-sm text-blue-400 font-medium">Acceso Restringido Súper Usuario</p>
             </div>
           </div>
-          <Link href="/wizard">
+          <Link href="/">
             <button className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-zinc-800 transition-all shadow-xl">
-              <Home className="w-4 h-4 text-zinc-400" /> Volver al Wizard
+              <Home className="w-4 h-4 text-zinc-400" /> Volver al Menú Principal
             </button>
           </Link>
         </header>
@@ -137,11 +137,11 @@ export default function AdminDashboard() {
                       {u.subscriptionTier === 'FREE' && u.role !== 'ADMIN' && (
                         <button 
                           disabled={processingId === u.id}
-                          onClick={() => grantProPlan(u.id)}
+                          onClick={() => grantStarterPlan(u.id)}
                           className="inline-flex items-center gap-1.5 bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 hover:border-green-500/50 text-[11px] font-bold px-3 py-1.5 rounded-lg transition-all disabled:opacity-50"
                         >
                           {processingId === u.id ? <Loader2 className="w-3 h-3 animate-spin"/> : <Gift className="w-3 h-3" />}
-                          Regalar PRO
+                          Regalar BÁSICO
                         </button>
                       )}
                     </td>
