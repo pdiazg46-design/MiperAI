@@ -21,6 +21,9 @@ export default function DeviceSimulatorProvider({ children }: { children: React.
   const pathname = usePathname();
 
   useEffect(() => {
+    // Si estamos en Vercel/Producción, ignoramos el simulador por completo
+    if (process.env.NODE_ENV === 'production') return;
+
     setMounted(true);
     const stored = localStorage.getItem('isMobileSim');
     if (stored === 'true') setIsSimulatorEnabled(true);
