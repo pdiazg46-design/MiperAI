@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 
     if (mime === 'application/pdf' || name.endsWith('.pdf')) {
       text = await new Promise((resolve, reject) => {
-        const pdfParser = new PDFParser(null, 1);
+        const pdfParser = new PDFParser(null, true);
         pdfParser.on("pdfParser_dataError", (errData: any) => reject(new Error(errData.parserError)));
         pdfParser.on("pdfParser_dataReady", () => resolve(pdfParser.getRawTextContent()));
         pdfParser.parseBuffer(buffer);
