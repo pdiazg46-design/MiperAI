@@ -476,6 +476,24 @@ export default function WizardPage() {
                 placeholder="Ej: Montaje de Andamios..."
               />
             </div>
+
+            <div className="pt-2 border-t border-slate-200/60 mt-1">
+              <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">Sector Industrial / Contexto</label>
+              <select 
+                value={industria} 
+                onChange={(e) => setIndustria(e.target.value)}
+                className="w-full text-sm font-semibold text-slate-700 bg-white border border-slate-300 hover:border-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-3 py-2 outline-none transition-all shadow-sm"
+              >
+                <option value="Construcción">Construcción / Obras Civiles</option>
+                <option value="Telecomunicaciones">Telecomunicaciones</option>
+                <option value="Minería">Minería</option>
+                <option value="Servicios de Salud">Servicios de Salud / Hospitalario</option>
+                <option value="Industrial / Manufactura">Industrial / Manufactura</option>
+                <option value="Logística y Transporte">Logística y Transporte</option>
+                <option value="Forestal">Forestal y Maderero</option>
+                <option value="Otro">Otro sector</option>
+              </select>
+            </div>
           </div>
           <p className="text-xs text-slate-500 font-medium bg-slate-100 p-1.5 rounded-md inline-block">{accumulatedTasks.length} Maniobras evaluadas</p>
           
@@ -748,23 +766,6 @@ export default function WizardPage() {
                     <p className="text-slate-500 text-[13px] px-4">Sube un Procedimiento completo (PDF/Word). La IA extraerá e interpretará todas las maniobras operativas automáticamente.</p>
                   </div>
                   
-                  <div className="flex flex-col gap-1.5 mt-4">
-                   <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Sector Industrial / Contexto</label>
-                   <select 
-                     value={industria} 
-                     onChange={(e) => setIndustria(e.target.value)}
-                     className="w-full text-sm font-semibold text-slate-700 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-colors"
-                   >
-                     <option value="Construcción">Construcción / Obras Civiles</option>
-                     <option value="Telecomunicaciones">Telecomunicaciones</option>
-                     <option value="Minería">Minería</option>
-                     <option value="Servicios de Salud">Servicios de Salud / Hospitalario</option>
-                     <option value="Industrial / Manufactura">Industrial / Manufactura</option>
-                     <option value="Logística y Transporte">Logística y Transporte</option>
-                     <option value="Forestal">Forestal y Maderero</option>
-                     <option value="Otro">Otro sector</option>
-                   </select>
-                 </div>
 
                   <div className="flex flex-col items-center justify-center p-6 bg-indigo-50/50 border-2 border-dashed border-indigo-200 rounded-2xl transition-all hover:bg-indigo-50 hover:border-indigo-400 mt-2">
                       <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload} />
