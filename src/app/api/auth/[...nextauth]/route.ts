@@ -44,6 +44,7 @@ export const authOptions = {
       if (user) {
         token.id = user.id;
         token.subscriptionTier = user.subscriptionTier;
+        token.role = user.role;
       }
       return token;
     },
@@ -51,6 +52,7 @@ export const authOptions = {
       if (session?.user) {
         session.user.id = token.id;
         session.user.subscriptionTier = token.subscriptionTier;
+        session.user.role = token.role;
       }
       return session;
     },

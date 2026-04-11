@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronRight, CheckCircle2, FileDown, ShieldAlert, Loader2, ArrowLeft, Plus, Check, Upload, X, Trash2, Edit3, Save, ArrowUp, ArrowDown, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 import { generateMatrixDocxBlob } from '@/lib/docx-generator/exportService';
+import UserMenu from '@/components/UserMenu';
+import UserMenu from '@/components/UserMenu';
 
 export function getRiskLevel(p: number, s: number): string {
   if (!p || !s) return 'MEDIO';

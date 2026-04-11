@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import DeviceSimulatorProvider from "@/components/DeviceSimulatorProvider";
 import AuthProvider from "@/components/AuthProvider";
+import UserMenu from "@/components/UserMenu";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900" suppressHydrationWarning>
         <AuthProvider>
           <DeviceSimulatorProvider>
+            <UserMenu />
             {children}
           </DeviceSimulatorProvider>
         </AuthProvider>
