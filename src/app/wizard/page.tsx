@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronRight, CheckCircle2, FileDown, ShieldAlert, Loader2, ArrowLeft, Plus, Check, Upload, X, Trash2, Edit3, Save, ArrowUp, ArrowDown, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 import { generateMatrixDocxBlob } from '@/lib/docx-generator/exportService';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import AILoadingScanner from '@/components/AILoadingScanner';
 
@@ -51,6 +52,7 @@ export function getRiskColorClass(level: string): string {
 }
 
 export default function WizardPage() {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [trialDaysLeft, setTrialDaysLeft] = useState<number | null>(null);
 
@@ -284,6 +286,13 @@ export default function WizardPage() {
   };
 
   const handleExportProject = async () => {
+    const tier = (session?.user as any)?.subscriptionTier;
+    if (tier === 'FREE' || tier === 'BASICO') {
+      alert("Tu plan actual no incluye exportación de documentos.\n\nActualiza tu cuenta a PRO para desbloquear esta función.");
+      router.push('/checkout');
+      return;
+    }
+
     try {
       // Usamos tanto el proyecto como el procedimiento para el documento
       const documentTitle = `${projectName} - ${procedureName}`;
@@ -306,6 +315,13 @@ export default function WizardPage() {
   };
 
   const handleExportPDF = () => {
+    const tier = (session?.user as any)?.subscriptionTier;
+    if (tier === 'FREE' || tier === 'BASICO') {
+      alert("Tu plan actual no incluye exportación de documentos.\n\nActualiza tu cuenta a PRO para desbloquear esta función.");
+      router.push('/checkout');
+      return;
+    }
+
     const documentTitle = `${projectName} - ${procedureName}`;
     let htmlContent = `
       <!DOCTYPE html>
