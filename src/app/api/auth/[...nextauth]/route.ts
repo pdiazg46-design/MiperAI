@@ -66,9 +66,6 @@ export const authOptions = {
       return session;
     },
   },
-  pages: {
-    signIn: '/login',
-  },
   secret: (process.env.NEXTAUTH_SECRET || "miperai_secret_fallback_temporal_123_edge").trim(),
 }
 
