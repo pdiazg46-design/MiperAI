@@ -18,6 +18,10 @@ export const authOptions = {
           throw new Error("Datos incompletos");
         }
 
+        if (!process.env.DATABASE_URL) {
+          throw new Error("ERROR CRÍTICO: DATABASE_URL no existe en Vercel Config");
+        }
+
         try {
           const user = await prisma.user.findUnique({
             where: { email: credentials.email }
@@ -67,7 +71,7 @@ export const authOptions = {
   pages: {
     signIn: '/login',
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: (process.env.NEXTAUTH_SECRET || "miperai_secret_fallback_temporal_123_edge").trim(),
 }
 
 const handler = NextAuth(authOptions)
