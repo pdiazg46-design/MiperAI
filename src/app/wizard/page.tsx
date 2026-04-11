@@ -415,7 +415,7 @@ export default function WizardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col md:flex-row relative">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col relative w-full">
       {showPaywallAlert && (
          <div className="fixed inset-0 z-[999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
             <div className="bg-zinc-900 border border-zinc-700 p-8 rounded-3xl max-w-md w-full shadow-2xl flex flex-col items-center text-center">
@@ -455,7 +455,7 @@ export default function WizardPage() {
       )}
 
       {trialDaysLeft !== null && trialDaysLeft >= 0 && (
-         <div className="absolute top-0 left-0 right-0 z-[100] bg-orange-600/90 backdrop-blur-md text-white px-4 py-2.5 flex flex-col sm:flex-row items-center justify-center gap-4 shadow-xl border-b border-orange-500">
+         <div className="w-full relative z-[100] bg-orange-600/90 backdrop-blur-md text-white px-4 py-3 flex flex-col sm:flex-row items-center justify-center gap-4 shadow-md border-b border-orange-500 shrink-0">
             <span className="text-[13px] font-bold uppercase tracking-wide">⚠️ Período de Prueba Activo: Quedan {trialDaysLeft} Días</span>
             <Link href="/checkout">
                <button className="bg-white hover:bg-zinc-100 text-orange-700 px-4 py-1.5 rounded-lg text-xs font-black shadow-md uppercase transition-all">
@@ -465,6 +465,7 @@ export default function WizardPage() {
          </div>
       )}
       
+      <div className="flex flex-col md:flex-row flex-1 relative w-full">
       {/* Sidebar de Proyecto (Carrito) */}
       <aside className="w-full md:w-80 bg-white border-r border-slate-200 md:min-h-screen flex flex-col md:sticky md:top-0 z-40 shadow-sm order-2 md:order-1 h-[40vh] md:h-screen">
         <div className="p-5 border-b border-slate-200 bg-slate-50/50">
@@ -1060,7 +1061,7 @@ export default function WizardPage() {
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
