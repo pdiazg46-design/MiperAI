@@ -468,8 +468,8 @@ export default function WizardPage() {
       {/* Sidebar de Proyecto (Carrito) */}
       <aside className="w-full md:w-80 bg-white border-r border-slate-200 md:min-h-screen flex flex-col md:sticky md:top-0 z-40 shadow-sm order-2 md:order-1 h-[40vh] md:h-screen">
         <div className="p-5 border-b border-slate-200 bg-slate-50/50">
-          <Link href="/" className="inline-flex font-semibold text-sm tracking-tight text-slate-500 hover:text-blue-600 transition-colors items-center gap-1 mb-4">
-            <ArrowLeft className="w-4 h-4"/> Menú Principal
+          <Link href="/" className="flex bg-slate-800 text-white hover:bg-slate-900 px-4 py-2.5 rounded-xl mb-6 font-bold shadow-md items-center justify-center gap-2 transition-all">
+            <ArrowLeft className="w-5 h-5"/> Volver al Panel Principal
           </Link>
           <div className="flex flex-col mb-5 space-y-4 bg-slate-100/50 p-3 rounded-xl border border-slate-200">
             <div>
