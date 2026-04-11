@@ -44,9 +44,10 @@ export default function CheckoutPage() {
           </div>
           
           <div className="flex-1 space-y-3.5 mb-8">
-            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Hasta 10 Tareas de Matriz al mes</span></div>
+            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Hasta 10 Tareas de Matriz IPER al mes</span></div>
             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Hasta 2 Inspecciones de Terreno</span></div>
             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Hasta 2 Charlas Preventivas</span></div>
+            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Generación Básica PTS y AST</span></div>
             <div className="flex items-start gap-3 opacity-50"><XCircle className="w-5 h-5 text-red-400 shrink-0"/><span className="text-sm text-zinc-400 leading-tight line-through">Sin Exportación (Solo vista en pantalla)</span></div>
           </div>
           
@@ -71,8 +72,10 @@ export default function CheckoutPage() {
           
           <div className="flex-1 space-y-3.5 mb-8">
              <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-[13px] text-blue-200 font-bold leading-tight">Gestión para 1 Proyecto Único</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Matrices IPER, AST y PTS Ilimitados</span></div>
              <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Inspecciones Ilimitadas en Obra</span></div>
-             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Charlas 5 Minutos Ilimitadas</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Charlas de 5 Min. y Emisión de Constancias</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Reportes Gerenciales y Cumplimiento Normativo</span></div>
              <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-[13px] text-zinc-300 font-bold text-amber-300 leading-tight">Carga Masiva Documental Mágica 🪄</span></div>
              <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-[13px] text-zinc-300 font-bold text-green-300 leading-tight">Exportación Completa Editable (Word/PDF)</span></div>
           </div>
@@ -101,10 +104,12 @@ export default function CheckoutPage() {
           
           <div className="flex-1 space-y-3.5 mb-8">
              <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-purple-400 shrink-0"/><span className="text-sm text-purple-200 font-bold leading-tight">Gestión Multi-Proyecto Ilimitada</span></div>
-             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-purple-400 shrink-0"/><span className="text-[13px] text-zinc-300 leading-tight">Memorias y Reportes Personalizados por Cliente (Logo/Datos)</span></div>
-             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-purple-400 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Inspecciones y Charlas Ilimitadas Globales</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-purple-400 shrink-0"/><span className="text-[13px] text-zinc-300 leading-tight">Informes Gerenciales Personalizados (Tu Logo y Marca)</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-purple-400 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Gestión IPER, PTS y AST Ilimitado Multi-Cliente</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-purple-400 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Archivo Histórico Centralizado de Documentos</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-purple-400 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Inspecciones, Cumplimiento y Charlas Ilimitadas</span></div>
              <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-purple-400 shrink-0"/><span className="text-[13px] text-zinc-300 font-bold text-amber-300 leading-tight">Carga Masiva Documental Mágica 🪄</span></div>
-             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-purple-400 shrink-0"/><span className="text-[13px] text-zinc-300 font-bold text-green-300 leading-tight">Exportación Completa Editable (Word/PDF)</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-purple-400 shrink-0"/><span className="text-[13px] text-zinc-300 font-bold text-green-300 leading-tight">Exportación Total (Word/PDF)</span></div>
           </div>
           
           <button onClick={() => alert("Integración MercadoPago Pendiente: PRO ASESOR")} className="w-full bg-purple-600 hover:bg-purple-500 text-white text-sm font-bold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)]">
