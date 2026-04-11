@@ -35,16 +35,16 @@ export default function CheckoutPage() {
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Plan STARTER</h3>
             <div className="flex items-baseline gap-1 mb-2">
-              <span className="text-4xl font-black text-white">$45.000</span>
+              <span className="text-4xl font-black text-white">$19.990</span>
               <span className="text-zinc-500 text-sm font-medium">CLP / mes</span>
             </div>
             <p className="text-sm text-zinc-400">Ideal para prevencionistas independientes y asesores freelance.</p>
           </div>
           
           <div className="flex-1 space-y-4 mb-8">
-            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Hasta 20 Matrices de IA al mes</span></div>
-            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Exportación a Word y PDF</span></div>
-            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Soporte normativo básico</span></div>
+            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Hasta 10 Matrices de Tareas al mes</span></div>
+            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Análisis normativo individual</span></div>
+            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Exportación básica a PDF</span></div>
           </div>
           
           <button onClick={() => alert("Integración MercadoPago Pendiente: STARTER")} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl transition-colors border border-zinc-700">
@@ -63,7 +63,7 @@ export default function CheckoutPage() {
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Plan PRO</h3>
             <div className="flex items-baseline gap-1 mb-2">
-              <span className="text-4xl font-black text-white">$120.000</span>
+              <span className="text-4xl font-black text-white">$45.000</span>
               <span className="text-blue-300/60 text-sm font-medium">CLP / mes</span>
             </div>
             <p className="text-sm text-zinc-300 gap-1 mb-2">Potencia industrial para corporaciones y constructoras dinámicas.</p>
