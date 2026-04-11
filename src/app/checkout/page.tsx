@@ -14,9 +14,9 @@ export default function CheckoutPage() {
       <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none -z-10" />
       <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none -z-10" />
 
-      <Link href="/wizard">
+      <Link href="/">
         <button className="absolute top-8 left-8 flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-zinc-800 transition-all shadow-xl z-20">
-          <ArrowLeft className="w-4 h-4 text-zinc-400" /> Volver al Wizard
+          <ArrowLeft className="w-4 h-4 text-zinc-400" /> Volver al Menú Principal
         </button>
       </Link>
 
