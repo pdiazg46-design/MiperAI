@@ -102,53 +102,53 @@ export default function AdminDashboard() {
           <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-black/40">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-zinc-800 text-[10px] uppercase tracking-widest font-bold text-zinc-500">
-                  <th className="p-4">Usuario</th>
-                  <th className="p-4">Rol</th>
-                  <th className="p-4">Plan Actual</th>
-                  <th className="p-4">Uso (API / Matrices)</th>
-                  <th className="p-4 text-right">Acciones Administrativas</th>
+                <tr className="border-b border-zinc-700 text-xs sm:text-sm uppercase tracking-widest font-extrabold text-zinc-300">
+                  <th className="p-5">Usuario</th>
+                  <th className="p-5">Rol</th>
+                  <th className="p-5">Plan Actual</th>
+                  <th className="p-5">Uso (API / Matrices)</th>
+                  <th className="p-5 text-right">Acciones Administrativas</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800/80">
                 {users.map((u) => (
                   <tr key={u.id} className="hover:bg-white/[0.02] transition-colors group">
-                    <td className="p-4">
+                    <td className="p-5">
                       <div className="flex flex-col">
-                        <span className="font-semibold text-white text-sm">{u.name || 'Sin Nombre'}</span>
-                        <span className="text-xs text-zinc-500">{u.email}</span>
+                        <span className="font-bold text-white text-base">{u.name || 'Sin Nombre'}</span>
+                        <span className="text-sm text-zinc-400 mt-1">{u.email}</span>
                       </div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-5">
                       {u.role === 'ADMIN' ? (
-                        <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px] font-bold px-2 py-1 rounded-md uppercase">Root</span>
+                        <span className="bg-blue-500/20 text-blue-300 border border-blue-500/40 text-xs font-black px-3 py-1.5 rounded-md uppercase tracking-wider">Root</span>
                       ) : (
-                        <span className="bg-zinc-800 text-zinc-400 text-[10px] font-bold px-2 py-1 rounded-md uppercase">User</span>
+                        <span className="bg-zinc-800 text-zinc-300 text-xs font-bold px-3 py-1.5 rounded-md uppercase tracking-wider">User</span>
                       )}
                     </td>
-                    <td className="p-4">
+                    <td className="p-5">
                       <div className="flex items-center gap-2">
                         {u.subscriptionTier?.includes('PRO') || u.subscriptionTier === 'ENTERPRISE' ? (
-                           <Crown className="w-4 h-4 text-yellow-500" />
+                           <Crown className="w-5 h-5 text-yellow-500" />
                         ) : null}
-                        <span className={`text-xs font-bold uppercase ${u.subscriptionTier?.includes('PRO') ? 'text-yellow-500' : 'text-zinc-400'}`}>
+                        <span className={`text-sm font-black uppercase tracking-wide ${u.subscriptionTier?.includes('PRO') ? 'text-yellow-400' : 'text-zinc-300'}`}>
                           {u.subscriptionTier}
                         </span>
                       </div>
                     </td>
-                    <td className="p-4">
-                        <span className="text-sm font-mono text-zinc-300">{u.queriesUsed || 0}</span>
+                    <td className="p-5">
+                        <span className="text-base font-mono font-bold text-zinc-200">{u.queriesUsed || 0}</span>
                     </td>
-                    <td className="p-4 text-right">
+                    <td className="p-5 text-right">
                       {u.role !== 'ADMIN' && (
-                        <div className="flex items-center justify-end gap-2">
-                           {processingId === u.id && <Loader2 className="w-4 h-4 animate-spin text-blue-500" />}
+                        <div className="flex items-center justify-end gap-3">
+                           {processingId === u.id && <Loader2 className="w-5 h-5 animate-spin text-blue-500" />}
                            <div className="relative group inline-block">
                              <select
                                 value={u.subscriptionTier}
                                 disabled={processingId === u.id}
                                 onChange={(e) => changeUserTier(u.id, e.target.value)}
-                                className="appearance-none bg-zinc-900 border border-zinc-800 hover:border-zinc-600 text-xs font-semibold px-4 py-2 pr-8 rounded-lg text-zinc-300 outline-none transition-colors cursor-pointer disabled:opacity-50"
+                                className="appearance-none bg-zinc-800 border-2 border-zinc-700 hover:border-zinc-500 text-sm font-bold px-5 py-2.5 pr-10 rounded-xl text-white outline-none transition-colors cursor-pointer disabled:opacity-50 min-w-[200px]"
                              >
                                <option value="FREE">Degradar a FREE</option>
                                <option value="BASICO">Ascender a BÁSICO</option>
