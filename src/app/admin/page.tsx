@@ -79,11 +79,18 @@ export default function AdminDashboard() {
               <p className="text-sm text-blue-400 font-medium">Acceso Restringido Súper Usuario</p>
             </div>
           </div>
-          <Link href="/">
-            <button className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-zinc-800 transition-all shadow-xl">
-              <Home className="w-4 h-4 text-zinc-400" /> Volver al Menú Principal
-            </button>
-          </Link>
+          <div className="flex flex-col md:flex-row items-center gap-3">
+            <Link href="/checkout">
+              <button className="flex items-center gap-2 bg-blue-600/10 border border-blue-500/30 text-blue-400 text-sm font-bold px-5 py-2.5 rounded-full hover:bg-blue-600/20 transition-all shadow-[0_0_15px_rgba(59,130,246,0.15)]">
+                🔗 Ver Pasarela de Pagos
+              </button>
+            </Link>
+            <Link href="/">
+              <button className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-zinc-800 transition-all shadow-xl">
+                <Home className="w-4 h-4 text-zinc-400" /> Volver al Menú Principal
+              </button>
+            </Link>
+          </div>
         </header>
 
         <main className="bg-zinc-900/60 backdrop-blur-2xl border border-white/5 rounded-[2rem] p-6 shadow-2xl">
