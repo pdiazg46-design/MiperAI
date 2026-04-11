@@ -18,21 +18,26 @@ export const authOptions = {
           throw new Error("Datos incompletos");
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
-        });
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email }
+          });
 
-        if (!user || !user.password) {
-          throw new Error("Usuario no encontrado o usa otro método de acceso");
+          if (!user || !user.password) {
+            throw new Error("Usuario no encontrado o usa otro método de acceso");
+          }
+
+          const passwordsMatch = await bcrypt.compare(credentials.password, user.password);
+
+          if (!passwordsMatch) {
+            throw new Error("Contraseña incorrecta");
+          }
+
+          return user;
+        } catch (error: any) {
+          console.error("NextAuth authorize exception:", error);
+          throw new Error(error?.message || "Error interno de base de datos o conexión (504/401)");
         }
-
-        const passwordsMatch = await bcrypt.compare(credentials.password, user.password);
-
-        if (!passwordsMatch) {
-          throw new Error("Contraseña incorrecta");
-        }
-
-        return user;
       }
     })
   ],
@@ -58,6 +63,9 @@ export const authOptions = {
       }
       return session;
     },
+  },
+  pages: {
+    signIn: '/login',
   },
   secret: process.env.NEXTAUTH_SECRET,
 }
