@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Camera, Mic, Upload, X, ShieldAlert, Loader2, Sparkles, CheckCircle2, FileDown, Zap, Smartphone } from 'lucide-react';
 import Link from 'next/link';
 
@@ -11,6 +11,19 @@ export default function InspeccionPage() {
   const [reportType, setReportType] = useState<'falta' | 'cumplimiento'>('falta');
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [projects, setProjects] = useState<any[]>([]);
+  const [selectedProjectId, setSelectedProjectId] = useState('');
+  const [selectedProcedureId, setSelectedProcedureId] = useState('');
+
+  useEffect(() => {
+    fetch('/api/projects')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setProjects(data);
+      })
+      .catch(console.error);
+  }, []);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -78,11 +91,18 @@ export default function InspeccionPage() {
                  <div>
                     <h2 className="flex items-center gap-2 text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Proyecto Activo</h2>
                     <div className="relative">
-                      <select className="appearance-none w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 font-medium focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none cursor-pointer text-sm">
+                      <select 
+                        value={selectedProjectId}
+                        onChange={(e) => {
+                          setSelectedProjectId(e.target.value);
+                          setSelectedProcedureId(''); // reset proc
+                        }}
+                        className="appearance-none w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 font-medium focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none cursor-pointer text-sm"
+                      >
                         <option value="">Selecciona el Proyecto actual...</option>
-                        <option value="1">Construcción Edificio Vista Azul</option>
-                        <option value="2">Mantenimiento Planta Solar Norte</option>
-                        <option value="3">Ampliación Subestación Eléctrica 220kV</option>
+                        {projects.map(p => (
+                          <option key={p.id} value={p.id}>{p.name}</option>
+                        ))}
                       </select>
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
                         <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
@@ -93,12 +113,16 @@ export default function InspeccionPage() {
                  <div>
                     <h2 className="flex items-center gap-2 text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Procedimiento (Matriz)</h2>
                     <div className="relative">
-                      <select className="appearance-none w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 font-medium focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none cursor-pointer text-sm">
+                      <select 
+                        value={selectedProcedureId}
+                        onChange={(e) => setSelectedProcedureId(e.target.value)}
+                        disabled={!selectedProjectId}
+                        className="appearance-none w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 font-medium focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none cursor-pointer text-sm disabled:opacity-50"
+                      >
                         <option value="">Selecciona el Procedimiento de Riesgo...</option>
-                        <option value="p1">Excavaciones y Zanjas</option>
-                        <option value="p2">Montaje de Andamios y Trabajo en Altura</option>
-                        <option value="p3">Descarga de Materiales Pesados</option>
-                        <option value="p4">Hormigonado de Lozas</option>
+                        {projects.find(p => p.id === selectedProjectId)?.procedures?.map((proc: any) => (
+                           <option key={proc.id} value={proc.id}>{proc.name}</option>
+                        ))}
                       </select>
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
                         <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>

@@ -1,10 +1,15 @@
 import { NextResponse } from 'next/server';
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = (session?.user as any)?.id;
+
     const { projectName, procedureName, tasksPayload, companyName } = await req.json();
 
     // Creamos ambas cosas en una sola transacción anidada
@@ -12,6 +17,7 @@ export async function POST(req: Request) {
       data: {
         name: projectName || 'Nuevo Proyecto Seguro',
         company: companyName || 'ACME Corp',
+        userId: userId || null,
         procedures: {
           create: {
             name: procedureName || 'Procedimiento Base',
@@ -33,7 +39,15 @@ export async function POST(req: Request) {
 
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = (session?.user as any)?.id;
+
+    if (!userId) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    }
+
     const projects = await prisma.project.findMany({
+      where: { userId },
       orderBy: { createdAt: 'desc' },
       include: {
         procedures: true
