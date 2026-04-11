@@ -479,50 +479,7 @@ export default function WizardPage() {
           </div>
           <p className="text-xs text-slate-500 font-medium bg-slate-100 p-1.5 rounded-md inline-block">{accumulatedTasks.length} Maniobras evaluadas</p>
           
-          {appMode !== 'manual' && appMode !== 'import' && (
-            <div className="mt-4 flex flex-col gap-2">
-               <div className="flex flex-col gap-1 mb-2">
-                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Sector Industrial / Área</label>
-                 <select 
-                   value={industria} 
-                   onChange={(e) => setIndustria(e.target.value)}
-                   className="w-full text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:border-slate-300 rounded p-1.5 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
-                 >
-                   <option value="Construcción">Construcción / Obras Civiles</option>
-                   <option value="Telecomunicaciones">Telecomunicaciones</option>
-                   <option value="Minería">Minería</option>
-                   <option value="Servicios de Salud">Servicios de Salud / Hospitalario</option>
-                   <option value="Industrial / Manufactura">Industrial / Manufactura</option>
-                   <option value="Logística y Transporte">Logística y Transporte</option>
-                   <option value="Forestal">Forestal y Maderero</option>
-                   <option value="Otro">Otro sector</option>
-                 </select>
-               </div>
-               <div className="flex flex-col mb-2">
-                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 text-center">Cargar Documento de Procedimiento</label>
-                 <div className="flex flex-col items-center justify-center p-6 bg-blue-50/70 border-2 border-dashed border-blue-200 rounded-xl transition-all hover:bg-blue-50 hover:border-blue-400">
-                    <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload} />
-                    <Upload className="w-8 h-8 text-blue-500 mb-3" />
-                    <p className="text-[10px] font-medium text-slate-500 mb-4 text-center px-4 leading-relaxed">Sube tu documento PDF o Word. La IA interceptará el archivo y <strong className="text-blue-600 font-extrabold">mapeará todos los riesgos automáticamente</strong>.</p>
-                    
-                    <button 
-                      onClick={() => {
-                         if (!projectName.trim() || !procedureName.trim()) {
-                            setShowValidationAlert(true);
-                            return;
-                         }
-                         fileInputRef.current?.click();
-                      }} 
-                      disabled={isParsing || isBulkGenerating} 
-                      className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-md font-bold text-xs transition-colors uppercase tracking-wide disabled:opacity-50"
-                    >
-                      {(isParsing || isBulkGenerating) ? <Loader2 className="w-4 h-4 animate-spin"/> : <Upload className="w-4 h-4" />}
-                      {isParsing ? 'Leyendo el Archivo...' : isBulkGenerating ? 'Mapeando Riesgos con IA...' : 'SELECCIONAR ARCHIVO LOCAL'}
-                    </button>
-                 </div>
-               </div>
-            </div>
-          )}
+
 
           {appMode === 'import' && (
             <div className="mt-4 flex flex-col items-center justify-center gap-3 p-5 bg-blue-50 border-2 border-dashed border-blue-300 rounded-xl text-center">
@@ -778,48 +735,104 @@ export default function WizardPage() {
         </div>
 
         {step === 1 && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="text-center space-y-4">
-              <div className="mx-auto w-16 h-16 bg-blue-100 text-blue-600 flex items-center justify-center rounded-2xl shadow-sm border border-blue-200">
-                <ShieldAlert className="w-8 h-8" />
-              </div>
-              <h2 className="text-3xl font-extrabold text-slate-800">Agregar Nueva Tarea</h2>
-              <p className="text-slate-500">Describe la maniobra operacional que incorporarás al proyecto.</p>
-            </div>
-            
-            <div 
-              className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative group"
-              onClickCapture={(e) => {
-                if (!projectName.trim() || !procedureName.trim()) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setShowValidationAlert(true);
-                }
-              }}
-            >
-              <textarea 
-                className={`w-full border-slate-300 rounded-xl p-4 text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-slate-50 min-h-[120px] resize-none ${(!projectName.trim() || !procedureName.trim()) ? 'cursor-not-allowed opacity-60' : ''}`}
-                placeholder="Ejemplo: Montaje de andamios tubulares con arnés de seguridad..."
-                value={taskName}
-                readOnly={!projectName.trim() || !procedureName.trim()}
-                onChange={(e) => setTaskName(e.target.value)}
-              />
-              { (!projectName.trim() || !procedureName.trim()) && (
-                <div className="absolute inset-0 z-10 cursor-not-allowed flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-white/40 backdrop-blur-[1px] rounded-2xl">
-                   <span className="bg-slate-800 text-white font-bold text-xs uppercase px-3 py-1.5 rounded-lg shadow-md">
-                     Defina el documento primero
-                   </span>
-                </div>
-              )}
-            </div>
+          <div className={`grid grid-cols-1 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500 ${appMode === 'ai' ? 'lg:grid-cols-2' : ''}`}>
+             
+             {/* LEFT COLUMN: Upload Document (Masivo IA) */}
+             {appMode === 'ai' && (
+               <div className="space-y-6 flex flex-col justify-center bg-white p-6 md:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200">
+                  <div className="text-center space-y-3">
+                    <div className="mx-auto w-14 h-14 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-2xl shadow-inner border border-indigo-200">
+                      <Upload className="w-6 h-6" />
+                    </div>
+                    <h2 className="text-xl font-extrabold text-slate-800">Análisis Masivo Mágico 🪄</h2>
+                    <p className="text-slate-500 text-[13px] px-4">Sube un Procedimiento completo (PDF/Word). La IA extraerá e interpretará todas las maniobras operativas automáticamente.</p>
+                  </div>
+                  
+                  <div className="flex flex-col gap-1.5 mt-4">
+                   <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Sector Industrial / Contexto</label>
+                   <select 
+                     value={industria} 
+                     onChange={(e) => setIndustria(e.target.value)}
+                     className="w-full text-sm font-semibold text-slate-700 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-colors"
+                   >
+                     <option value="Construcción">Construcción / Obras Civiles</option>
+                     <option value="Telecomunicaciones">Telecomunicaciones</option>
+                     <option value="Minería">Minería</option>
+                     <option value="Servicios de Salud">Servicios de Salud / Hospitalario</option>
+                     <option value="Industrial / Manufactura">Industrial / Manufactura</option>
+                     <option value="Logística y Transporte">Logística y Transporte</option>
+                     <option value="Forestal">Forestal y Maderero</option>
+                     <option value="Otro">Otro sector</option>
+                   </select>
+                 </div>
 
-            <button 
-              onClick={() => setStep(2)}
-              disabled={taskName.length < 5}
-              className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white p-4 rounded-xl font-bold shadow-md hover:bg-blue-700 transition-all disabled:opacity-50 disabled:grayscale"
-            >
-              Continuar <ChevronRight className="w-5 h-5" />
-            </button>
+                  <div className="flex flex-col items-center justify-center p-6 bg-indigo-50/50 border-2 border-dashed border-indigo-200 rounded-2xl transition-all hover:bg-indigo-50 hover:border-indigo-400 mt-2">
+                      <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload} />
+                      
+                      <button 
+                        onClick={() => {
+                           if (!projectName.trim() || !procedureName.trim()) {
+                              setShowValidationAlert(true);
+                              return;
+                           }
+                           fileInputRef.current?.click();
+                        }} 
+                        disabled={isParsing || isBulkGenerating} 
+                        className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-xl shadow-lg font-bold text-xs transition-colors uppercase tracking-wide disabled:opacity-50"
+                      >
+                        {(isParsing || isBulkGenerating) ? <Loader2 className="w-5 h-5 animate-spin"/> : <Upload className="w-5 h-5" />}
+                        {isParsing ? 'Procesando Archivo...' : isBulkGenerating ? 'Mapeando Riesgos...' : 'Seleccionar Documento'}
+                      </button>
+                   </div>
+               </div>
+             )}
+
+             {/* RIGHT COLUMN: Manual Individual Task Input */}
+             {appMode !== 'import' && (
+               <div className="space-y-6 flex flex-col justify-center bg-white p-6 md:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200">
+                  <div className="text-center space-y-3">
+                    <div className="mx-auto w-14 h-14 bg-blue-100 text-blue-600 flex items-center justify-center rounded-2xl shadow-inner border border-blue-200">
+                      <ShieldAlert className="w-6 h-6" />
+                    </div>
+                    <h2 className="text-xl font-extrabold text-slate-800">Evaluación Individual 🎯</h2>
+                    <p className="text-slate-500 text-[13px] px-4">Describe puntualmente una maniobra. Nuestro motor normativo estructurará los peligros, incidentes y controles idóneos.</p>
+                  </div>
+                  
+                  <div 
+                    className="bg-slate-50 p-2 rounded-2xl shadow-inner border border-slate-100 relative group mt-4"
+                    onClickCapture={(e) => {
+                      if (!projectName.trim() || !procedureName.trim()) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setShowValidationAlert(true);
+                      }
+                    }}
+                  >
+                    <textarea 
+                      className={`w-full border-2 border-slate-200 rounded-xl p-4 text-slate-700 text-sm font-medium focus:ring-0 focus:border-blue-500 bg-white min-h-[140px] resize-none transition-colors ${(!projectName.trim() || !procedureName.trim()) ? 'cursor-not-allowed opacity-60' : ''}`}
+                      placeholder="Ejemplo: Armado y nivelación de andamios tubulares perimetrales sobre superficie irregular..."
+                      value={taskName}
+                      readOnly={!projectName.trim() || !procedureName.trim()}
+                      onChange={(e) => setTaskName(e.target.value)}
+                    />
+                    { (!projectName.trim() || !procedureName.trim()) && (
+                      <div className="absolute inset-0 z-10 cursor-not-allowed flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-white/40 backdrop-blur-[1px] rounded-2xl">
+                         <span className="bg-slate-800 text-white font-bold text-xs uppercase px-3 py-1.5 rounded-lg shadow-md">
+                           Defina el documento primero
+                         </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <button 
+                    onClick={() => setStep(2)}
+                    disabled={taskName.length < 5}
+                    className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white p-3.5 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-all disabled:opacity-50 disabled:grayscale uppercase text-xs"
+                  >
+                    Identificar Riesgos <ChevronRight className="w-5 h-5" />
+                  </button>
+               </div>
+             )}
           </div>
         )}
 
