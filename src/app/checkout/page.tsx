@@ -136,9 +136,9 @@ export default function CheckoutPage() {
             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Ingeniero Técnico dedicado 24/7</span></div>
           </div>
           
-          <button onClick={() => alert("Contacto comercial a enviar.")} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-bold py-3.5 rounded-xl transition-colors border border-zinc-700">
+          <a href="mailto:atsittelecom@gmail.com?subject=Consulta Plan Enterprise MiperAI" className="block w-full text-center bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-bold py-3.5 rounded-xl transition-colors border border-zinc-700">
             Contactar Ventas
-          </button>
+          </a>
         </div>
 
       </div>
