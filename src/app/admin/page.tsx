@@ -149,6 +149,7 @@ export default function AdminDashboard() {
                                 disabled={processingId === u.id}
                                 onChange={(e) => changeUserTier(u.id, e.target.value)}
                                 className="appearance-none bg-zinc-900 border border-zinc-800 hover:border-zinc-600 text-xs font-semibold px-4 py-2 pr-8 rounded-lg text-zinc-300 outline-none transition-colors cursor-pointer disabled:opacity-50"
+                             >
                                <option value="FREE">Degradar a FREE</option>
                                <option value="BASICO">Ascender a BÁSICO</option>
                                <option value="PRO_OBRA">Ascender a PRO (Obra)</option>

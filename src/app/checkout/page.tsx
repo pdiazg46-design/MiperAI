@@ -48,7 +48,6 @@ export default function CheckoutPage() {
             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Hasta 2 Inspecciones de Terreno</span></div>
             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Hasta 2 Charlas Preventivas</span></div>
             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300 leading-tight">Generación Básica PTS y AST</span></div>
-            <div className="flex items-start gap-3 opacity-50"><XCircle className="w-5 h-5 text-red-400 shrink-0"/><span className="text-sm text-zinc-400 leading-tight line-through">Sin Exportación (Solo vista en pantalla)</span></div>
           </div>
           
           <button onClick={() => alert("Integración MercadoPago Pendiente: BÁSICO")} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-bold py-3.5 rounded-xl transition-colors border border-zinc-700">
