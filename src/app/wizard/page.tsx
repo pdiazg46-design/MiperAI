@@ -587,35 +587,50 @@ export default function WizardPage() {
           </div>
         </div>
 
-        {accumulatedTasks.length > 0 && (
-          <div className="p-4 border-t border-slate-200 bg-white flex flex-col gap-2">
-            <button 
-              onClick={handleSaveProject}
-              disabled={isSaving}
-              className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white p-3.5 rounded-xl font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-50"
-            >
-              {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Guardar Proyecto en la Nube ☁️'}
-            </button>
-            <div className="w-full h-px bg-slate-200 my-1"></div>
-            <button 
-              onClick={handleExportProject}
-              className="w-full flex items-center justify-center gap-2 bg-green-600 text-white p-3.5 rounded-xl font-bold shadow-lg shadow-green-600/20 hover:bg-green-700 hover:-translate-y-0.5 transition-all text-sm"
-            >
-              Exportar Proyecto a Word <FileDown className="w-5 h-5" />
-            </button>
-            <button 
-              onClick={handleExportPDF}
-              className="w-full flex items-center justify-center gap-2 bg-red-600 text-white p-3.5 rounded-xl font-bold shadow-lg shadow-red-600/20 hover:bg-red-700 hover:-translate-y-0.5 transition-all text-sm"
-            >
-              Exportar Proyecto a PDF <FileDown className="w-5 h-5" />
-            </button>
-          </div>
-        )}
+
       </aside>
 
       {/* Main Wizard Area */}
-      <main className="flex-1 px-4 py-8 md:py-12 order-1 md:order-2 overflow-y-auto w-full max-w-7xl mx-auto">
-      
+      <main className="flex-1 order-1 md:order-2 overflow-y-auto w-full flex flex-col relative h-[60vh] md:h-screen">
+        
+        {accumulatedTasks.length > 0 && (
+          <div className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 py-4 flex flex-col xl:flex-row items-center justify-between gap-4 shadow-sm w-full">
+            <div className="flex items-center gap-3 w-full xl:w-auto justify-center xl:justify-start">
+               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center border border-blue-200 shrink-0">
+                 <ShieldAlert className="w-5 h-5 text-blue-600" />
+               </div>
+               <div>
+                  <h3 className="font-extrabold text-slate-800 text-base md:text-lg leading-tight">Tablero de Exportación y Guardado</h3>
+                  <p className="text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-widest">{accumulatedTasks.length} maniobras armadas y listas</p>
+               </div>
+            </div>
+            
+            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 w-full xl:w-auto">
+              <button 
+                onClick={handleSaveProject}
+                disabled={isSaving}
+                className="flex-1 xl:flex-none flex items-center justify-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-md shadow-blue-600/20 hover:bg-blue-700 hover:-translate-y-0.5 transition-all text-xs md:text-sm disabled:opacity-50"
+              >
+                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'A Nube ☁️'}
+              </button>
+              <div className="hidden xl:block w-px h-6 bg-slate-300 mx-1"></div>
+              <button 
+                onClick={handleExportProject}
+                className="flex-1 xl:flex-none flex items-center justify-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-md shadow-emerald-600/20 hover:bg-emerald-700 hover:-translate-y-0.5 transition-all text-xs md:text-sm"
+              >
+                A Word <FileDown className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={handleExportPDF}
+                className="flex-1 xl:flex-none flex items-center justify-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-md shadow-red-600/20 hover:bg-red-700 hover:-translate-y-0.5 transition-all text-xs md:text-sm"
+              >
+                A PDF <FileDown className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12 flex-1">
         {bulkReviewTasks ? (
            <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 pb-10">
              <div className="text-center space-y-3 relative mb-6">
@@ -927,6 +942,7 @@ export default function WizardPage() {
         )}
         </>
        )}
+        </div>
       </main>
 
       {/* MODAL: Formulario Manual */}
