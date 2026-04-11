@@ -33,7 +33,7 @@ export default function CheckoutPage() {
             <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center justify-center mb-4">
               <ShieldAlert className="w-6 h-6 text-emerald-400" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Plan STARTER</h3>
+            <h3 className="text-xl font-bold text-white mb-2">Plan BÁSICO</h3>
             <div className="flex items-baseline gap-1 mb-2">
               <span className="text-4xl font-black text-white">$19.990</span>
               <span className="text-zinc-500 text-sm font-medium">CLP / mes</span>
@@ -42,13 +42,15 @@ export default function CheckoutPage() {
           </div>
           
           <div className="flex-1 space-y-4 mb-8">
-            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Hasta 10 Matrices de Tareas al mes</span></div>
-            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Análisis normativo individual</span></div>
-            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Exportación básica a PDF</span></div>
+            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Hasta 10 Tareas de Matriz al mes</span></div>
+            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Hasta 2 Inspecciones de Terreno al mes</span></div>
+            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Hasta 2 Charlas de 5 Minutos al mes</span></div>
+            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Análisis Normativo Manual</span></div>
+            <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0"/><span className="text-sm text-zinc-300">Exportación en PDF</span></div>
           </div>
           
-          <button onClick={() => alert("Integración MercadoPago Pendiente: STARTER")} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl transition-colors border border-zinc-700">
-            Seleccionar Starter
+          <button onClick={() => alert("Integración MercadoPago Pendiente: BÁSICO")} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-xl transition-colors border border-zinc-700">
+            Seleccionar Básico
           </button>
         </div>
 
@@ -70,10 +72,11 @@ export default function CheckoutPage() {
           </div>
           
           <div className="flex-1 space-y-4 mb-8">
-             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-200 font-medium">Matrices Ilimitadas Mensuales</span></div>
-             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-300">Carga Masiva Documental Mágica</span></div>
-             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-300">Exportación Ilimitada en la Nube</span></div>
-             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-300">Regulaciones chilenas garantizadas (DS 594)</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-200 font-bold">Tareas y Matrices Ilimitadas</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-300">Inspecciones de Terreno Ilimitadas</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-300">Charlas de 5 Minutos Ilimitadas</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-300 font-bold text-amber-300">Carga Masiva Documental Mágica 🪄</span></div>
+             <div className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0"/><span className="text-sm text-zinc-300">Exportación Total (Word/PDF)</span></div>
           </div>
           
           <button onClick={() => alert("Integración MercadoPago Pendiente: PRO")} className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)]">
