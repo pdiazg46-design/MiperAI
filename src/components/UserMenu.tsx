@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { LogOut, ShieldAlert, Crown, User as UserIcon } from 'lucide-react';
 import Link from 'next/link';
@@ -8,6 +8,21 @@ import Link from 'next/link';
 export default function UserMenu() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   if (!session?.user) {
     return (
@@ -23,7 +38,7 @@ export default function UserMenu() {
   }
 
   return (
-    <div className="fixed top-4 right-4 z-[999]">
+    <div ref={menuRef} className="fixed top-4 right-4 z-[999]">
       {/* Dropdown Toggle */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
