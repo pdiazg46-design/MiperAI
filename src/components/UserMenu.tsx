@@ -9,9 +9,6 @@ export default function UserMenu() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: session } = useSession();
-  const [isOpen, setIsOpen] = useState(false);
-
   if (!session?.user) {
     return (
       <div className="fixed top-4 right-4 z-[999]">
