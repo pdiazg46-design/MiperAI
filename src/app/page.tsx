@@ -3,10 +3,18 @@ import { useState, useRef, useEffect } from 'react';
 import { PlusCircle, Search, FileText, ShieldAlert, FolderSync, Camera, Mic, Zap, ChevronRight, ClipboardCheck, User } from 'lucide-react';
 import Link from 'next/link';
 import { useDeviceSimulator } from '@/components/DeviceSimulatorProvider';
+import { useSession } from 'next-auth/react';
 
 export default function Dashboard() {
   const { isSimulatorEnabled } = useDeviceSimulator();
-  const [avatarUrl, setAvatarUrl] = useState<string>("/foto%20perfil.jpeg");
+  const { data: session } = useSession();
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (session?.user?.image) {
+      setAvatarUrl(session.user.image);
+    }
+  }, [session]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [projects, setProjects] = useState<any[]>([]);
@@ -63,7 +71,11 @@ export default function Dashboard() {
               onClick={handleAvatarClick}
               className={`${isSimulatorEnabled ? 'hidden' : 'hidden md:flex'} w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-200 border-2 border-white shadow-md items-center justify-center text-slate-500 overflow-hidden shrink-0 cursor-pointer hover:ring-2 hover:ring-blue-500 hover:ring-offset-1 transition-all relative group`}
             >
-               <img src={avatarUrl} alt="Avatar Usuario" className="w-full h-full object-cover" />
+               {avatarUrl ? (
+                 <img src={avatarUrl} alt="Avatar Usuario" className="w-full h-full object-cover" />
+               ) : (
+                 <User className="w-6 h-6 text-slate-400" />
+               )}
                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                  <Camera className="w-5 h-5 text-white" />
                </div>
@@ -117,7 +129,11 @@ export default function Dashboard() {
              onClick={handleAvatarClick}
              className="w-16 h-16 rounded-full bg-slate-200 border-4 border-white shadow-xl flex items-center justify-center text-slate-500 overflow-hidden shrink-0 animate-in zoom-in duration-500 -translate-y-3 cursor-pointer hover:scale-105 transition-transform relative group"
            >
-             <img src={avatarUrl} alt="Avatar Usuario" className="w-full h-full object-cover" />
+             {avatarUrl ? (
+               <img src={avatarUrl} alt="Avatar Usuario" className="w-full h-full object-cover" />
+             ) : (
+               <User className="w-8 h-8 text-slate-400" />
+             )}
              <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                <Camera className="w-6 h-6 text-white" />
              </div>
