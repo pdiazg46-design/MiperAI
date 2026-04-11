@@ -434,7 +434,9 @@ export default function WizardPage() {
           <Link href="/" className="inline-flex font-semibold text-sm tracking-tight text-slate-500 hover:text-blue-600 transition-colors items-center gap-1 mb-4">
             <ArrowLeft className="w-4 h-4"/> Menú Principal
           </Link>
-          <div className="flex flex-col border-b border-transparent hover:border-slate-300 focus-within:border-blue-600 transition-colors overflow-hidden pb-1 mb-2">
+          <div className="flex flex-col border border-blue-200 bg-blue-50/50 hover:bg-blue-50 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200 transition-all rounded-xl p-3 mb-4 shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+            <span className="text-[10px] uppercase font-black text-blue-600 tracking-wider mb-2 flex items-center gap-1.5 animate-pulse"><Edit3 className="w-3.5 h-3.5"/> Define tu Documento</span>
             <div className="flex items-center gap-1">
               <input 
                 type="text" 
@@ -449,7 +451,7 @@ export default function WizardPage() {
               type="text" 
               value={procedureName}
               onChange={(e)=>setProcedureName(e.target.value)}
-              className="w-full text-[11px] font-bold text-blue-600 bg-blue-50/50 hover:bg-blue-50 focus:bg-blue-50 border border-transparent hover:border-blue-100 focus:border-blue-300 rounded px-1 py-0.5 outline-none transition-colors truncate"
+              className="w-full text-xs font-bold text-slate-500 bg-white border border-transparent hover:border-slate-200 focus:border-blue-400 rounded px-2 py-1 mt-1 outline-none transition-colors truncate shadow-inner"
               placeholder="Ej: Montaje de Andamios..."
             />
           </div>
@@ -722,7 +724,7 @@ export default function WizardPage() {
         ) : (
           <>
         {/* Progress indicator */}
-        <div className="flex justify-end mb-8">
+        <div className="flex justify-start mb-8">
            <div className="flex items-center gap-2">
               <span className="text-xs uppercase font-bold text-slate-400">Paso {step} de 3</span>
               <div className="flex gap-1 bg-slate-100 p-1 rounded-full">
