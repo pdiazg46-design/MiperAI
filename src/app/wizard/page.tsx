@@ -3,8 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronRight, CheckCircle2, FileDown, ShieldAlert, Loader2, ArrowLeft, Plus, Check, Upload, X, Trash2, Edit3, Save, ArrowUp, ArrowDown, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 import { generateMatrixDocxBlob } from '@/lib/docx-generator/exportService';
-import UserMenu from '@/components/UserMenu';
-import UserMenu from '@/components/UserMenu';
+import { useSession } from 'next-auth/react';
 
 export function getRiskLevel(p: number, s: number): string {
   if (!p || !s) return 'MEDIO';
@@ -51,6 +50,19 @@ export function getRiskColorClass(level: string): string {
 }
 
 export default function WizardPage() {
+  const { data: session, status } = useSession();
+  const [trialDaysLeft, setTrialDaysLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (session?.user && (session.user as any).subscriptionTier === 'FREE' && (session.user as any).createdAt) {
+       const created = new Date((session.user as any).createdAt);
+       const now = new Date();
+       const diffTime = now.getTime() - created.getTime();
+       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+       setTrialDaysLeft(15 - diffDays);
+    }
+  }, [session]);
+
   const [step, setStep] = useState(1);
   const [taskName, setTaskName] = useState('');
   const [altura, setAltura] = useState<string|null>(null);
@@ -377,8 +389,39 @@ export default function WizardPage() {
     }
   };
 
+  const isExpired = trialDaysLeft !== null && trialDaysLeft < 0;
+
+  if (status === 'loading') {
+    return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-blue-500" /></div>;
+  }
+
+  if (isExpired) {
+    return (
+       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-6 text-center select-none">
+          <ShieldAlert className="w-32 h-32 text-red-500 mb-6 drop-shadow-[0_0_20px_rgba(239,68,68,0.5)]" />
+          <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Período de Prueba Finalizado</h1>
+          <p className="text-zinc-400 mb-10 max-w-lg text-lg">Han transcurrido los 15 días de tu prueba gratuita. Haz upgrade para seguir generando matrices.</p>
+          <Link href="/checkout">
+             <button className="bg-amber-500 hover:bg-amber-400 text-amber-950 px-10 py-5 rounded-2xl font-black text-xl shadow-[0_0_50px_rgba(245,158,11,0.5)] transition-all uppercase tracking-wide">
+                Activar Pase PRO Ahora
+             </button>
+          </Link>
+       </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col md:flex-row">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col md:flex-row relative">
+      {trialDaysLeft !== null && trialDaysLeft >= 0 && (
+         <div className="absolute top-0 left-0 right-0 z-[100] bg-orange-600/90 backdrop-blur-md text-white px-4 py-2.5 flex flex-col sm:flex-row items-center justify-center gap-4 shadow-xl border-b border-orange-500">
+            <span className="text-[13px] font-bold uppercase tracking-wide">⚠️ Período de Prueba Activo: Quedan {trialDaysLeft} Días</span>
+            <Link href="/checkout">
+               <button className="bg-white hover:bg-zinc-100 text-orange-700 px-4 py-1.5 rounded-lg text-xs font-black shadow-md uppercase transition-all">
+                 Hacer Upgrade Ahora
+               </button>
+            </Link>
+         </div>
+      )}
       
       {/* Sidebar de Proyecto (Carrito) */}
       <aside className="w-full md:w-80 bg-white border-r border-slate-200 md:min-h-screen flex flex-col md:sticky md:top-0 z-40 shadow-sm order-2 md:order-1 h-[40vh] md:h-screen">
