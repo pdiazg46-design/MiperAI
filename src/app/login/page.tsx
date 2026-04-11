@@ -41,7 +41,12 @@ export default function LoginPage() {
           setLoading(false);
         }
       } catch (err: any) {
-        setError(err?.message || "Ocurrió un error inesperado al iniciar sesión.");
+        let errorMsg = err?.message || "Ocurrió un error inesperado";
+        if (errorMsg === "Failed to fetch") {
+          errorMsg = `[Sonda] Falla CORS o Corte de Vercel. URL Origen rechazada. Revisa consola. Stack: ${err?.stack?.split('\n')[0]}`;
+          console.error("DIAGNOSTICO CIENTÍFICO:", err);
+        }
+        setError(errorMsg);
         setLoading(false);
       }
     } else {
