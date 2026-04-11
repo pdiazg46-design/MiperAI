@@ -65,6 +65,7 @@ export default function WizardPage() {
 
   const isExpired = trialDaysLeft !== null && trialDaysLeft < 0;
   const [showPaywallAlert, setShowPaywallAlert] = useState(false);
+  const [showValidationAlert, setShowValidationAlert] = useState(false);
 
   const [step, setStep] = useState(1);
   const [taskName, setTaskName] = useState('');
@@ -415,6 +416,27 @@ export default function WizardPage() {
             </div>
          </div>
       )}
+      
+      {showValidationAlert && (
+         <div className="fixed inset-0 z-[1000] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 min-h-screen">
+            <div className="bg-white border flex flex-col items-center justify-center border-slate-200 p-8 rounded-3xl max-w-sm w-full shadow-[0_20px_50px_rgba(0,0,0,0.2)] text-center animate-in zoom-in-95 duration-200">
+               <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mb-4 shadow-inner">
+                 <ShieldAlert className="w-8 h-8 text-amber-500" />
+               </div>
+               <h3 className="text-xl font-extrabold text-slate-800 mb-2">Faltan Datos</h3>
+               <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+                 Debes definir el <b>Nombre del Proyecto</b> y el <b>Procedimiento</b> en el panel izquierdo antes de continuar.
+               </p>
+               <button 
+                 onClick={() => setShowValidationAlert(false)} 
+                 className="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-md active:scale-95"
+               >
+                 Entendido, volver
+               </button>
+            </div>
+         </div>
+      )}
+
       {trialDaysLeft !== null && trialDaysLeft >= 0 && (
          <div className="absolute top-0 left-0 right-0 z-[100] bg-orange-600/90 backdrop-blur-md text-white px-4 py-2.5 flex flex-col sm:flex-row items-center justify-center gap-4 shadow-xl border-b border-orange-500">
             <span className="text-[13px] font-bold uppercase tracking-wide">⚠️ Período de Prueba Activo: Quedan {trialDaysLeft} Días</span>
@@ -486,7 +508,7 @@ export default function WizardPage() {
                     <button 
                       onClick={() => {
                          if (!projectName.trim() || !procedureName.trim()) {
-                            alert('⚠️ Debes definir el Nombre del Proyecto y el Procedimiento en la parte superior antes de cargar un archivo.');
+                            setShowValidationAlert(true);
                             return;
                          }
                          fileInputRef.current?.click();
@@ -553,7 +575,7 @@ export default function WizardPage() {
             <button 
               onClick={() => {
                  if (!projectName.trim() || !procedureName.trim()) {
-                    alert('⚠️ Debes definir el Nombre del Proyecto y el Procedimiento en la parte superior antes de agregar maniobras.');
+                    setShowValidationAlert(true);
                     return;
                  }
                  setShowManualForm(true);
