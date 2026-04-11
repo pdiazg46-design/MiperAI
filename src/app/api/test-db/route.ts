@@ -28,16 +28,19 @@ export async function POST(request: Request) {
 
     // BYPASS NEXTAUTH: Creamos el token manualmente simulando NextAuth
     const secret = (process.env.NEXTAUTH_SECRET || "miperai_secret_fallback_temporal_123_edge").trim();
+    
+    // Jose (NextAuth internal encoder) requiere STRICT JSON payload objects
+    const pureTokenPayload = {
+      id: user.id || "",
+      email: user.email || "",
+      name: user.name || "",
+      picture: user.image || null,
+      subscriptionTier: user.subscriptionTier || "FREE",
+      role: user.role || "USER",
+    };
+
     const token = await encode({
-      token: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        picture: user.image,
-        subscriptionTier: user.subscriptionTier,
-        role: user.role,
-        createdAt: user.createdAt,
-      },
+      token: pureTokenPayload,
       secret: secret,
       maxAge: 30 * 24 * 60 * 60, // 30 dias
     });
