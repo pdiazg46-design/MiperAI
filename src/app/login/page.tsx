@@ -24,22 +24,12 @@ export default function LoginPage() {
 
     if (isLogin) {
       try {
-        const res = await signIn("credentials", {
-          redirect: false,
+        // Ejecución nativa sin 'redirect: false' para evitar fallos de fetch o CORS.
+        await signIn("credentials", {
           email,
           password,
+          callbackUrl: "/wizard"
         });
-
-        if (res?.error) {
-          setError(res.error);
-          setLoading(false);
-        } else if (res?.ok) {
-          router.push("/wizard");
-          router.refresh();
-        } else {
-          setError("Error de red o servidor caído.");
-          setLoading(false);
-        }
       } catch (err: any) {
         let errorMsg = err?.message || "Ocurrió un error inesperado";
         if (errorMsg === "Failed to fetch") {
