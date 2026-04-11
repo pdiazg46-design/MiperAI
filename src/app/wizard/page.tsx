@@ -484,7 +484,13 @@ export default function WizardPage() {
                     <p className="text-[10px] font-medium text-slate-500 mb-4 text-center px-4 leading-relaxed">Sube tu documento PDF o Word. La IA interceptará el archivo y <strong className="text-blue-600 font-extrabold">mapeará todos los riesgos automáticamente</strong>.</p>
                     
                     <button 
-                      onClick={() => fileInputRef.current?.click()} 
+                      onClick={() => {
+                         if (!projectName.trim() || !procedureName.trim()) {
+                            alert('⚠️ Debes definir el Nombre del Proyecto y el Procedimiento en la parte superior antes de cargar un archivo.');
+                            return;
+                         }
+                         fileInputRef.current?.click();
+                      }} 
                       disabled={isParsing || isBulkGenerating} 
                       className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-md font-bold text-xs transition-colors uppercase tracking-wide disabled:opacity-50"
                     >
@@ -545,7 +551,13 @@ export default function WizardPage() {
           
           <div className="pt-2">
             <button 
-              onClick={() => setShowManualForm(true)}
+              onClick={() => {
+                 if (!projectName.trim() || !procedureName.trim()) {
+                    alert('⚠️ Debes definir el Nombre del Proyecto y el Procedimiento en la parte superior antes de agregar maniobras.');
+                    return;
+                 }
+                 setShowManualForm(true);
+              }}
               className="w-full flex items-center justify-center gap-2 border-2 border-dashed border-slate-300 text-slate-500 bg-white p-2.5 rounded-lg hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-colors text-xs font-semibold"
             >
               <PlusCircle className="w-4 h-4" /> Agregar Maniobra Manual
