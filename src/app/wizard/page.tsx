@@ -772,19 +772,36 @@ export default function WizardPage() {
               <p className="text-slate-500">Describe la maniobra operacional que incorporarás al proyecto.</p>
             </div>
             
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div 
+              className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative group"
+              onClickCapture={(e) => {
+                if (!projectName.trim() || !procedureName.trim()) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowValidationAlert(true);
+                }
+              }}
+            >
               <textarea 
-                className="w-full border-slate-300 rounded-xl p-4 text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-slate-50 min-h-[120px] resize-none"
+                className={`w-full border-slate-300 rounded-xl p-4 text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-slate-50 min-h-[120px] resize-none ${(!projectName.trim() || !procedureName.trim()) ? 'cursor-not-allowed opacity-60' : ''}`}
                 placeholder="Ejemplo: Montaje de andamios tubulares con arnés de seguridad..."
                 value={taskName}
+                readOnly={!projectName.trim() || !procedureName.trim()}
                 onChange={(e) => setTaskName(e.target.value)}
               />
+              { (!projectName.trim() || !procedureName.trim()) && (
+                <div className="absolute inset-0 z-10 cursor-not-allowed flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-white/40 backdrop-blur-[1px] rounded-2xl">
+                   <span className="bg-slate-800 text-white font-bold text-xs uppercase px-3 py-1.5 rounded-lg shadow-md">
+                     Defina el documento primero
+                   </span>
+                </div>
+              )}
             </div>
 
             <button 
               onClick={() => setStep(2)}
               disabled={taskName.length < 5}
-              className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white p-4 rounded-xl font-bold shadow-md hover:bg-blue-700 transition-all disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white p-4 rounded-xl font-bold shadow-md hover:bg-blue-700 transition-all disabled:opacity-50 disabled:grayscale"
             >
               Continuar <ChevronRight className="w-5 h-5" />
             </button>
