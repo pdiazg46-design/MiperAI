@@ -24,7 +24,22 @@ export default function LoginPage() {
 
     if (isLogin) {
       try {
-        // Ejecución nativa sin 'redirect: false' para evitar fallos de fetch o CORS.
+        // DIAGNÓSTICO PROFUNDO: Testeando Vercel POST nativo antes de NextAuth
+        const rawRes = await fetch("/api/test-db", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const rawData = await rawRes.json();
+        console.log("Raw DB Test Response:", rawData);
+        
+        if (rawRes.status === 200) {
+           setError("[TEST-DB OK] DB funciona perfecto. NextAuth es el problema.");
+        } else {
+           setError(`[TEST-DB FALLA] ${rawData.error}`);
+        }
+
+        // Ejecución nativa sin 'redirect: false'
         await signIn("credentials", {
           email,
           password,
