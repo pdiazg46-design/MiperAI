@@ -4,6 +4,7 @@ import { ChevronRight, CheckCircle2, FileDown, ShieldAlert, Loader2, ArrowLeft, 
 import Link from 'next/link';
 import { generateMatrixDocxBlob } from '@/lib/docx-generator/exportService';
 import { useSession } from 'next-auth/react';
+import AILoadingScanner from '@/components/AILoadingScanner';
 
 export function getRiskLevel(p: number, s: number): string {
   if (!p || !s) return 'MEDIO';
@@ -872,11 +873,7 @@ export default function WizardPage() {
         {step === 3 && (
           <div className="space-y-8 animate-in fade-in duration-500">
              {isGenerating ? (
-               <div className="text-center space-y-6 py-20 flex flex-col items-center">
-                 <Loader2 className="w-14 h-14 text-blue-600 animate-spin" />
-                 <h2 className="text-2xl font-extrabold text-slate-800">Prevencionista Inteligente Pensando...</h2>
-                 <p className="text-slate-500">Cotejando Decreto Supremo 594 y Ley 16.744</p>
-               </div>
+               <AILoadingScanner />
              ) : matrixResult && matrixResult.risks ? (
                <div className="space-y-6">
                 <div className="text-center space-y-4">
