@@ -1061,6 +1061,7 @@ export default function WizardPage() {
             </div>
           </div>
         </div>
+      )}
       </div>
     </div>
   );
