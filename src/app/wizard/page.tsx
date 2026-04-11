@@ -84,8 +84,8 @@ export default function WizardPage() {
   
   // NEW: Accumulate tasks for a project
   const [accumulatedTasks, setAccumulatedTasks] = useState<any[]>([]);
-  const [projectName, setProjectName] = useState('Nuevo Proyecto');
-  const [procedureName, setProcedureName] = useState('Procedimiento de Trabajo Seguro');
+  const [projectName, setProjectName] = useState('');
+  const [procedureName, setProcedureName] = useState('');
   // NEW: Global procedure context
   const [procedimiento, setProcedimiento] = useState('');
   const [industria, setIndustria] = useState('Construcción');
@@ -163,6 +163,7 @@ export default function WizardPage() {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (isExpired) { setShowPaywallAlert(true); return; }
 
     setIsParsing(true);
     const formData = new FormData();
@@ -177,7 +178,8 @@ export default function WizardPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      setProcedimiento(prev => prev ? prev + "\n\n" + data.text : data.text);
+      setProcedimiento(data.text);
+      await performAutoMap(data.text);
     } catch (err: any) {
       alert("Error al extraer texto: " + err.message);
     } finally {
@@ -186,16 +188,13 @@ export default function WizardPage() {
     }
   };
 
-  const runBulkExtraction = async () => {
-    if (isExpired) { setShowPaywallAlert(true); return; }
-    if (procedimiento.length < 20) return;
+  const performAutoMap = async (procedimientoBase: string) => {
     setIsBulkGenerating(true);
-    
     try {
       const res = await fetch('/api/extract-bulk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ procedimientoBase: procedimiento, industria }),
+        body: JSON.stringify({ procedimientoBase, industria }),
       });
       
       const data = await res.json();
@@ -210,14 +209,13 @@ export default function WizardPage() {
       }
 
       setBulkReviewTasks(data.tareas);
-      // Opcional: mostrar confimación visual amigable
     } catch (e: any) {
       console.error(e);
       alert("Error en la extracción masiva: " + e.message);
     } finally {
       setIsBulkGenerating(false);
     }
-  }
+  };
 
   const runAIAlgorithm = async () => {
     if (isExpired) { setShowPaywallAlert(true); return; }
@@ -478,30 +476,23 @@ export default function WizardPage() {
                    <option value="Otro">Otro sector</option>
                  </select>
                </div>
-               <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Procedimiento Global (Contexto)</label>
-                  <div>
-                     <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload} />
-                     <button onClick={() => fileInputRef.current?.click()} disabled={isParsing} className="flex items-center gap-1 bg-white border border-slate-200 px-2 py-1 rounded shadow-sm text-[9px] font-bold text-blue-600 hover:bg-slate-50 transition-colors uppercase disabled:opacity-50">
-                       {isParsing ? <Loader2 className="w-3 h-3 animate-spin"/> : <Upload className="w-3 h-3" />}
-                       {isParsing ? 'Leyendo...' : 'Cargar Doc'}
-                     </button>
-                  </div>
+               <div className="flex flex-col mb-2">
+                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 text-center">Cargar Documento de Procedimiento</label>
+                 <div className="flex flex-col items-center justify-center p-6 bg-blue-50/70 border-2 border-dashed border-blue-200 rounded-xl transition-all hover:bg-blue-50 hover:border-blue-400">
+                    <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload} />
+                    <Upload className="w-8 h-8 text-blue-500 mb-3" />
+                    <p className="text-[10px] font-medium text-slate-500 mb-4 text-center px-4 leading-relaxed">Sube tu documento PDF o Word. La IA interceptará el archivo y <strong className="text-blue-600 font-extrabold">mapeará todos los riesgos automáticamente</strong>.</p>
+                    
+                    <button 
+                      onClick={() => fileInputRef.current?.click()} 
+                      disabled={isParsing || isBulkGenerating} 
+                      className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-md font-bold text-xs transition-colors uppercase tracking-wide disabled:opacity-50"
+                    >
+                      {(isParsing || isBulkGenerating) ? <Loader2 className="w-4 h-4 animate-spin"/> : <Upload className="w-4 h-4" />}
+                      {isParsing ? 'Leyendo el Archivo...' : isBulkGenerating ? 'Mapeando Riesgos con IA...' : 'SELECCIONAR ARCHIVO LOCAL'}
+                    </button>
+                 </div>
                </div>
-               <textarea 
-                 placeholder="Pega aquí el Procedimiento Seguro completo. La IA lo tendrá siempre a la vista para cada tarea que evalúe..."
-                 value={procedimiento}
-                 onChange={(e) => setProcedimiento(e.target.value)}
-                 className="w-full text-xs p-2.5 bg-white text-slate-600 rounded-lg border border-slate-200 hover:border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none h-28 shadow-inner transition-colors"
-               />
-               <button 
-                 onClick={runBulkExtraction}
-                 disabled={procedimiento.length < 20 || isBulkGenerating}
-                 className="w-full flex items-center justify-center gap-2 bg-yellow-400 text-yellow-950 p-2.5 rounded-lg font-bold shadow-sm hover:bg-yellow-300 transition-colors text-[11px] uppercase tracking-wide disabled:opacity-50 disabled:grayscale"
-               >
-                 {isBulkGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : '⚡'}
-                 {isBulkGenerating ? 'Buscando Maniobras...' : 'Auto-Mapear Procedimiento'}
-               </button>
             </div>
           )}
 
