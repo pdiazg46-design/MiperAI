@@ -24,28 +24,24 @@ export default function LoginPage() {
 
     if (isLogin) {
       try {
-        // Ejecución B2G NATURA sin NextAuth signIn
-        const rawRes = await fetch("/api/test-db", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
+        const res = await signIn("credentials", {
+          redirect: false,
+          email,
+          password
         });
-        const rawData = await rawRes.json();
         
-        if (rawRes.ok && rawData.success) {
-           router.push("/wizard");
-           router.refresh();
-        } else {
-           setError(rawData.error || "Error de red interno.");
-           setLoading(false);
+        if (res?.error) {
+          setError(res.error);
+          setLoading(false);
+          return;
+        }
+
+        if (res?.ok) {
+           window.location.href = "/";
         }
 
       } catch (err: any) {
         let errorMsg = err?.message || "Ocurrió un error inesperado";
-        if (errorMsg === "Failed to fetch") {
-          errorMsg = `[Sonda] Falla CORS o Corte de Vercel. URL Origen rechazada. Revisa consola. Stack: ${err?.stack?.split('\n')[0]}`;
-          console.error("DIAGNOSTICO CIENTÍFICO:", err);
-        }
         setError(errorMsg);
         setLoading(false);
       }
@@ -70,17 +66,17 @@ export default function LoginPage() {
           setError(data.message || "Error al crear la cuenta");
           setLoading(false);
         } else {
-          // Loguear automático tras registro usando el bypass NextAuth
-          const autoRes = await fetch("/api/test-db", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
+          // Loguear automático tras registro
+          const autoRes = await signIn("credentials", {
+            redirect: false,
+            email,
+            password,
           });
-          if (autoRes.ok) {
-            router.push("/wizard");
-            router.refresh();
+          if (autoRes?.ok) {
+            window.location.href = "/";
           } else {
-             setError("Cuenta creada, inicie sesión manualmente");
+             setError("Cuenta creada, pero falló auto-login.");
+             setLoading(false);
           }
         }
       } catch (err) {

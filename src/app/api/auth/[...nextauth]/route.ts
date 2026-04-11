@@ -52,7 +52,6 @@ export const authOptions = {
         token.id = user.id;
         token.subscriptionTier = user.subscriptionTier;
         token.role = user.role;
-        token.createdAt = (user as any).createdAt;
       }
       return token;
     },
@@ -61,7 +60,6 @@ export const authOptions = {
         session.user.id = token.id;
         session.user.subscriptionTier = token.subscriptionTier;
         session.user.role = token.role;
-        (session.user as any).createdAt = token.createdAt;
       }
       return session;
     },
