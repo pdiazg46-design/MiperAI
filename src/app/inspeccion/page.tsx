@@ -9,6 +9,7 @@ export default function InspeccionPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [audioNote, setAudioNote] = useState('');
   const [reportType, setReportType] = useState<'falta' | 'cumplimiento'>('falta');
+  const [extractedData, setExtractedData] = useState<any>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -58,15 +59,37 @@ export default function InspeccionPage() {
     }
   };
 
-  const simulateProcessing = () => {
-    if(!photoUrl) {
-      alert('Por favor, toma o sube una fotografía del hallazgo primero.');
+  const simulateProcessing = async () => {
+    if(!photoUrl || !selectedProjectId) {
+      alert('Por favor, asegúrate de seleccionar un "Proyecto Activo" y de cargar la fotografía.');
       return;
     }
     setStep(2);
-    setTimeout(() => {
-      setStep(3);
-    }, 4500); // Simulando el deley cognitivo de Vision + GPT
+    try {
+      const res = await fetch('/api/inspections', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectId: selectedProjectId,
+          photoData: photoUrl, // Omitimos base64 inmenso en prototipo
+          audioData: audioNote,
+          transcription: audioNote,
+          reportType: reportType
+        })
+      });
+      const data = await res.json();
+      if(data.success && data.extractedData) {
+         setExtractedData(data.extractedData);
+         setStep(3);
+      } else {
+         alert('Error al grabar el informe en NeonDB Postgres.');
+         setStep(1);
+      }
+    } catch(e) {
+      console.error(e);
+      alert('Error de conexión a la API Serverless.');
+      setStep(1);
+    }
   };
 
   return (
@@ -243,9 +266,7 @@ export default function InspeccionPage() {
                     <div>
                         <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Descripción del Hallazgo</h3>
                         <p className="font-semibold text-slate-800">
-                          {reportType === 'falta' 
-                            ? "Trabajo en andamio a altura sin línea de vida asegurada y plataforma incompleta (falta rodapié)."
-                            : "Uso ejemplar de Elementos de Protección Personal (EPP). Arnés enganchado a línea de vida y andamio estructural completamente normado con rodapiés vigentes."}
+                          {extractedData?.description || "Procesando..."}
                         </p>
                     </div>
 
@@ -254,18 +275,19 @@ export default function InspeccionPage() {
                           {reportType === 'falta' ? 'Infracción Legal Incurrida' : 'Normativa Cumplida a Cabalidad'}
                         </h3>
                         <ul className="text-xs text-slate-700 space-y-2">
-                           <li><strong className="text-slate-900">D.S. N° 594, Art. 53:</strong> "Todo trabajador que labore a alturas mayores de 1.8 metros deberá usar cinturón de seguridad o arnés..."</li>
-                           <li><strong className="text-slate-900">NCh 998, Of.1999:</strong> "Los andamios deben contar con barandas protectoras y rodapiés en todos los costados expuestos..."</li>
+                           {extractedData?.rules?.map((rule: any, i: number) => (
+                              <li key={i}><strong className="text-slate-900">{rule.norm}:</strong> "{rule.text}"</li>
+                           ))}
                         </ul>
                     </div>
 
-                    {reportType === 'falta' && (
+                    {reportType === 'falta' && extractedData?.correctiveActions?.length > 0 && (
                         <div>
                             <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Medida Correctiva Inmediata</h3>
-                            <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg text-amber-900 text-sm font-medium">
-                               1. Detener las faenas en andamio nivel 2 de inmediato. <br/>
-                               2. Proveer y obligar el enganche continuo de arnés. <br/>
-                               3. Instalar rodapié lateral en plataforma antes de retomar.
+                            <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg text-amber-900 text-sm font-medium space-y-1">
+                               {extractedData.correctiveActions.map((action: string, idx: number) => (
+                                 <p key={idx}>{idx + 1}. {action}</p>
+                               ))}
                             </div>
                         </div>
                     )}

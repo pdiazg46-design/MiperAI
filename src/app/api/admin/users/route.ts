@@ -40,16 +40,20 @@ export async function PATCH(req: Request) {
   }
 
   try {
-    const { userId, newTier } = await req.json();
+    const { userId, newTier, newRole } = await req.json();
     
-    if (!userId || !newTier) {
-      return NextResponse.json({ error: "Faltan parámetros" }, { status: 400 });
+    if (!userId) {
+      return NextResponse.json({ error: "Falta userId" }, { status: 400 });
     }
+
+    const dataToUpdate: any = {};
+    if (newTier) dataToUpdate.subscriptionTier = newTier;
+    if (newRole) dataToUpdate.role = newRole;
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: { subscriptionTier: newTier },
-      select: { id: true, email: true, subscriptionTier: true }
+      data: dataToUpdate,
+      select: { id: true, email: true, subscriptionTier: true, role: true }
     });
 
     return NextResponse.json(updatedUser);

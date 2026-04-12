@@ -58,6 +58,27 @@ export default function AdminDashboard() {
     }
   };
 
+  const changeUserRole = async (userId: string, newRole: string) => {
+    if (!confirm(`¿Actualizar el rol corporativo a ${newRole}?`)) return;
+    setProcessingId(userId);
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, newRole })
+      });
+      if (res.ok) {
+        setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u));
+      } else {
+        alert("Fallo al actualizar rol.");
+      }
+    } catch (e) {
+      alert("Error de red.");
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
   if (status === 'loading' || loading) {
     return <div className="min-h-screen bg-zinc-950 flex items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-blue-500" /></div>;
   }
@@ -149,12 +170,14 @@ export default function AdminDashboard() {
                       {u.role !== 'ADMIN' && (
                         <div className="flex items-center justify-end gap-3">
                            {processingId === u.id && <Loader2 className="w-5 h-5 animate-spin text-blue-500" />}
+                           
+                           {/* Select de Plan Base */}
                            <div className="relative group inline-block">
                              <select
                                 value={u.subscriptionTier}
                                 disabled={processingId === u.id}
                                 onChange={(e) => changeUserTier(u.id, e.target.value)}
-                                className="appearance-none bg-zinc-800 border-2 border-zinc-700 hover:border-zinc-500 text-sm font-bold px-5 py-2.5 pr-10 rounded-xl text-white outline-none transition-colors cursor-pointer disabled:opacity-50 min-w-[200px]"
+                                className="appearance-none bg-zinc-800 border-2 border-zinc-700 hover:border-zinc-500 text-xs font-bold px-3 py-2 pr-8 rounded-lg text-white outline-none transition-colors cursor-pointer disabled:opacity-50 min-w-[140px]"
                              >
                                <option value="FREE">Degradar a FREE</option>
                                <option value="BASICO">Ascender a BÁSICO</option>
@@ -166,6 +189,25 @@ export default function AdminDashboard() {
                                 <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
                              </div>
                            </div>
+
+                           {/* Select de Rol Operativo */}
+                           <div className="relative group inline-block">
+                             <select
+                                value={u.role}
+                                disabled={processingId === u.id}
+                                onChange={(e) => changeUserRole(u.id, e.target.value)}
+                                className="appearance-none bg-blue-900/30 border-2 border-blue-500/30 hover:border-blue-500/60 text-xs font-bold px-3 py-2 pr-8 rounded-lg text-blue-100 outline-none transition-colors cursor-pointer disabled:opacity-50 min-w-[140px]"
+                             >
+                               <option value="USER">Base (USER)</option>
+                               <option value="OPERADOR">OPERADOR</option>
+                               <option value="PREVENCIONISTA">PREVENCIONISTA</option>
+                               <option value="SUPERVISOR">SUPERVISOR</option>
+                             </select>
+                             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-blue-500 group-hover:text-blue-300 transition-colors">
+                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                             </div>
+                           </div>
+
                         </div>
                       )}
                     </td>

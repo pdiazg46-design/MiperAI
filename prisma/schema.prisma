@@ -47,9 +47,10 @@ model Project {
   userId     String?
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  astLogs    ASTLog[]
-  procedures Procedure[]
-  user       User?       @relation(fields: [userId], references: [id])
+  astLogs     ASTLog[]
+  inspections InspectionLog[]
+  procedures  Procedure[]
+  user        User?       @relation(fields: [userId], references: [id])
 }
 
 model Procedure {
@@ -70,6 +71,18 @@ model ASTLog {
   audioData       String?
   checkedControls String
   signature       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model InspectionLog {
+  id              String   @id @default(cuid())
+  projectId       String
+  photoData       String?  // Base64 o URL
+  audioData       String?  // Base64 o URL
+  transcription   String?  // Lo que la IA o el usuario transcribe
+  reportType      String   // "falta" o "cumplimiento"
+  extractedItems  String   // JSON string de los hallazgos 5S detectados
   createdAt       DateTime @default(now())
   project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
