@@ -47,13 +47,20 @@ export const authOptions = {
     strategy: "jwt" as "jwt",
   },
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, user, trigger, session }: any) {
       if (user) {
         token.id = user.id;
         token.subscriptionTier = user.subscriptionTier;
         token.role = user.role;
         token.createdAt = user.createdAt;
+        token.mustChangePassword = user.mustChangePassword;
       }
+      
+      // Update session handling
+      if (trigger === "update" && session && session.mustChangePassword !== undefined) {
+        token.mustChangePassword = session.mustChangePassword;
+      }
+      
       return token;
     },
     async session({ session, token }: any) {
@@ -62,6 +69,7 @@ export const authOptions = {
         session.user.subscriptionTier = token.subscriptionTier;
         session.user.role = token.role;
         session.user.createdAt = token.createdAt;
+        session.user.mustChangePassword = token.mustChangePassword;
       }
       return session;
     },

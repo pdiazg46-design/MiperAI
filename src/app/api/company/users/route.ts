@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
 
@@ -50,14 +51,28 @@ export async function POST(req: Request) {
   try {
     const { email } = await req.json();
     if (!email) return NextResponse.json({ error: "Email es requerido" }, { status: 400 });
+    const formattedEmail = email.trim().toLowerCase();
 
-    const targetUser = await prisma.user.findUnique({ where: { email } });
+    const targetUser = await prisma.user.findUnique({ where: { email: formattedEmail } });
     if (!targetUser) {
-        return NextResponse.json({ error: "Este correo aún no está registrado en MiperAI. Dile al operario que cree su cuenta gratuita primero." }, { status: 404 });
+        const defaultPassword = await bcrypt.hash('Miper2026*', 10);
+        const newUser = await prisma.user.create({
+            data: {
+                email: formattedEmail,
+                name: formattedEmail.split('@')[0],
+                password: defaultPassword,
+                companyId: adminUser.companyId,
+                role: 'PREVENCIONISTA',
+                canCreateMatrices: true,
+                canCreateInspections: true,
+                mustChangePassword: true
+            }
+        });
+        return NextResponse.json(newUser);
     }
 
     const updatedUser = await prisma.user.update({
-      where: { email },
+      where: { email: formattedEmail },
       data: { companyId: adminUser.companyId, role: "PREVENCIONISTA" }
     });
 

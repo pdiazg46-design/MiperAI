@@ -4,6 +4,7 @@ import "./globals.css";
 import DeviceSimulatorProvider from "@/components/DeviceSimulatorProvider";
 import AuthProvider from "@/components/AuthProvider";
 import UserMenu from "@/components/UserMenu";
+import ForcePasswordChange from "@/components/ForcePasswordChange";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default function RootLayout({
         <AuthProvider>
           <DeviceSimulatorProvider>
             <UserMenu />
+            <ForcePasswordChange />
             {children}
           </DeviceSimulatorProvider>
         </AuthProvider>

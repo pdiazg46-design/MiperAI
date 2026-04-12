@@ -23,6 +23,7 @@ model User {
   companyId          String?
   canCreateMatrices  Boolean   @default(false)
   canCreateInspections Boolean @default(false)
+  mustChangePassword Boolean   @default(false)
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   accounts           Account[]
