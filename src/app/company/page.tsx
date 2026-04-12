@@ -237,24 +237,24 @@ export default function CompanyDashboard() {
                 </div>
                 <form onSubmit={handleUpdateCompany} className="space-y-4">
                     <div>
-                        <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">Empresa / Razón Social</label>
-                        <input type="text" value={company?.name || ''} onChange={(e)=>setCompany({...company, name: e.target.value})} className="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-all" required/>
+                        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Empresa / Razón Social</label>
+                        <input type="text" value={company?.name || ''} onChange={(e)=>setCompany({...company, name: e.target.value})} className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-all text-slate-800" required/>
                     </div>
                     <div>
-                        <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">RUT Empresa</label>
-                        <input type="text" value={company?.rut || ''} onChange={(e)=>setCompany({...company, rut: formatRUT(e.target.value)})} maxLength={12} className="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-all" placeholder="Ej: 76.123.456-7"/>
+                        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">RUT Empresa</label>
+                        <input type="text" value={company?.rut || ''} onChange={(e)=>setCompany({...company, rut: formatRUT(e.target.value)})} maxLength={12} className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-all text-slate-800" placeholder="Ej: 76.123.456-7"/>
                     </div>
                     <div>
-                        <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">Dirección Matriz</label>
-                        <input type="text" value={company?.address || ''} onChange={(e)=>setCompany({...company, address: e.target.value})} className="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-all"/>
+                        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Dirección Matriz</label>
+                        <input type="text" value={company?.address || ''} onChange={(e)=>setCompany({...company, address: e.target.value})} className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-all text-slate-800"/>
                     </div>
-                    <div className="pt-2 border-t border-slate-100 mt-2">
-                        <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">Responsable HSEC (Nombre)</label>
-                        <input type="text" value={company?.adminContactName || ''} onChange={(e)=>setCompany({...company, adminContactName: e.target.value})} className="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-all"/>
+                    <div className="pt-4 border-t border-slate-200 mt-4">
+                        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Responsable HSEC (Nombre)</label>
+                        <input type="text" value={company?.adminContactName || ''} onChange={(e)=>setCompany({...company, adminContactName: e.target.value})} className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-all text-slate-800"/>
                     </div>
                     <div>
-                        <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">Soporte Corporativo (Correo/Teléfono)</label>
-                        <input type="text" value={company?.adminContactEmail || ''} onChange={(e)=>setCompany({...company, adminContactEmail: e.target.value})} placeholder="Soporte interno de la minera..." className="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-all"/>
+                        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Soporte Corporativo (Correo/Teléfono)</label>
+                        <input type="text" value={company?.adminContactEmail || ''} onChange={(e)=>setCompany({...company, adminContactEmail: e.target.value})} placeholder="Soporte interno de la minera..." className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-all text-slate-800"/>
                     </div>
 
                     <button type="submit" disabled={savingCompany} className="w-full mt-6 flex items-center justify-center gap-2 bg-indigo-600 text-white font-bold px-4 py-3 rounded-xl shadow-md hover:bg-indigo-700 transition-colors disabled:opacity-50">
@@ -269,9 +269,9 @@ export default function CompanyDashboard() {
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-800"></div>
                     <form onSubmit={handleAddUser} className="flex flex-col sm:flex-row items-end gap-3 rounded-2xl">
                         <div className="flex-1 w-full pl-3">
-                           <label className="block text-xs font-extrabold text-slate-800 uppercase mb-2 tracking-wider">Despliegue General</label>
-                           <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="Email para enrolar manual..." className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-3.5 text-sm font-semibold outline-none shadow-sm transition-all"/>
-                           <p className="text-[10px] text-slate-400 font-medium mt-2">Puedes añadir uno por uno o usar carga masiva (*.xlsx).</p>
+                           <label className="block text-sm font-black text-slate-800 uppercase tracking-wide mb-2">Despliegue General</label>
+                           <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="Email para enrolar manual..." className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-3.5 text-sm font-semibold outline-none shadow-sm transition-all text-slate-800"/>
+                           <p className="text-xs text-slate-500 font-medium mt-2">Puedes añadir uno por uno o usar carga masiva (*.xlsx).</p>
                         </div>
                         <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
                            <button type="submit" className="w-full sm:w-auto bg-slate-800 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-slate-900 transition-all shadow-md flex items-center justify-center gap-2">
@@ -294,21 +294,21 @@ export default function CompanyDashboard() {
 
                     <table className="w-full text-left border-collapse min-w-[700px]">
                         <thead>
-                            <tr className="border-b border-slate-200 text-[10px] uppercase tracking-widest font-extrabold text-slate-500">
-                                <th className="p-3">Trabajador & Correo</th>
-                                <th className="p-3">Cargo Real</th>
-                                <th className="p-3 text-center bg-blue-50/50 rounded-t-lg border-x border-slate-100">Crear Matrices IA</th>
-                                <th className="p-3 text-center bg-orange-50/50 rounded-t-lg">Hacer Inspecciones</th>
-                                <th className="p-3 text-center">Baja</th>
+                            <tr className="border-b border-slate-300 text-xs uppercase tracking-wide font-bold text-slate-600 bg-slate-50">
+                                <th className="p-4 rounded-tl-xl">Trabajador & Correo</th>
+                                <th className="p-4">Cargo Real</th>
+                                <th className="p-4 text-center border-l border-slate-200">Crear Matrices IA</th>
+                                <th className="p-4 text-center">Hacer Inspecciones</th>
+                                <th className="p-4 text-center rounded-tr-xl">Baja</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-slate-200">
                             {users.map(u => (
-                                <tr key={u.id} className="hover:bg-slate-50/50 transition-colors">
+                                <tr key={u.id} className="hover:bg-indigo-50/40 transition-colors">
                                     <td className="p-4">
-                                        <div className="flex flex-col">
-                                           <span className="font-bold text-slate-800 text-sm whitespace-nowrap">{u.name || 'Contratista S.N'}</span>
-                                           <span className="text-xs text-slate-400 font-medium">{u.email}</span>
+                                        <div className="flex flex-col gap-0.5">
+                                           <span className="font-extrabold text-slate-800 text-sm whitespace-nowrap">{u.name || 'Contratista S.N'}</span>
+                                           <span className="text-sm text-slate-500 font-medium">{u.email}</span>
                                         </div>
                                     </td>
                                     <td className="p-4">
@@ -329,16 +329,16 @@ export default function CompanyDashboard() {
                                            </div>
                                         </div>
                                     </td>
-                                    <td className="p-4 text-center bg-blue-50/20 border-x border-slate-100">
+                                    <td className="p-4 text-center border-l border-slate-100">
                                         <label className="relative inline-flex items-center cursor-pointer" title="Autorizar tokens PxS">
                                             <input type="checkbox" disabled={processingId === u.id} checked={u.canCreateMatrices} className="sr-only peer" onChange={(e) => handeUpdateUser(u.id, {canCreateMatrices: e.target.checked})} />
-                                            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 shadow-inner"></div>
+                                            <div className="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 shadow-inner"></div>
                                         </label>
                                     </td>
-                                    <td className="p-4 text-center bg-orange-50/20">
+                                    <td className="p-4 text-center">
                                         <label className="relative inline-flex items-center cursor-pointer" title="Autorizar dictado móvil">
                                             <input type="checkbox" disabled={processingId === u.id} checked={u.canCreateInspections} className="sr-only peer" onChange={(e) => handeUpdateUser(u.id, {canCreateInspections: e.target.checked})} />
-                                            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500 shadow-inner"></div>
+                                            <div className="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500 shadow-inner"></div>
                                         </label>
                                     </td>
                                     <td className="p-4 text-center">

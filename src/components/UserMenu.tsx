@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
-import { LogOut, ShieldAlert, Crown, User as UserIcon } from 'lucide-react';
+import { LogOut, ShieldAlert, Crown, User as UserIcon, Building2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function UserMenu() {
@@ -85,6 +85,15 @@ export default function UserMenu() {
                 <button className="w-full mt-1 text-left flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-orange-400 hover:bg-orange-500/10 rounded-xl transition-all">
                   <Crown className="w-4 h-4" />
                   Upgrade a PRO
+                </button>
+             </Link>
+          )}
+
+          {(session.user as any).subscriptionTier === 'ENTERPRISE' && (
+             <Link href="/company">
+                <button className="w-full mt-1 text-left flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-indigo-400 hover:bg-indigo-500/10 rounded-xl transition-all">
+                  <Building2 className="w-4 h-4" />
+                  Panel Corporativo
                 </button>
              </Link>
           )}
