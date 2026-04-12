@@ -6,6 +6,24 @@ import { useRouter } from 'next/navigation';
 import { Building2, Users, Loader2, Home, Save, UserPlus, Settings2 } from 'lucide-react';
 import Link from 'next/link';
 
+const formatRUT = (value: string) => {
+  let clean = value.replace(/[^0-9kK]/g, '').toUpperCase();
+  if (clean.length === 0) return '';
+  if (clean.length <= 1) return clean;
+  
+  const body = clean.slice(0, -1);
+  const dv = clean.slice(-1);
+  
+  let formattedBody = '';
+  for (let i = body.length - 1, j = 1; i >= 0; i--, j++) {
+    formattedBody = body[i] + formattedBody;
+    if (j % 3 === 0 && i !== 0) {
+      formattedBody = '.' + formattedBody;
+    }
+  }
+  return `${formattedBody}-${dv}`;
+};
+
 export default function CompanyDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -140,7 +158,7 @@ export default function CompanyDashboard() {
                     </div>
                     <div>
                         <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">RUT Empresa</label>
-                        <input type="text" value={company?.rut || ''} onChange={(e)=>setCompany({...company, rut: e.target.value})} className="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-all" placeholder="Ej: 76.123.456-7"/>
+                        <input type="text" value={company?.rut || ''} onChange={(e)=>setCompany({...company, rut: formatRUT(e.target.value)})} maxLength={12} className="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-all" placeholder="Ej: 76.123.456-7"/>
                     </div>
                     <div>
                         <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">Dirección Matriz</label>
