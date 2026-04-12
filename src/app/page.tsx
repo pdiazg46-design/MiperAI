@@ -318,9 +318,9 @@ export default function Dashboard() {
                     <span className="text-[11px] font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-md">
                       {new Date(p.createdAt).toLocaleDateString()}
                     </span>
-                    <button className="text-sm text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    <Link href={`/wizard?projectId=${p.id}`} className="text-sm text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                       Ver Detalles &rarr;
-                    </button>
+                    </Link>
                   </div>
                 </div>
               ))

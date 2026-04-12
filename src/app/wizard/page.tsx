@@ -75,10 +75,36 @@ export default function WizardPage() {
   const [altura, setAltura] = useState<string|null>(null);
   
   const [appMode, setAppMode] = useState('ai');
+  const [projectId, setProjectId] = useState<string | null>(null);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       setAppMode(urlParams.get('mode') || 'ai');
+      
+      const pid = urlParams.get('projectId');
+      if (pid) {
+        setProjectId(pid);
+        fetch(`/api/projects/${pid}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data && !data.error) {
+               setProjectName(data.name || '');
+               if (data.procedures && data.procedures.length > 0) {
+                 setProcedureName(data.procedures[0].name || '');
+                 if (data.procedures[0].jsonPayload) {
+                   try {
+                     const parsed = JSON.parse(data.procedures[0].jsonPayload);
+                     if (Array.isArray(parsed)) {
+                       setAccumulatedTasks(parsed);
+                     }
+                   } catch(e) {}
+                 }
+               }
+            }
+          })
+          .catch(err => console.error("Error loading project:", err));
+      }
     }
   }, []);
   
@@ -270,6 +296,7 @@ export default function WizardPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          projectId,
           projectName,
           procedureName,
           companyName: 'AceroTech S.A.', // Puede ser reemplazado dinámicamente si se requiere

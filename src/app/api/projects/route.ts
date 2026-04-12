@@ -10,9 +10,40 @@ export async function POST(req: Request) {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id;
 
-    const { projectName, procedureName, tasksPayload, companyName } = await req.json();
+    const { projectId, projectName, procedureName, tasksPayload, companyName } = await req.json();
 
-    // Creamos ambas cosas en una sola transacción anidada
+    if (projectId) {
+      // Intentar actualizar el proyecto existente
+      const existingProject = await prisma.project.findUnique({
+        where: { id: projectId },
+        include: { procedures: true }
+      });
+
+      if (existingProject) {
+        const procId = existingProject.procedures[0]?.id;
+        
+        await prisma.project.update({
+          where: { id: projectId },
+          data: {
+            name: projectName || 'Nuevo Proyecto Seguro',
+            company: companyName || existingProject.company,
+          }
+        });
+        
+        if (procId) {
+          await prisma.procedure.update({
+            where: { id: procId },
+            data: {
+              name: procedureName || 'Procedimiento Base',
+              jsonPayload: JSON.stringify(tasksPayload),
+            }
+          });
+        }
+        return NextResponse.json({ success: true, updated: true, id: projectId });
+      }
+    }
+
+    // Creamos ambas cosas en una sola transacción anidada si es un proyecto nuevo
     const project = await prisma.project.create({
       data: {
         name: projectName || 'Nuevo Proyecto Seguro',
