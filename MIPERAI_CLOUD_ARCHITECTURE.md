@@ -72,3 +72,23 @@ Este ecosistema **ya se encuentra vivamente desplegado y operativo en Vercel**, 
 
 * **La Nube es la Única Verdad:** Cualquier prueba o testeo sobre la concurrencia de sesiones y renderizado móvil debe entenderse bajo las normativas del entorno en la nube. Las menciones a "simuladores" solo hacen referencia a restricciones visuales de CSS/Layout en el DOM de la aplicación, pero la data, el enrutamiento (Edge Routes) y la funcionalidad residen e interactúan al 100% con un entorno Vercel de producción real.
 * Está prohibido asumir flujos pensando en entornos locales (`npm run dev`); se debe programar contemplando las restricciones de tiempo y latencia del ecosistema Vercel.
+
+<br/>
+
+## 8. Ecosistema Multi-Tenant y Seguridad B2B (Fase Enterprise)
+
+MiperAI ha evolucionado de una herramienta transaccional individual a una **plataforma B2B (Multi-Tenant)**. Esto significa que las empresas compran "nodos" del ecosistema corporativo para gobernar a su propia flota.
+
+### 8.1 Jerarquía Operativa (Escalamiento de Permisos)
+*   **ROOT (Súper Administrador)**: El creador del software. Controla los planes de negocio (Ascensos a Enterprise) a través de `/admin` y goza de uso ilimitado de la API IA.
+*   **ADMIN (Admin Corporativo / Empresa)**: Un cliente que compró el plan `ENTERPRISE`. Obtiene acceso a `/company`, donde puede inyectar el Logo, RUT de su empresa, y enrolar masivamente a sus trabajadores. Él es el "Dios" de su propia burbuja cerrada.
+*   **PREVENCIONISTA / SUPERVISOR**: Roles de faena media. Poseen facultades dinámicas (controladas por el Admin) para acceder al motor de inteligencia artificial (Crear Matrices) y auditar en campo (Inspecciones operativas con registro de base de datos).
+*   **OPERADOR**: El eslabón final y masivo. Carece de poder de generación inteligente, pero es el vector principal de trazabilidad legal. Utiliza su celular principalmente para:
+    1. Visualizar de forma transparente las jerarquías de riesgo.
+    2. Aplicar "**Firmas Multi-Concurrencia**" (Toma de Conocimiento) que comprueban inmutablemente ante fiscalizadores (Ej: Sernageomin) que recibió su instrucción.
+    3. Iniciar reportes rápidos de hallazgos mediante acceso único de cámara, sin poder editar documentación adyacente.
+
+### 8.2 Seguridad y Forja de Cuentas (El Túnel B2B)
+El sistema ha erradicado el frotamiento burocrático de que un minero "se cree una cuenta". Los usuarios son *Forjados en Clave* por sus gerentes.
+*   **Auto-Forjado y Sombra**: Cuando el *Administrador Corporativo* sube un flujo de Excel masivo (o añade manuales), las bases de datos de Prisma generan cuentas instantáneas vinculadas estrictamente a su `companyId`, estableciendo por defecto la contraseña global `Miper2026*`.
+*   **Bloqueo de Primer Acceso (Túnel PxC)**: Por regulaciones severas de seguridad de la información informátia frente al cruce de accesos civiles y corporativos, todo usuario forjado nace con el flag `mustChangePassword = true`. Al efectuar su log-in inaugural, no pueden renderizar ni interactuar con los módulos de MiperAI sin antes declarar legalmente su propia contraseña bajo un flujo bloqueante de pantalla completa, desarticulando el conocimiento global de los gerentes sobre las claves personales y liberando de retención legal a la plataforma.
