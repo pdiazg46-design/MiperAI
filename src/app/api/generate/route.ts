@@ -60,6 +60,8 @@ export async function POST(req: Request) {
       - Severidad va de 1 a 5 (1: Insignificante, 2: Menor, 3: Significativo, 4: Mayor, 5: Severo).
       El campo magnitudeRisk DEBE dar exactamente probability * severity (rango de 1 a 25).
       
+      REGLA CRÍTICA N°5 (CONTROLES): OBLIGATORIAMENTE cada control debe comenzar con su categoría entre corchetes (Ej: [Ingeniería], [Administrativo], [EPP], [Sustitución]) SEGUIDO de la acción directa y específica para mitigarlo. Ejemplo: "[EPP] Uso de arnés de seguridad de cuerpo entero". ESTÁ ESTRICTAMENTE PROHIBIDO omitir los corchetes de la categoría y está prohibido responder solo la categoría sin la acción.
+
       Aterriza las consecuencias fisiológicas reales y severas según la maniobra (Por ejemplo: hipoacusia neurosensorial, silicosis, lumbago crónico por MMC, quemaduras por daño actínico UV, tendinitis bicipital, etc).`,
     });
 

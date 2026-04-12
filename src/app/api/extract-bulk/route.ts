@@ -52,6 +52,8 @@ export async function POST(req: Request) {
     - Probabilidad: 1=Raro, 2=Poco probable, 3=Moderado, 4=Probable, 5=Casi seguro.
     - Severidad: 1=Insignificante, 2=Menor, 3=Significativo, 4=Mayor, 5=Severo.
 
+    REGLA CRÍTICA N°5 (CONTROLES): OBLIGATORIAMENTE cada control debe comenzar con su categoría entre corchetes (Ej: [Ingeniería], [Administrativo], [EPP], [Sustitución]) SEGUIDO de la acción directa y específica para mitigarlo. Ejemplo: "[EPP] Uso de arnés de seguridad de cuerpo entero". ESTÁ ESTRICTAMENTE PROHIBIDO omitir los corchetes de la categoría y está prohibido responder solo la categoría sin la acción.
+
     Describe explícitamente el daño fisiológico esperado (ej. quemaduras por radiación, silicosis, hipoacusia, lumbago mecánico, trastorno ansioso, etc) para que las medidas de control sean de nivel ingenieril estricto (uso de exoesqueletos, rotación de pausas, ropa ignífuga, tapones moldeados).
     `;
 
