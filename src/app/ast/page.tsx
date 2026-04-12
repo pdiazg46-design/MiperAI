@@ -72,8 +72,20 @@ export default function ASTViewerPage() {
     if (!activeProject) return;
     setIsSubmitting(true);
     
-    // Armar el objeto de controles aprobados (sólo ids o textos)
-    const checkedList = Object.keys(checkedControls).filter(k => checkedControls[k]);
+    // Armar el objeto de controles aprobados extrayendo el texto real de la matriz
+    const checkedTexts: string[] = [];
+    Object.keys(checkedControls).forEach(cId => {
+      if (checkedControls[cId]) {
+         const parts = cId.split('_'); // Ej: c_0_0_0
+         if (parts.length === 4) {
+           const m = parseInt(parts[1]);
+           const r = parseInt(parts[2]);
+           const c = parseInt(parts[3]);
+           const text = parsedManeuvers[m]?.result?.risks?.[r]?.controls?.[c];
+           if (text) checkedTexts.push(text);
+         }
+      }
+    });
 
     try {
       const res = await fetch('/api/ast-logs', {
@@ -84,7 +96,7 @@ export default function ASTViewerPage() {
           procedureName: activeProcedure?.name || 'General',
           photoData,
           audioData,
-          checkedControls: checkedList
+          checkedControls: checkedTexts
         })
       });
       if (!res.ok) throw new Error();
