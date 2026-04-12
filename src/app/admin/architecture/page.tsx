@@ -1,20 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Home, Users, Search, Target, Shield, CheckCircle2, ChevronRight, Lock, Crown, Briefcase, Zap, UserPlus } from 'lucide-react';
+import { Home, Users, Shield, ChevronRight, Lock, Crown, Briefcase, Zap, UserPlus, Target, Navigation } from 'lucide-react';
+
+const plans = [
+  { id: 'free', label: '1. Evaluación (FREE)' },
+  { id: 'pro', label: '2. Asesor Independiente (PRO)' },
+  { id: 'enterprise', label: '3. Mandante Corporativo (ENTERPRISE)' },
+  { id: 'operador', label: '4. Flota de Terreno (OPERADOR)' }
+];
 
 export default function BusinessFlowMap() {
+  const [activePlan, setActivePlan] = useState('free');
+
   return (
-    <div className="min-h-screen bg-[#050505] text-slate-200 p-6 md:p-12 font-sans relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#050505] text-slate-200 p-6 md:p-12 font-sans relative overflow-x-hidden flex flex-col">
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none -z-10" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-600/10 rounded-full blur-[140px] pointer-events-none -z-10" />
 
-      <div className="max-w-7xl mx-auto z-10 relative">
-        <header className="flex flex-col md:flex-row md:items-center justify-between mb-12 border-b border-white/5 pb-6">
+      <div className="max-w-5xl mx-auto z-10 relative flex-1 w-full flex flex-col">
+        <header className="flex flex-col md:flex-row md:items-center justify-between mb-8 border-b border-white/5 pb-6">
           <div>
-            <h1 className="text-3xl font-black text-white uppercase tracking-tight">Ecosistema y Modelo de Negocio Diarío</h1>
-            <p className="text-sm text-zinc-400 font-medium mt-2">Visión del "User Journey" por cada plan y tipo de actor dentro de MiperAI.</p>
+            <h1 className="text-3xl font-black text-white uppercase tracking-tight">Arquitectura Interactiva de Negocios</h1>
+            <p className="text-sm text-zinc-400 font-medium mt-2">Simulación de flujos operacionales y monetización de MiperAI.</p>
           </div>
           <Link href="/admin">
             <button className="mt-4 md:mt-0 flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-zinc-800 transition-all shadow-xl">
@@ -23,164 +32,158 @@ export default function BusinessFlowMap() {
           </Link>
         </header>
 
-        {/* CONTENEDOR GRID DE PERSONAS */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative">
-          
-          {/* =========================================
-              MODO FREE (El Enganche)
-             ========================================= */}
-          <div className="bg-zinc-900/60 backdrop-blur-xl border border-zinc-700/50 p-8 rounded-[2rem] flex flex-col relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-               <Shield className="w-24 h-24" />
-            </div>
-            
-            <div className="flex items-center gap-3 mb-6">
-               <div className="bg-zinc-800 text-zinc-300 p-3 rounded-full"><Users className="w-6 h-6" /></div>
-               <h2 className="text-xl font-black text-white uppercase">Usuario FREE <span className="text-sm text-zinc-500 font-medium normal-case ml-2">(El curioso)</span></h2>
-            </div>
-            
-            <div className="space-y-4 relative z-10 flex-1">
-               <div className="flex items-start gap-3">
-                 <div className="mt-1"><ChevronRight className="w-4 h-4 text-zinc-500" /></div>
-                 <div>
-                   <span className="font-bold text-zinc-200 block">¿Cómo llega?</span>
-                   <p className="text-sm text-zinc-400 leading-relaxed">Se registra por sí mismo en la página web con su cuenta de Google o Correo para ver si la plataforma es real.</p>
-                 </div>
-               </div>
-               
-               <div className="flex items-start gap-3">
-                 <div className="mt-1"><ChevronRight className="w-4 h-4 text-emerald-500" /></div>
-                 <div>
-                   <span className="font-bold text-emerald-400 block">¿Qué experimenta? (El Valor)</span>
-                   <p className="text-sm text-zinc-400 leading-relaxed">Entra a su cuenta libremente y puede usar el Motor IA. Puede detallar una faena, generar riesgos y calcular métricas PxS. Ve la Magia en tiempo real. También puede usar el celular para ver reportes.</p>
-                 </div>
-               </div>
+        {/* SELECTOR INTERACTIVO */}
+        <div className="flex flex-wrap gap-3 mb-10">
+           {plans.map((plan) => (
+             <button
+               key={plan.id}
+               onClick={() => setActivePlan(plan.id)}
+               className={`px-6 py-4 rounded-xl font-bold flex items-center gap-2 text-sm transition-all outline-none 
+                 ${activePlan === plan.id 
+                    ? plan.id === 'free' ? 'bg-zinc-100 text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-105' :
+                      plan.id === 'pro' ? 'bg-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] scale-105' :
+                      plan.id === 'enterprise' ? 'bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)] scale-105' :
+                      'bg-emerald-500 text-black shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-105'
+                    : 'bg-zinc-900 border border-zinc-800 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800'
+                 }`}
+             >
+                {activePlan === plan.id && <Navigation className="w-4 h-4" />}
+                {plan.label}
+             </button>
+           ))}
+        </div>
 
-               <div className="flex items-start gap-3">
-                 <div className="mt-1"><Lock className="w-4 h-4 text-red-500" /></div>
-                 <div>
-                   <span className="font-bold text-red-400 block">La Limitación (Paywall)</span>
-                   <p className="text-sm text-zinc-400 leading-relaxed">Tras maravillarse, intenta descargar el PDF o Word para entregarlo a la obra. Ahí el sistema lo bloquea. Descubre que su prueba dura 15 días, al término de los cuales no puede generar más nada si no paga.</p>
-                 </div>
-               </div>
-            </div>
-          </div>
-
-
-          {/* =========================================
-              MODO PRO (El Asesor Independiente)
-             ========================================= */}
-          <div className="bg-blue-950/20 backdrop-blur-xl border border-blue-500/30 p-8 rounded-[2rem] flex flex-col relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-               <Zap className="w-24 h-24 text-blue-500" />
-            </div>
-            
-            <div className="flex items-center gap-3 mb-6">
-               <div className="bg-blue-600/20 text-blue-400 p-3 rounded-full border border-blue-500/50"><Zap className="w-6 h-6" /></div>
-               <h2 className="text-xl font-black text-blue-100 uppercase">Usuario PRO <span className="text-sm text-blue-300/60 font-medium normal-case ml-2">(Asesor u Obra)</span></h2>
-            </div>
-            
-            <div className="space-y-4 relative z-10 flex-1">
-               <div className="flex items-start gap-3">
-                 <div className="mt-1"><ChevronRight className="w-4 h-4 text-blue-500/50" /></div>
-                 <div>
-                   <span className="font-bold text-blue-200 block">¿Cómo llega?</span>
-                   <p className="text-sm text-blue-100/70 leading-relaxed">Es el usuario Free que descubrió que esto le ahorra 5 horas semanales y pasó por la Pasarela de Pago con su tarjeta de crédito.</p>
-                 </div>
-               </div>
-               
-               <div className="flex items-start gap-3">
-                 <div className="mt-1"><ChevronRight className="w-4 h-4 text-emerald-400" /></div>
-                 <div>
-                   <span className="font-bold text-emerald-400 block">El Poder Desbloqueado</span>
-                   <p className="text-sm text-blue-100/70 leading-relaxed">Ahora puede exportar ilimitadamente PDF y Docx. Pone el logo de MiperAI o el suyo (si marca blanca). Entra a terreno con su celular y usa el AST con su propio equipo mínimo informático.</p>
-                 </div>
-               </div>
-
-               <div className="flex items-start gap-3">
-                 <div className="mt-1"><Lock className="w-4 h-4 text-zinc-500" /></div>
-                 <div>
-                   <span className="font-bold text-zinc-400 block">Su Limitación</span>
-                   <p className="text-sm text-zinc-500 leading-relaxed">Trabaja generalmente solo. No tiene un "Panel de Flota". Si tiene ayudantes, a veces tiene que prestarles su celular o no puede orquestarlos de manera corporativa gigante.</p>
-                 </div>
-               </div>
-            </div>
-          </div>
-
-
-          {/* =========================================
-              MODO ENTERPRISE (EL MANDANTE)
-             ========================================= */}
-          <div className="bg-amber-950/20 backdrop-blur-xl border border-amber-500/40 p-8 rounded-[2rem] flex flex-col relative overflow-hidden group md:col-span-1 lg:col-span-2">
-            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-               <Briefcase className="w-64 h-64 text-amber-500" />
-            </div>
-            
-            <div className="flex items-center gap-3 mb-6">
-               <div className="bg-amber-500/20 text-amber-400 p-3 rounded-full border border-amber-500/50"><Crown className="w-6 h-6" /></div>
-               <h2 className="text-2xl font-black text-amber-100 uppercase">Administrador ENTERPRISE <span className="text-base text-amber-300/60 font-medium normal-case ml-2">(La Constructora / Minera)</span></h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10 w-full mb-8">
-               <div className="space-y-4">
-                 <div className="flex items-start gap-3">
-                   <div className="mt-1"><ChevronRight className="w-4 h-4 text-amber-500/50" /></div>
+        {/* VISOR CONDICIONAL */}
+        <div className="flex-1 bg-zinc-900/60 backdrop-blur-xl border border-white/10 rounded-[2rem] p-8 md:p-12 relative overflow-hidden transition-all duration-500">
+           
+           {activePlan === 'free' && (
+             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center gap-4 mb-8">
+                   <div className="bg-zinc-800 p-4 rounded-2xl"><Shield className="w-10 h-10 text-zinc-200" /></div>
                    <div>
-                     <span className="font-bold text-amber-200 block">¿Cómo llega?</span>
-                     <p className="text-sm text-amber-100/70 leading-relaxed">Generalmente a través de un contacto B2B (tú se lo vendes). Le otorgas este plan desde tu panel ROOT.</p>
+                     <h2 className="text-3xl font-black text-white uppercase">Suscripción FREE</h2>
+                     <p className="text-zinc-400 font-medium">El Gancho Comercial (Prueba de Pago)</p>
                    </div>
-                 </div>
-                 
-                 <div className="flex items-start gap-3">
-                   <div className="mt-1"><ChevronRight className="w-4 h-4 text-emerald-400" /></div>
-                   <div>
-                     <span className="font-bold text-emerald-400 block">El Ecosistema Cerrado</span>
-                     <p className="text-sm text-amber-100/70 leading-relaxed">No solo tiene uso ilimitado. Se le desbloquea una bóveda: el <strong>Panel Corporativo</strong>. Aquí sube el Logo Oficial y el RUT de su faena, el cual estampará legalmente cada PDF saliente.</p>
-                   </div>
-                 </div>
-               </div>
-
-               <div className="space-y-4">
-                 <div className="flex items-start gap-3">
-                   <div className="mt-1"><UserPlus className="w-4 h-4 text-amber-500" /></div>
-                   <div>
-                     <span className="font-bold text-amber-400 block">Creador de Vidas (El Enrolamiento)</span>
-                     <p className="text-sm text-amber-100/70 leading-relaxed">
-                       Sube una plantilla Excel con sus 200 obreros. El sistema auto-crea cuentas fantasma en segundos, imponiendo claves estándar corporativas sin preguntarles. Se convierte en Dios operativo de su flota.
-                     </p>
-                   </div>
-                 </div>
-               </div>
-            </div>
-
-            {/* RAMIFICACIÓN AL OPERADOR */}
-            <div className="border-t border-amber-500/20 pt-8 flex justify-center">
-                <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-[2rem] p-8 max-w-4xl w-full flex flex-col md:flex-row gap-6 items-center shadow-2xl relative">
-                   <div className="hidden md:flex absolute -top-8 left-1/2 -translate-x-1/2 bg-[#050505] px-2 text-amber-500/50">
-                     <ArrowDownComponent />
-                   </div>
-                   
-                   <div className="bg-emerald-500/20 p-4 rounded-full border border-emerald-500/40 shrink-0">
-                      <Target className="w-8 h-8 text-emerald-400" />
-                   </div>
-
-                   <div className="flex-1 space-y-3">
-                      <h3 className="text-xl font-black text-emerald-100 uppercase">El Operador de Terreno</h3>
-                      <p className="text-sm text-emerald-100/80 leading-relaxed">
-                        Es el trabajador real (Eléctrico, Rigger, etc). No entra a MiperAI para escribir ni para crear matrices.
-                      </p>
-                      <ul className="text-sm text-emerald-200/60 pl-4 list-disc space-y-1 mt-2">
-                        <li><strong>Ingreso Obligatorio:</strong> Entra con el correo y clave que el Enterprise le dictó. Un túnel irrompible lo obliga a crear su propia clave por privacidad legal.</li>
-                        <li><strong>Consumidor de Riesgos:</strong> Lee las matrices que otros crearon para saber a qué riesgos se enfrenta hoy.</li>
-                        <li><strong>Rol Activo (Charla 5 Minutos):</strong> Cuando su jefe da la charla, él presiona "Tomo Conocimiento" en su móvil. Su firma estampa legalmente la base de datos protegiendo a la empresa.</li>
-                        <li><strong>Reporte Visual:</strong> Usa su cámara para documentar que su área está limpia o mandar alertas ("Cable pelado al inicio del turno").</li>
-                      </ul>
-                   </div>
-
                 </div>
-            </div>
 
-          </div>
+                <div className="space-y-8">
+                   <FeatureBlock
+                      icon={<Users className="w-5 h-5 text-zinc-400" />}
+                      title="1. El Aterrizaje (Ingreso)"
+                      desc="El usuario entra desde la Landing Web o Google. Crea una cuenta sin restricciones ni tarjetas de crédito. Ideal para que el minero averigüe si la IA funciona o es mentira."
+                   />
+                   <FeatureBlock
+                      icon={<Zap className="w-5 h-5 text-yellow-500" />}
+                      title="2. La Sensación de Poder (Funciones)"
+                      desc="Se le abren las compuertas al Motor de IA GPT-4o. Crea una faena, visualiza la evaluación de riesgos, interactúa con la matriz en tiempo real simulando ser un Prevencionista de primer nivel."
+                   />
+                   <FeatureBlock
+                      icon={<Lock className="w-5 h-5 text-red-500" />}
+                      title="3. El Muro (Paywall Transaccional)"
+                      desc="Cuando la IA terminó de analizar los riesgos y él necesita presentar este documento de 20 páginas al mandante mañoso de la minera, presiona 'Exportar a Word/PDF'. MiperAI enciende la sirena: 'Tu licencia expiró'. Su única salida para recuperar ese trabajo terminado es sacar la Tarjeta de Crédito."
+                   />
+                </div>
+             </div>
+           )}
+
+           {activePlan === 'pro' && (
+             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
+                  <Zap className="w-[300px] h-[300px] text-blue-500" />
+                </div>
+                <div className="flex items-center gap-4 mb-8 relative z-10">
+                   <div className="bg-blue-600 p-4 rounded-2xl shadow-[0_0_20px_rgba(59,130,246,0.3)]"><Zap className="w-10 h-10 text-white" /></div>
+                   <div>
+                     <h2 className="text-3xl font-black text-blue-400 uppercase">Suscripción PRO</h2>
+                     <p className="text-blue-200/60 font-medium">El Asesor Independiente de Riesgos</p>
+                   </div>
+                </div>
+
+                <div className="space-y-8 relative z-10">
+                   <FeatureBlock
+                      icon={<Crown className="w-5 h-5 text-blue-400" />}
+                      title="1. El Upgrade Financiero"
+                      desc="Depositó el pago en la Pasarela (Stripe/MercadoPago). Su cuenta es elevada a tier PRO. Adquiere consultas masivas de tokens IA (GPT)."
+                   />
+                   <FeatureBlock
+                      icon={<Briefcase className="w-5 h-5 text-blue-400" />}
+                      title="2. Operatoria Profesional (Descargas y APIs)"
+                      desc="Descarga un PDF o Docx oficial por cada matriz generada, perfecto, encriptado y aceptado en Chile. Le inyecta el logo global de MiperAI (o sin marca de agua). No requiere personal a cargo para sacarle valor a la plataforma."
+                   />
+                   <FeatureBlock
+                      icon={<Lock className="w-5 h-5 text-zinc-500" />}
+                      title="3. Ausencia del Panel Corporativo"
+                      desc="Pese a tener todo ilimitado, funciona como un llanero solitario. Si tiene 10 maestros de obra bajo su mando, no posee manera de 'auto-enrolarlos' con un clic. Debe prestar su celular para la Charla de 5 Minutos."
+                   />
+                </div>
+             </div>
+           )}
+
+           {activePlan === 'enterprise' && (
+             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
+                  <Briefcase className="w-[300px] h-[300px] text-amber-500" />
+                </div>
+                <div className="flex items-center gap-4 mb-8 relative z-10">
+                   <div className="bg-amber-500 p-4 rounded-2xl shadow-[0_0_20px_rgba(245,158,11,0.3)]"><Briefcase className="w-10 h-10 text-amber-950" /></div>
+                   <div>
+                     <h2 className="text-3xl font-black text-amber-500 uppercase">Administrador ENTERPRISE</h2>
+                     <p className="text-amber-200/70 font-medium">La Constructora, Contratista o Mandante B2B</p>
+                   </div>
+                </div>
+
+                <div className="space-y-8 relative z-10">
+                   <FeatureBlock
+                      icon={<Users className="w-5 h-5 text-amber-400" />}
+                      title="1. Entorno Multi-Tenant (Su propio software)"
+                      desc="Al obtener este plan, desbloquea la 'Bóveda Empresarial'. Todo el software ahora opera bajo su RUT Comercial, con su propio LOGO en los PDFs y sus Políticas Internas inyectadas globalmente."
+                   />
+                   <FeatureBlock
+                      icon={<UserPlus className="w-5 h-5 text-amber-400" />}
+                      title="2. El Sistema de Inyección de Cuentas (Forja Masiva)"
+                      desc="Sube una planilla Excel con 1.000 operarios (Nombre, RUT, Correo, Rol). MiperAI crea instantáneamente 1.000 cuentas de acceso. Asigna roles: 'Supervisores' (podrán operar matrices) o 'Operadores' (Sujetos de control de terreno)."
+                   />
+                   <FeatureBlock
+                      icon={<Target className="w-5 h-5 text-amber-400" />}
+                      title="3. Panel de Mando Privado (Dashboard B2B)"
+                      desc="En tiempo real, este administrador observa un semáforo rojo y verde viendo cuántos de sus contratistas han firmado digitalmente la 'Toma de Conocimiento del Riesgo' antes de que Sernageomin llegue a golpear su puerta."
+                   />
+                </div>
+             </div>
+           )}
+
+           {activePlan === 'operador' && (
+             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
+                  <Target className="w-[300px] h-[300px] text-emerald-500" />
+                </div>
+                <div className="flex items-center gap-4 mb-8 relative z-10">
+                   <div className="bg-emerald-500 p-4 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.3)]"><Target className="w-10 h-10 text-emerald-950" /></div>
+                   <div>
+                     <h2 className="text-3xl font-black text-emerald-500 uppercase">El Operador (Móvil)</h2>
+                     <p className="text-emerald-200/70 font-medium">Eléctrico, Rigger, Albañil o Chofer en Terreno</p>
+                   </div>
+                </div>
+
+                <div className="space-y-8 relative z-10">
+                   <FeatureBlock
+                      icon={<Lock className="w-5 h-5 text-emerald-400" />}
+                      title="1. La Celda Obligatoria (Túnel de Seguridad)"
+                      desc="Nunca se registró por sí mismo. Su empresa (Enterprise) lo hizo por él otorgándole la clave comodín oficial (Miper2026*). Al iniciar sesión en la App Web por primera vez, un Muro Infranqueable le advierte legalmente que DEBE crear una contraseña estrictamente personal para seguir iterando."
+                   />
+                   <FeatureBlock
+                      icon={<Shield className="w-5 h-5 text-emerald-400" />}
+                      title="2. El Repositorio Restringido (Bolsillo Seguro)"
+                      desc="Este usuario no redacta. Ingresa desde su celular en modo App y su UI colapsa módulos gigantes: solo ve los 'Informes', 'Matrices' o 'PTS' redactados superiormente por su Prevencionista."
+                   />
+                   <FeatureBlock
+                      icon={<Zap className="w-5 h-5 text-emerald-400" />}
+                      title="3. Rol Pasivo y Defensivo (La Toma de Conocimiento)"
+                      desc="Físicamente asiste a la charla de seguridad (5 minutos). Tras el habla, saca el celular de su bolsillo derecho y asiente con 1 clic: 'Comprendí los peligros de la excavación hoy'. Esta firma digital se inyecta en la nube. Aparte, tiene acceso rápido a levantar Alertas de Cámara instantáneas (Auditoría Básica)."
+                   />
+                </div>
+             </div>
+           )}
 
         </div>
       </div>
@@ -188,8 +191,16 @@ export default function BusinessFlowMap() {
   );
 }
 
-const ArrowDownComponent = () => (
-  <svg width="24" height="40" viewBox="0 0 24 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 0V38M12 38L6 32M12 38L18 32" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
+function FeatureBlock({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
+  return (
+    <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white/[0.02] transition-colors border border-transparent hover:border-white/5">
+      <div className="mt-1 bg-zinc-800 border border-zinc-700 p-2 rounded-xl text-white">
+        {icon}
+      </div>
+      <div>
+        <h4 className="text-lg font-bold text-white tracking-wide mb-1">{title}</h4>
+        <p className="text-sm text-zinc-400 leading-relaxed max-w-3xl">{desc}</p>
+      </div>
+    </div>
+  )
+}
