@@ -160,7 +160,72 @@ export default function Dashboard() {
            </div>
         </div>
 
-        <section className={`mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 grid grid-cols-1 ${isSimulatorEnabled ? '' : 'md:grid-cols-2'} gap-6 flex-col`}>
+        {/* Banner Educativo Móvil - Solo aparece si no hay proyectos y se está en vista móvil/simulador */}
+        {!isLoadingProjects && projects.length === 0 && (
+          <div className={`mb-10 ${isSimulatorEnabled ? 'block' : 'block md:hidden'} animate-in fade-in zoom-in-95 duration-700`}>
+            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 rounded-3xl p-6 md:p-8 shadow-2xl border border-blue-800 text-white text-center relative overflow-hidden group">
+              <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl pointer-events-none transition-transform group-hover:scale-110"></div>
+              <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              
+              <div className="relative z-10 space-y-5">
+                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto shadow-inner backdrop-blur-md border border-white/10">
+                  <ShieldAlert className="w-8 h-8 text-blue-300" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-extrabold text-white tracking-tight mb-2">Configuración Requerida</h3>
+                  <p className="text-sm text-blue-100/80 font-light leading-relaxed">
+                    Este módulo de Charlas AST e Inspecciones en Terreno solo se activa cuando has creado matrices de riesgo en tu proyecto.
+                  </p>
+                </div>
+                
+                <div className="bg-black/40 p-5 rounded-2xl border border-white/10 backdrop-blur-md mt-6 shadow-inner text-left">
+                  <p className="text-xs text-blue-200 font-medium mb-3 text-center">Para crear tu primera matriz, ingresa desde tu computador (PC) a esta dirección:</p>
+                  <div className="flex items-center justify-between gap-3 bg-white/5 p-3 rounded-xl border border-white/10">
+                    <span className="font-mono text-base md:text-lg text-white font-bold truncate">
+                      {typeof window !== 'undefined' ? window.location.host : 'miper.ai'}
+                    </span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button 
+                        onClick={() => {
+                          if (navigator.share && typeof window !== 'undefined') {
+                             navigator.share({
+                               title: 'MiperAI - Matriz de Riesgo',
+                               text: 'Ingresa desde tu PC para generar la Matriz de Riesgo',
+                               url: window.location.origin
+                             }).catch(console.error);
+                          } else {
+                            if (navigator.clipboard && typeof window !== 'undefined') {
+                               navigator.clipboard.writeText(window.location.host);
+                               alert("Enlace copiado al portapapeles.");
+                            }
+                          }
+                        }}
+                        className="bg-indigo-600 hover:bg-indigo-500 text-white p-[8px] rounded-lg shadow-md transition-colors flex items-center justify-center"
+                        title="Compartir enlace"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                      </button>
+                      <button 
+                        onClick={() => {
+                          if (navigator.clipboard && typeof window !== 'undefined') {
+                             navigator.clipboard.writeText(window.location.host);
+                             alert("¡Enlace copiado al portapapeles!");
+                          }
+                        }}
+                        className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-md transition-colors"
+                      >
+                        Copiar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Mosaico AST / Reportes (Se oculta en móvil si no hay proyectos) */}
+        <section className={`mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ${!isLoadingProjects && projects.length === 0 ? (isSimulatorEnabled ? 'hidden' : 'hidden md:grid') : 'grid'} grid-cols-1 ${isSimulatorEnabled ? '' : 'md:grid-cols-2'} gap-6 flex-col`}>
            {/* Visor AST */}
            <Link href="/ast" className="block w-full rounded-3xl bg-gradient-to-br from-emerald-400 to-teal-600 p-[2px] hover:scale-[1.02] transition-transform shadow-lg group">
              <div className="bg-white rounded-[22px] px-5 py-6 h-full flex flex-col justify-between group-hover:bg-emerald-50/80 transition-colors">

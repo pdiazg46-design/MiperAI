@@ -65,3 +65,10 @@ MiperAI maneja múltiples suscripciones cruzadas en la base de datos para bloque
 > 
 > 2.  **El Loop Silencioso del Soft Router (SPA):** Si el Frontend utiliza `router.push('/ruta_protegida')` tras el registro/login, Next.js emite un Soft Navigation Transition (obteniendo el RSC Payload). Si hubo alguna ligera inestabilidad de cookie o demora en la sincronización, el archivo `middleware.ts` rechazará el fetch de React abortando el RSC. Esto ocasiona que el usuario sea redirigido de vuelta al origen *sin cambiar físicamente la URL del Browser*, dejando un estado React local perpetuo (`loading === true`) que hace que los Spinners jamás se detengan.
 >     *   **Regla Institucional:** Tras un suceso de Login o Registro donde NextAuth emite una nueva jerarquía estructural (cookies firmadas con `NEXTAUTH_SECRET`), el frontend **debe** aplicar invariablemente `window.location.href = '/'` para ejecutar un Hard Reload en el browser. Esto limpia los contextos de React, asegura el flush del microtask queue y materializa sin fallos la persistencia universal de la aplicación al llegar al Dashboard Principal.
+
+### 7.1 Estado de Despliegue: Producción Activa (Vercel y Neon)
+
+Este ecosistema **ya se encuentra vivamente desplegado y operativo en Vercel**, conectado en tiempo real a nuestra base de datos Cloud (NeonDB).
+
+* **La Nube es la Única Verdad:** Cualquier prueba o testeo sobre la concurrencia de sesiones y renderizado móvil debe entenderse bajo las normativas del entorno en la nube. Las menciones a "simuladores" solo hacen referencia a restricciones visuales de CSS/Layout en el DOM de la aplicación, pero la data, el enrutamiento (Edge Routes) y la funcionalidad residen e interactúan al 100% con un entorno Vercel de producción real.
+* Está prohibido asumir flujos pensando en entornos locales (`npm run dev`); se debe programar contemplando las restricciones de tiempo y latencia del ecosistema Vercel.
