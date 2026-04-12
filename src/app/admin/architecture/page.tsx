@@ -2,16 +2,16 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Home, Users, Shield, ChevronRight, Lock, Crown, Briefcase, Zap, UserPlus, Target, Navigation } from 'lucide-react';
+import { Home, Lightbulb, Download, UserCheck, ShieldCheck, Phone, CheckCircle2, Navigation, AlertTriangle, Briefcase, Users, FileText } from 'lucide-react';
 
 const plans = [
-  { id: 'free', label: '1. Evaluación (FREE)' },
-  { id: 'pro', label: '2. Asesor Independiente (PRO)' },
-  { id: 'enterprise', label: '3. Mandante Corporativo (ENTERPRISE)' },
-  { id: 'operador', label: '4. Flota de Terreno (OPERADOR)' }
+  { id: 'free', label: '1. Plan de Prueba (Gratis)' },
+  { id: 'pro', label: '2. Profesional (PRO)' },
+  { id: 'enterprise', label: '3. Nivel Empresa' },
+  { id: 'operador', label: '4. El Trabajador (Terreno)' }
 ];
 
-export default function BusinessFlowMap() {
+export default function UserJourneySimple() {
   const [activePlan, setActivePlan] = useState('free');
 
   return (
@@ -22,8 +22,8 @@ export default function BusinessFlowMap() {
       <div className="max-w-5xl mx-auto z-10 relative flex-1 w-full flex flex-col">
         <header className="flex flex-col md:flex-row md:items-center justify-between mb-8 border-b border-white/5 pb-6">
           <div>
-            <h1 className="text-3xl font-black text-white uppercase tracking-tight">Arquitectura Interactiva de Negocios</h1>
-            <p className="text-sm text-zinc-400 font-medium mt-2">Simulación de flujos operacionales y monetización de MiperAI.</p>
+            <h1 className="text-3xl font-black text-white uppercase tracking-tight">¿Cómo funciona MiperAI?</h1>
+            <p className="text-sm text-zinc-400 font-medium mt-2">Paso a paso de lo que vive el usuario dentro del software.</p>
           </div>
           <Link href="/admin">
             <button className="mt-4 md:mt-0 flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-zinc-800 transition-all shadow-xl">
@@ -58,29 +58,29 @@ export default function BusinessFlowMap() {
            
            {activePlan === 'free' && (
              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center gap-4 mb-8">
-                   <div className="bg-zinc-800 p-4 rounded-2xl"><Shield className="w-10 h-10 text-zinc-200" /></div>
+                <div className="flex items-center gap-4 mb-10">
+                   <div className="bg-zinc-800 p-4 rounded-2xl"><Lightbulb className="w-10 h-10 text-zinc-200" /></div>
                    <div>
-                     <h2 className="text-3xl font-black text-white uppercase">Suscripción FREE</h2>
-                     <p className="text-zinc-400 font-medium">El Gancho Comercial (Prueba de Pago)</p>
+                     <h2 className="text-3xl font-black text-white uppercase">El Plan Gratuito (15 Días)</h2>
+                     <p className="text-zinc-400 font-medium">Así descubre una persona cómo MiperAI le facilita la vida.</p>
                    </div>
                 </div>
 
-                <div className="space-y-8">
+                <div className="space-y-6">
                    <FeatureBlock
-                      icon={<Users className="w-5 h-5 text-zinc-400" />}
-                      title="1. El Aterrizaje (Ingreso)"
-                      desc="El usuario entra desde la Landing Web o Google. Crea una cuenta sin restricciones ni tarjetas de crédito. Ideal para que el minero averigüe si la IA funciona o es mentira."
+                      icon={<UserCheck />}
+                      title="Paso 1: Entrar a la plataforma"
+                      desc="Te registras con tu correo en un par de clics por la web."
                    />
                    <FeatureBlock
-                      icon={<Zap className="w-5 h-5 text-yellow-500" />}
-                      title="2. La Sensación de Poder (Funciones)"
-                      desc="Se le abren las compuertas al Motor de IA GPT-4o. Crea una faena, visualiza la evaluación de riesgos, interactúa con la matriz en tiempo real simulando ser un Prevencionista de primer nivel."
+                      icon={<Lightbulb />}
+                      title="Paso 2: Hablar con la IA"
+                      desc="Le dices a la plataforma qué trabajo vas a realizar (Ej: 'Soldar en un techo'). La Inteligencia Artificial analiza el trabajo y en segundos te arma una lista completa de peligros y cómo cuidarte."
                    />
                    <FeatureBlock
-                      icon={<Lock className="w-5 h-5 text-red-500" />}
-                      title="3. El Muro (Paywall Transaccional)"
-                      desc="Cuando la IA terminó de analizar los riesgos y él necesita presentar este documento de 20 páginas al mandante mañoso de la minera, presiona 'Exportar a Word/PDF'. MiperAI enciende la sirena: 'Tu licencia expiró'. Su única salida para recuperar ese trabajo terminado es sacar la Tarjeta de Crédito."
+                      icon={<AlertTriangle className="text-red-400" />}
+                      title="Paso 3: El Límite"
+                      desc="Puedes ver toda esa información en pantalla, pero si quieres descargarla en un documento PDF formal para entregarlo a tu jefe, el sistema te avisará que tu prueba gratuita de 15 días terminó y debes comprar el plan PRO."
                    />
                 </div>
              </div>
@@ -88,32 +88,29 @@ export default function BusinessFlowMap() {
 
            {activePlan === 'pro' && (
              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
-                  <Zap className="w-[300px] h-[300px] text-blue-500" />
-                </div>
-                <div className="flex items-center gap-4 mb-8 relative z-10">
-                   <div className="bg-blue-600 p-4 rounded-2xl shadow-[0_0_20px_rgba(59,130,246,0.3)]"><Zap className="w-10 h-10 text-white" /></div>
+                <div className="flex items-center gap-4 mb-10 relative z-10">
+                   <div className="bg-blue-600 p-4 rounded-2xl shadow-[0_0_20px_rgba(59,130,246,0.3)]"><Download className="w-10 h-10 text-white" /></div>
                    <div>
-                     <h2 className="text-3xl font-black text-blue-400 uppercase">Suscripción PRO</h2>
-                     <p className="text-blue-200/60 font-medium">El Asesor Independiente de Riesgos</p>
+                     <h2 className="text-3xl font-black text-blue-400 uppercase">La Suscripción PRO</h2>
+                     <p className="text-blue-200/60 font-medium">Para el Asesor de Riesgos o Profesional Independiente.</p>
                    </div>
                 </div>
 
-                <div className="space-y-8 relative z-10">
+                <div className="space-y-6 relative z-10">
                    <FeatureBlock
-                      icon={<Crown className="w-5 h-5 text-blue-400" />}
-                      title="1. El Upgrade Financiero"
-                      desc="Depositó el pago en la Pasarela (Stripe/MercadoPago). Su cuenta es elevada a tier PRO. Adquiere consultas masivas de tokens IA (GPT)."
+                      icon={<CheckCircle2 />}
+                      title="Paso 1: ¡Todo el poder desbloqueado!"
+                      desc="Funciona igual que el plan gratuito, pero ahora eres un profesional sin límites para generar prevenciones con Inteligencia Artificial."
                    />
                    <FeatureBlock
-                      icon={<Briefcase className="w-5 h-5 text-blue-400" />}
-                      title="2. Operatoria Profesional (Descargas y APIs)"
-                      desc="Descarga un PDF o Docx oficial por cada matriz generada, perfecto, encriptado y aceptado en Chile. Le inyecta el logo global de MiperAI (o sin marca de agua). No requiere personal a cargo para sacarle valor a la plataforma."
+                      icon={<FileText />}
+                      title="Paso 2: Documentos Oficiales Inmediatos"
+                      desc="Ahora sí puedes presionar el botón 'Exportar' en cualquier momento. Bajas todas tus matrices en carpetas PDF o Word listas para firmar e imprimir."
                    />
                    <FeatureBlock
-                      icon={<Lock className="w-5 h-5 text-zinc-500" />}
-                      title="3. Ausencia del Panel Corporativo"
-                      desc="Pese a tener todo ilimitado, funciona como un llanero solitario. Si tiene 10 maestros de obra bajo su mando, no posee manera de 'auto-enrolarlos' con un clic. Debe prestar su celular para la Charla de 5 Minutos."
+                      icon={<Briefcase />}
+                      title="Paso 3: Tu propia marca"
+                      desc="Los documentos que descargas ya no son genéricos. Pueden salir con tu logotipo en la esquina superior, luciendo como reportes corporativos de primer nivel."
                    />
                 </div>
              </div>
@@ -121,32 +118,29 @@ export default function BusinessFlowMap() {
 
            {activePlan === 'enterprise' && (
              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
-                  <Briefcase className="w-[300px] h-[300px] text-amber-500" />
-                </div>
-                <div className="flex items-center gap-4 mb-8 relative z-10">
+                <div className="flex items-center gap-4 mb-10 relative z-10">
                    <div className="bg-amber-500 p-4 rounded-2xl shadow-[0_0_20px_rgba(245,158,11,0.3)]"><Briefcase className="w-10 h-10 text-amber-950" /></div>
                    <div>
-                     <h2 className="text-3xl font-black text-amber-500 uppercase">Administrador ENTERPRISE</h2>
-                     <p className="text-amber-200/70 font-medium">La Constructora, Contratista o Mandante B2B</p>
+                     <h2 className="text-3xl font-black text-amber-500 uppercase">Suscripción EMPRESA</h2>
+                     <p className="text-amber-200/70 font-medium">Para la Constructora, la Minera o el Contratista.</p>
                    </div>
                 </div>
 
-                <div className="space-y-8 relative z-10">
+                <div className="space-y-6 relative z-10">
                    <FeatureBlock
-                      icon={<Users className="w-5 h-5 text-amber-400" />}
-                      title="1. Entorno Multi-Tenant (Su propio software)"
-                      desc="Al obtener este plan, desbloquea la 'Bóveda Empresarial'. Todo el software ahora opera bajo su RUT Comercial, con su propio LOGO en los PDFs y sus Políticas Internas inyectadas globalmente."
+                      icon={<ShieldCheck />}
+                      title="Paso 1: Tu Propio Panel de Empresa"
+                      desc="Se te abre un menú especial donde subes el Logo y RUT de tu constructora. Absolutamente todos los reportes de tus trabajadores llevarán tu insignia, unificando todo el formato."
                    />
                    <FeatureBlock
-                      icon={<UserPlus className="w-5 h-5 text-amber-400" />}
-                      title="2. El Sistema de Inyección de Cuentas (Forja Masiva)"
-                      desc="Sube una planilla Excel con 1.000 operarios (Nombre, RUT, Correo, Rol). MiperAI crea instantáneamente 1.000 cuentas de acceso. Asigna roles: 'Supervisores' (podrán operar matrices) o 'Operadores' (Sujetos de control de terreno)."
+                      icon={<Users />}
+                      title="Paso 2: El Jefe de la Flota (Auto-registro)"
+                      desc="Ya no necesitas que tus 100 obreros 'visiten una página web' para inscribirse. Tú como empresa subes un archivo Excel y la plataforma le crea una cuenta mágica a cada uno de tus trabajadores."
                    />
                    <FeatureBlock
-                      icon={<Target className="w-5 h-5 text-amber-400" />}
-                      title="3. Panel de Mando Privado (Dashboard B2B)"
-                      desc="En tiempo real, este administrador observa un semáforo rojo y verde viendo cuántos de sus contratistas han firmado digitalmente la 'Toma de Conocimiento del Riesgo' antes de que Sernageomin llegue a golpear su puerta."
+                      icon={<Target />}
+                      title="Paso 3: Tú decides quién manda"
+                      desc="El Administrador puede decirle al sistema: 'A Juan dale permisos de Prevencionista para usar la IA', y 'A Pedro ponlo de Operador simple' para que solo lea a través de su celular sin tocar botones importantes."
                    />
                 </div>
              </div>
@@ -154,32 +148,29 @@ export default function BusinessFlowMap() {
 
            {activePlan === 'operador' && (
              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
-                  <Target className="w-[300px] h-[300px] text-emerald-500" />
-                </div>
-                <div className="flex items-center gap-4 mb-8 relative z-10">
-                   <div className="bg-emerald-500 p-4 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.3)]"><Target className="w-10 h-10 text-emerald-950" /></div>
+                <div className="flex items-center gap-4 mb-10 relative z-10">
+                   <div className="bg-emerald-500 p-4 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.3)]"><Phone className="w-10 h-10 text-emerald-950" /></div>
                    <div>
-                     <h2 className="text-3xl font-black text-emerald-500 uppercase">El Operador (Móvil)</h2>
-                     <p className="text-emerald-200/70 font-medium">Eléctrico, Rigger, Albañil o Chofer en Terreno</p>
+                     <h2 className="text-3xl font-black text-emerald-500 uppercase">El Trabajador de Terreno</h2>
+                     <p className="text-emerald-200/70 font-medium">Aquel que lleva la aplicación en su celular durante la obra.</p>
                    </div>
                 </div>
 
-                <div className="space-y-8 relative z-10">
+                <div className="space-y-6 relative z-10">
                    <FeatureBlock
-                      icon={<Lock className="w-5 h-5 text-emerald-400" />}
-                      title="1. La Celda Obligatoria (Túnel de Seguridad)"
-                      desc="Nunca se registró por sí mismo. Su empresa (Enterprise) lo hizo por él otorgándole la clave comodín oficial (Miper2026*). Al iniciar sesión en la App Web por primera vez, un Muro Infranqueable le advierte legalmente que DEBE crear una contraseña estrictamente personal para seguir iterando."
+                      icon={<Lock />}
+                      title="Paso 1: Una cuenta segura"
+                      desc="Como su cuenta fue creada por su jefe en Excel, él entra inicialmente con la contraseña que el capataz le dictó. Pero por su propia privacidad, el sistema congela la pantalla al entrar y le exige crear su propia contraseña secreta."
                    />
                    <FeatureBlock
-                      icon={<Shield className="w-5 h-5 text-emerald-400" />}
-                      title="2. El Repositorio Restringido (Bolsillo Seguro)"
-                      desc="Este usuario no redacta. Ingresa desde su celular en modo App y su UI colapsa módulos gigantes: solo ve los 'Informes', 'Matrices' o 'PTS' redactados superiormente por su Prevencionista."
+                      icon={<SmartphoneIcon />}
+                      title="Paso 2: Una App ultra sencilla (Modo Lector)"
+                      desc="A diferencia de los gerentes, al abrir MiperAI él ve pocos botones. No ve herramientas complicadas ni a la Inteligencia Artificial. Solo usa su celular como una 'enciclopedia de bolsillo' para revisar qué riesgos tiene su día de trabajo."
                    />
                    <FeatureBlock
-                      icon={<Zap className="w-5 h-5 text-emerald-400" />}
-                      title="3. Rol Pasivo y Defensivo (La Toma de Conocimiento)"
-                      desc="Físicamente asiste a la charla de seguridad (5 minutos). Tras el habla, saca el celular de su bolsillo derecho y asiente con 1 clic: 'Comprendí los peligros de la excavación hoy'. Esta firma digital se inyecta en la nube. Aparte, tiene acceso rápido a levantar Alertas de Cámara instantáneas (Auditoría Básica)."
+                      icon={<CheckCircle2 />}
+                      title="Paso 3: El check de los 5 Minutos"
+                      desc="Después de escuchar al Prevencionista en la mañana, saca su celular y aprieta un enorme botón verde: 'Comprendí los peligros de hoy'. En ese segundo, su nombre viaja a la tabla del Gerente diciendo que la Ley se cumplió."
                    />
                 </div>
              </div>
@@ -193,14 +184,22 @@ export default function BusinessFlowMap() {
 
 function FeatureBlock({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
   return (
-    <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white/[0.02] transition-colors border border-transparent hover:border-white/5">
-      <div className="mt-1 bg-zinc-800 border border-zinc-700 p-2 rounded-xl text-white">
+    <div className="flex items-start gap-5 p-5 rounded-2xl bg-zinc-950/40 border border-zinc-800/80 hover:bg-zinc-800/50 transition-colors">
+      <div className="shrink-0 mt-1 bg-zinc-800 border border-zinc-700 p-3 rounded-xl text-white">
         {icon}
       </div>
       <div>
-        <h4 className="text-lg font-bold text-white tracking-wide mb-1">{title}</h4>
-        <p className="text-sm text-zinc-400 leading-relaxed max-w-3xl">{desc}</p>
+        <h4 className="text-lg font-black text-white tracking-wide mb-2">{title}</h4>
+        <p className="text-sm md:text-base text-zinc-400 leading-relaxed max-w-4xl">{desc}</p>
       </div>
     </div>
   )
+}
+
+function SmartphoneIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>
+    </svg>
+  );
 }
