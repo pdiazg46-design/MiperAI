@@ -80,6 +80,24 @@ export default function CharlasReportView() {
               let checks = [];
               try { checks = JSON.parse(log.checkedControls || '[]'); } catch(e){}
               
+              let photosArray: string[] = [];
+              let audiosArray: string[] = [];
+              
+              if (log.photoData) {
+                if (log.photoData.startsWith('[')) {
+                  try { photosArray = JSON.parse(log.photoData); } catch(e){}
+                } else {
+                  photosArray = [log.photoData]; // Backward Compat
+                }
+              }
+              if (log.audioData) {
+                if (log.audioData.startsWith('[')) {
+                  try { audiosArray = JSON.parse(log.audioData); } catch(e){}
+                } else {
+                  audiosArray = [log.audioData]; // Backward Compat
+                }
+              }
+              
               const date = new Date(log.createdAt);
               
               return (
@@ -124,26 +142,32 @@ export default function CharlasReportView() {
                        </ul>
                      )}
 
-                     {(log.photoData || log.audioData) && (
+                     {(photosArray.length > 0 || audiosArray.length > 0) && (
                        <div className="mt-4 pt-6 border-t border-slate-100">
                          <h4 className="font-black text-slate-700 mb-4 flex items-center gap-2 uppercase tracking-tight text-sm">Evidencia Adjunta</h4>
-                         <div className="flex flex-col md:flex-row gap-6">
-                           {log.photoData && (
-                             <div className="flex-1 w-full max-w-[300px]">
-                               <img src={log.photoData} alt="Evidencia visual" className="w-full h-auto rounded-2xl border-4 border-white shadow-md object-cover" />
-                             </div>
-                           )}
-                           {log.audioData && (
-                             <div className="flex-1 w-full max-w-[300px]">
-                               <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-2xl shadow-sm flex flex-col gap-3">
-                                 <div className="flex items-center gap-2 font-bold text-sm">
-                                   <Mic className="w-4 h-4" /> Nota de Voz
-                                 </div>
-                                 <audio controls src={log.audioData} className="w-full h-10" />
+                         
+                         {photosArray.length > 0 && (
+                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+                             {photosArray.map((photo, pIdx) => (
+                               <div key={pIdx} className="w-full relative aspect-square">
+                                 <img src={photo} alt={`Evidencia visual ${pIdx + 1}`} className="w-full h-full rounded-2xl border-4 border-white shadow-md object-cover" />
                                </div>
-                             </div>
-                           )}
-                         </div>
+                             ))}
+                           </div>
+                         )}
+
+                         {audiosArray.length > 0 && (
+                           <div className="flex flex-col gap-3">
+                             {audiosArray.map((audio, aIdx) => (
+                               <div key={aIdx} className="w-full max-w-sm bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-2xl shadow-sm flex flex-col gap-3">
+                                 <div className="flex items-center gap-2 font-bold text-sm">
+                                   <Mic className="w-4 h-4" /> Nota de Voz #{aIdx + 1}
+                                 </div>
+                                 <audio controls src={audio} className="w-full h-10" />
+                               </div>
+                             ))}
+                           </div>
+                         )}
                        </div>
                      )}
                   </div>

@@ -11,9 +11,9 @@ export default function ASTViewerPage() {
   const [activeProjectId, setActiveProjectId] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
-  // Multimedia Capture
-  const [photoData, setPhotoData] = useState<string|null>(null);
-  const [audioData, setAudioData] = useState<string|null>(null);
+  // Multimedia Capture (Arrays)
+  const [photosData, setPhotosData] = useState<string[]>([]);
+  const [audiosData, setAudiosData] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -62,10 +62,22 @@ export default function ASTViewerPage() {
     const reader = new FileReader();
     reader.onload = (event) => {
       const base64str = event.target?.result as string;
-      if(type === 'photo') setPhotoData(base64str);
-      else setAudioData(base64str);
+      if (type === 'photo') {
+         setPhotosData(prev => [...prev, base64str]);
+      } else {
+         setAudiosData(prev => [...prev, base64str]);
+      }
     };
     reader.readAsDataURL(file);
+    e.target.value = ''; // Permite volver a sacar la misma o sucesivas
+  };
+
+  const removeAttachment = (index: number, type: 'photo' | 'audio') => {
+    if (type === 'photo') {
+      setPhotosData(prev => prev.filter((_, i) => i !== index));
+    } else {
+      setAudiosData(prev => prev.filter((_, i) => i !== index));
+    }
   };
 
   const submitASTLog = async () => {
@@ -94,8 +106,8 @@ export default function ASTViewerPage() {
         body: JSON.stringify({
           projectId: activeProject.id,
           procedureName: activeProcedure?.name || 'General',
-          photoData,
-          audioData,
+          photoData: photosData.length > 0 ? JSON.stringify(photosData) : null,
+          audioData: audiosData.length > 0 ? JSON.stringify(audiosData) : null,
           checkedControls: checkedTexts
         })
       });
@@ -276,15 +288,43 @@ export default function ASTViewerPage() {
                     <input type="file" accept="audio/*" capture="environment" className="hidden" ref={fileInputAudioRef} onChange={(e) => handleCapture(e, 'audio')} />
 
                     <div className="grid grid-cols-2 gap-3">
-                       <button onClick={() => fileInputPhotoRef.current?.click()} className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all ${photoData ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-600'}`}>
-                          <Camera className={`w-6 h-6 mb-2 ${photoData ? 'text-emerald-500' : ''}`}/>
-                          <span className="text-[10px] font-bold uppercase tracking-wider">{photoData ? 'Foto Adjunta' : 'Foto Asistencia'}</span>
+                       <button onClick={() => fileInputPhotoRef.current?.click()} className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all ${photosData.length > 0 ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-600'}`}>
+                          <Camera className={`w-6 h-6 mb-2 ${photosData.length > 0 ? 'text-emerald-500' : ''}`}/>
+                          <span className="text-[10px] font-bold uppercase tracking-wider">Añadir Foto</span>
                        </button>
-                       <button onClick={() => fileInputAudioRef.current?.click()} className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all ${audioData ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-600'}`}>
-                          <Mic className={`w-6 h-6 mb-2 ${audioData ? 'text-emerald-500' : ''}`}/>
-                          <span className="text-[10px] font-bold uppercase tracking-wider">{audioData ? 'Audio Listo' : 'Nota de Voz'}</span>
+                       <button onClick={() => fileInputAudioRef.current?.click()} className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all ${audiosData.length > 0 ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-600'}`}>
+                          <Mic className={`w-6 h-6 mb-2 ${audiosData.length > 0 ? 'text-emerald-500' : ''}`}/>
+                          <span className="text-[10px] font-bold uppercase tracking-wider">Grabar Audio</span>
                        </button>
                     </div>
+
+                    {/* Previsualización en Lista de Adjuntos */}
+                    {(photosData.length > 0 || audiosData.length > 0) && (
+                       <div className="mt-4 space-y-3">
+                          {photosData.map((photoStr, idx) => (
+                            <div key={`photo-${idx}`} className="flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-right-4">
+                              <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-200 shadow-sm">
+                                <img src={photoStr} alt="Previsualización" className="object-cover w-full h-full" />
+                              </div>
+                              <span className="text-xs font-bold text-slate-500">Fotografía #{idx + 1}</span>
+                              <button onClick={() => removeAttachment(idx, 'photo')} className="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
+                                <span className="font-bold">×</span>
+                              </button>
+                            </div>
+                          ))}
+
+                          {audiosData.map((audioStr, idx) => (
+                            <div key={`audio-${idx}`} className="flex items-center justify-between bg-emerald-50 p-2 rounded-xl border border-emerald-100 shadow-sm animate-in fade-in slide-in-from-right-4 gap-2">
+                              <div className="flex-1 w-full max-w-[200px]">
+                                <audio controls src={audioStr} className="w-full h-8" />
+                              </div>
+                              <button onClick={() => removeAttachment(idx, 'audio')} className="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center shrink-0 hover:bg-red-100 transition-colors">
+                                <span className="font-bold">×</span>
+                              </button>
+                            </div>
+                          ))}
+                       </div>
+                    )}
                  </div>
                )}
 
