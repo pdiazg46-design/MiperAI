@@ -15,7 +15,7 @@ const BulkMatrixSchema = z.object({
         severity: z.number().describe("Severidad o Consecuencia (escala 1 al 5, donde 1 es Insignificante y 5 es Severo)"),
         magnitudeRisk: z.number().describe("Magnitud del Riesgo (Matemáticamente exacto a Probabilidad multiplicada por Severidad. Rango 1 al 25)"),
         initialRiskLevel: z.string().describe("Nivel Cualitativo (Ej: Muy bajo, Bajo, Medio, Alto, Muy alto, Extremo)"),
-        controls: z.array(z.string()).describe("Lista de controles estrictos y técnicos basados en normativa legal chilena.")
+        controls: z.array(z.string()).describe("Lista de controles. REGLA: Cada control debe comenzar con su categoría en corchetes y seguir con la ACCIÓN ESPECÍFICA para corregir o prevenir el riesgo (ej. '[Ingeniería] Instalación de mallas anticaídas', NUNCA pongas solo 'Ingeniería').")
       }))
     })
   }))

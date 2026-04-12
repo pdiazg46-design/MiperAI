@@ -38,7 +38,7 @@ export async function POST(req: Request) {
           severity: z.number().describe("Severidad o Consecuencia (escala 1 al 5, donde 1 es Insignificante y 5 es Severo)"),
           magnitudeRisk: z.number().describe("Magnitud del Riesgo (OBLIGATORIO: Matemáticamente exacto a Probabilidad multiplicada por Severidad. Rango 1 al 25)"),
           initialRiskLevel: z.string().describe("Nivel Cualitativo. Escribe un texto descriptivo, el Frontend definirá visualmente luego basado en la Matriz."),
-          controls: z.array(z.string()).describe("Lista de controles (Sustitución, Ingeniería, Administrativo, EPP)"),
+          controls: z.array(z.string()).describe("Lista de controles. REGLA: Cada control debe comenzar con su categoría en corchetes y seguir con la ACCIÓN ESPECÍFICA para corregir o prevenir el riesgo (ej. '[Ingeniería] Instalación de mallas anticaídas', NUNCA pongas solo 'Ingeniería')."),
         }))
       }),
       prompt: `Eres un Prevencionista de Riesgos experto bajo la normativa Chilena (Ley 16.744 y DS 594).
