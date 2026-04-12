@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Building2, Users, Loader2, Home, Save, UserPlus, Settings2 } from 'lucide-react';
+import { Building2, Users, Loader2, Home, Save, UserPlus, Settings2, CheckCircle2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
 const formatRUT = (value: string) => {
@@ -33,6 +33,12 @@ export default function CompanyDashboard() {
   const [loading, setLoading] = useState(true);
   const [savingCompany, setSavingCompany] = useState(false);
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+      setToast({ message, type });
+      setTimeout(() => setToast(null), 3500);
+  };
 
   const [newEmail, setNewEmail] = useState('');
 
@@ -72,7 +78,7 @@ export default function CompanyDashboard() {
            headers: { 'Content-Type': 'application/json' },
            body: JSON.stringify(company)
        });
-       if(res.ok) alert("Perfil Corporativo guardado con éxito.");
+       if(res.ok) showToast("Perfil corporativo guardado con éxito.");
     } finally {
        setSavingCompany(false);
     }
@@ -89,14 +95,14 @@ export default function CompanyDashboard() {
          });
          const data = await res.json();
          if(res.ok) {
-             alert("Usuario anexado a la compañía exitosamente.");
+             showToast("Trabajador anexado a la compañía.");
              setNewEmail('');
              fetchData(); // reload
          } else {
-             alert(data.error || "No se pudo anexar");
+             showToast(data.error || "No se pudo anexar", 'error');
          }
       } catch(e) {
-          alert("Error de red");
+          showToast("Error de conexión", 'error');
       }
   };
 
@@ -123,6 +129,14 @@ export default function CompanyDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-6 md:p-12 relative overflow-hidden">
+      {/* Toast Flotante Premium */}
+      {toast && (
+        <div className={`fixed bottom-8 right-8 z-[100] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 duration-300 ${toast.type === 'success' ? 'bg-indigo-900 border border-indigo-700 text-white' : 'bg-red-900 border border-red-700 text-white'}`}>
+            {toast.type === 'success' ? <CheckCircle2 className="w-5 h-5 text-indigo-300" /> : <AlertCircle className="w-5 h-5 text-red-300" />}
+            <span className="font-bold text-sm tracking-wide">{toast.message}</span>
+        </div>
+      )}
+
       {/* Luces sutiles corporativas */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
 
