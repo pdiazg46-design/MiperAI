@@ -271,7 +271,12 @@ export default function CompanyDashboard() {
                         <div className="flex-1 w-full pl-3">
                            <label className="block text-sm font-black text-slate-800 uppercase tracking-wide mb-2">Despliegue General</label>
                            <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="Email para enrolar manual..." className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-3.5 text-sm font-semibold outline-none shadow-sm transition-all text-slate-800"/>
-                           <p className="text-xs text-slate-500 font-medium mt-2">Puedes añadir uno por uno o usar carga masiva (*.xlsx).</p>
+                           
+                           <div className="mt-3 p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-xs text-emerald-800 shadow-sm leading-relaxed">
+                               <span className="font-bold block mb-1">📋 Instrucciones Carga Masiva (Excel *.xlsx):</span>
+                               La primera fila debe contener las cabeceras exactas: <code className="bg-white px-2 py-0.5 rounded border border-emerald-200 shadow-sm font-mono text-emerald-700 font-bold">nombre | rut | correo | cargo</code><br/>
+                               <span className="text-[10px] text-emerald-600/80 font-semibold italic mt-1 inline-block">Ej: Juan Pérez | 12.345.678-9 | juan@ejemplo.cl | PREVENCIONISTA</span>
+                           </div>
                         </div>
                         <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
                            <button type="submit" className="w-full sm:w-auto bg-slate-800 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-slate-900 transition-all shadow-md flex items-center justify-center gap-2">
@@ -355,8 +360,19 @@ export default function CompanyDashboard() {
                             ))}
                             {users.length === 0 && (
                                <tr>
-                                   <td colSpan={5} className="p-8 text-center text-slate-400 font-medium text-sm">
-                                       No hay personal enrolado aún. Escribe el correo de un operario arriba.
+                                   <td colSpan={5} className="p-8 text-center bg-slate-50/50 rounded-b-xl border-t border-slate-100">
+                                       <div className="text-slate-400 font-medium text-sm mb-5">No hay personal enrolado aún. Añade manualmente un correo o sube un archivo Excel.</div>
+                                       
+                                       <div className="inline-block text-left bg-white border border-slate-200 p-5 rounded-2xl shadow-sm">
+                                           <p className="text-sm font-extrabold text-slate-700 mb-2 flex items-center gap-2">
+                                              <FileSpreadsheet className="w-5 h-5 text-emerald-500"/>
+                                              Formato requerido (Celdas A1 a D1)
+                                           </p>
+                                           <div className="text-xs text-slate-600 font-mono bg-slate-50 p-3 rounded-xl border border-slate-100 shadow-inner">
+                                              <p className="pb-2 border-b border-slate-200 mb-2"><span className="font-bold text-indigo-600">Fila 1 (Títulos):</span> nombre <span className="text-slate-300">|</span> rut <span className="text-slate-300">|</span> correo <span className="text-slate-300">|</span> cargo</p>
+                                              <p className="text-slate-500"><span className="font-bold text-orange-600">Fila 2 (Ejemplo):</span> Juan Pérez <span className="text-slate-300">|</span> 12.345.678-9 <span className="text-slate-300">|</span> juan@mail.cl <span className="text-slate-300">|</span> PREVENCIONISTA</p>
+                                           </div>
+                                       </div>
                                    </td>
                                </tr>
                             )}
