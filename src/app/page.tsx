@@ -314,6 +314,14 @@ export default function Dashboard() {
                   <p className="text-sm text-slate-500 font-light mb-4 line-clamp-2">
                     {p.procedures && p.procedures.length > 0 ? p.procedures[0].name : 'Procedimiento General'}
                   </p>
+                  {p.astLogs && p.astLogs.length > 0 && (
+                     <div className="mb-4">
+                       <Link href={`/proyecto/${p.id}/charlas`} className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-bold transition-colors border border-emerald-200">
+                         <ClipboardCheck className="w-4 h-4" />
+                         {p.astLogs.length} Charla{p.astLogs.length !== 1 ? 's' : ''} AST (Ver)
+                       </Link>
+                     </div>
+                  )}
                   <div className="flex items-center justify-between mt-6">
                     <span className="text-[11px] font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-md">
                       {new Date(p.createdAt).toLocaleDateString()}

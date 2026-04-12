@@ -81,7 +81,8 @@ export async function GET() {
       where: { userId },
       orderBy: { createdAt: 'desc' },
       include: {
-        procedures: true
+        procedures: true,
+        astLogs: { orderBy: { createdAt: 'desc' } }
       }
     });
     return NextResponse.json(projects);

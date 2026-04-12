@@ -8,7 +8,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     const id = (await params).id;
     const project = await prisma.project.findUnique({
       where: { id },
-      include: { procedures: true }
+      include: { 
+        procedures: true,
+        astLogs: { orderBy: { createdAt: 'desc' } }
+      }
     });
     
     if (!project) return NextResponse.json({ error: "Proyecto no encontrado" }, { status: 404 });
