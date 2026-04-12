@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Home, Lightbulb, Download, UserCheck, ShieldCheck, Phone, CheckCircle2, Navigation, AlertTriangle, Briefcase, Users, FileText } from 'lucide-react';
+import { Home, Lightbulb, Download, UserCheck, ShieldCheck, Phone, CheckCircle2, Navigation, AlertTriangle, Briefcase, Users, FileText, Target, Lock } from 'lucide-react';
 
 const plans = [
   { id: 'free', label: '1. Plan de Prueba (Gratis)' },
