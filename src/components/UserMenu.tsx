@@ -26,7 +26,7 @@ export default function UserMenu() {
 
   if (!session?.user) {
     return (
-      <div className="fixed top-4 right-4 z-[999]">
+      <div className="fixed bottom-6 right-4 md:bottom-auto md:top-4 md:right-4 z-[999]">
         <Link href="/login">
           <button className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white border border-blue-400/50 rounded-full px-5 py-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]">
             <UserIcon className="w-4 h-4" />
@@ -38,7 +38,7 @@ export default function UserMenu() {
   }
 
   return (
-    <div ref={menuRef} className="fixed top-4 right-4 z-[999]">
+    <div ref={menuRef} className="fixed bottom-6 right-4 md:bottom-auto md:top-4 md:right-4 z-[999]">
       {/* Dropdown Toggle */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
@@ -64,7 +64,7 @@ export default function UserMenu() {
 
       {/* Flyout Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-64 bg-zinc-900/95 backdrop-blur-2xl border border-zinc-700/50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] p-2">
+        <div className="absolute right-0 bottom-full mb-3 md:bottom-auto md:top-full md:mt-3 md:mb-0 w-64 bg-zinc-900/95 backdrop-blur-2xl border border-zinc-700/50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] p-2">
           
           <div className="px-3 py-3 border-b border-zinc-800/50 mb-2">
             <p className="text-sm font-medium text-white truncate">{(session.user as any).email}</p>
