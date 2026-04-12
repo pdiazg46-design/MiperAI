@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Building2, Users, Loader2, Home, Save, UserPlus, Settings2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Building2, Users, Loader2, Home, Save, UserPlus, Settings2, CheckCircle2, AlertCircle, FileSpreadsheet, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 
 const formatRUT = (value: string) => {
@@ -34,6 +34,8 @@ export default function CompanyDashboard() {
   const [savingCompany, setSavingCompany] = useState(false);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
       setToast({ message, type });
@@ -123,6 +125,74 @@ export default function CompanyDashboard() {
     }
   };
 
+  const handleRemoveUser = async (userId: string) => {
+    if(!confirm("¿Dar de baja a este trabajador? Pierde acceso a tu empresa, pero su cuenta personal no se borra.")) return;
+    setProcessingId(userId);
+    try {
+      const res = await fetch(`/api/company/users?userId=${userId}`, {
+        method: 'DELETE'
+      });
+      if(res.ok) {
+         showToast("Trabajador dado de baja.");
+         fetchData();
+      } else {
+         showToast("Error al dar de baja", "error");
+      }
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleExcelUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if(!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (evt) => {
+         try {
+             setLoading(true);
+             const bstr = evt.target?.result;
+             const XLSX = await import('xlsx');
+             const wb = XLSX.read(bstr, { type: 'binary' });
+             const wsname = wb.SheetNames[0];
+             const ws = wb.Sheets[wsname];
+             const data = XLSX.utils.sheet_to_json(ws);
+             
+             const mappedUsers = data.map((row: any) => ({
+                 email: row.email || row.Email || row.correo || row.Correo,
+                 name: row.name || row.Name || row.nombre || row.Nombre || '',
+                 role: row.role || row.Role || row.cargo || row.Cargo || 'PREVENCIONISTA'
+             })).filter(u => u.email);
+
+             if(mappedUsers.length === 0) {
+                 showToast("No se encontró una columna 'email' o 'correo' en el Excel.", 'error');
+                 setLoading(false);
+                 return;
+             }
+
+             const res = await fetch('/api/company/users/bulk', {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify({ users: mappedUsers })
+             });
+             const resData = await res.json();
+
+             if(res.ok) {
+                 showToast(`¡Lote procesado! ${resData.added} anexados, ${resData.created} autogenerados.`);
+                 fetchData();
+             } else {
+                 showToast(resData.error || "Error al subir lote", 'error');
+             }
+         } catch(e) {
+             showToast("Error parseando el archivo Excel", 'error');
+         } finally {
+             setLoading(false);
+             if(fileInputRef.current) fileInputRef.current.value = '';
+         }
+      };
+      reader.readAsBinaryString(file);
+  };
+
   if (status === 'loading' || loading) {
     return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-indigo-500" /></div>;
   }
@@ -199,13 +269,20 @@ export default function CompanyDashboard() {
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-800"></div>
                     <form onSubmit={handleAddUser} className="flex flex-col sm:flex-row items-end gap-3 rounded-2xl">
                         <div className="flex-1 w-full pl-3">
-                           <label className="block text-xs font-extrabold text-slate-800 uppercase mb-2 tracking-wider">Despliegue: Invitar Trabajador Creado</label>
-                           <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="Escribe el email del trabajador existente en MiperAI..." className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-3.5 text-sm font-semibold outline-none shadow-sm transition-all"/>
-                           <p className="text-[10px] text-slate-400 font-medium mt-2">Usa metodología de enlace limpio: el contratista se registra gratis, y tú lo atraes corporativamente escribiendo aquí su correo.</p>
+                           <label className="block text-xs font-extrabold text-slate-800 uppercase mb-2 tracking-wider">Despliegue General</label>
+                           <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="Email para enrolar manual..." className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 rounded-xl px-4 py-3.5 text-sm font-semibold outline-none shadow-sm transition-all"/>
+                           <p className="text-[10px] text-slate-400 font-medium mt-2">Puedes añadir uno por uno o usar carga masiva (*.xlsx).</p>
                         </div>
-                        <button type="submit" className="w-full sm:w-auto bg-slate-800 text-white px-8 py-3.5 rounded-xl font-bold hover:bg-slate-900 transition-all shadow-md flex items-center justify-center gap-2">
-                           <UserPlus className="w-5 h-5"/> Enrolar
-                        </button>
+                        <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
+                           <button type="submit" className="w-full sm:w-auto bg-slate-800 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-slate-900 transition-all shadow-md flex items-center justify-center gap-2">
+                              <UserPlus className="w-5 h-5"/> Enrolar
+                           </button>
+                           
+                           <input type="file" accept=".xlsx, .xls, .csv" ref={fileInputRef} onChange={handleExcelUpload} className="hidden" />
+                           <button type="button" onClick={() => fileInputRef.current?.click()} className="w-full sm:w-auto bg-emerald-600 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-md flex items-center justify-center gap-2">
+                              <FileSpreadsheet className="w-5 h-5"/> Lote (Excel)
+                           </button>
+                        </div>
                     </form>
                 </div>
 
@@ -222,6 +299,7 @@ export default function CompanyDashboard() {
                                 <th className="p-3">Cargo Real</th>
                                 <th className="p-3 text-center bg-blue-50/50 rounded-t-lg border-x border-slate-100">Crear Matrices IA</th>
                                 <th className="p-3 text-center bg-orange-50/50 rounded-t-lg">Hacer Inspecciones</th>
+                                <th className="p-3 text-center">Baja</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -263,11 +341,21 @@ export default function CompanyDashboard() {
                                             <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500 shadow-inner"></div>
                                         </label>
                                     </td>
+                                    <td className="p-4 text-center">
+                                         <button 
+                                            onClick={() => handleRemoveUser(u.id)} 
+                                            disabled={processingId === u.id}
+                                            className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                            title="Desvincular de Empresa"
+                                         >
+                                            {processingId === u.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-5 h-5"/>}
+                                         </button>
+                                    </td>
                                 </tr>
                             ))}
                             {users.length === 0 && (
                                <tr>
-                                   <td colSpan={4} className="p-8 text-center text-slate-400 font-medium text-sm">
+                                   <td colSpan={5} className="p-8 text-center text-slate-400 font-medium text-sm">
                                        No hay personal enrolado aún. Escribe el correo de un operario arriba.
                                    </td>
                                </tr>

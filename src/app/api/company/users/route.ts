@@ -100,3 +100,33 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "Fallo actualizando permisos" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session || (session.user as any).subscriptionTier !== 'ENTERPRISE') {
+    return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+  }
+
+  const adminUser = await prisma.user.findUnique({ where: { id: (session.user as any).id }});
+  
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get('userId');
+
+  if (!userId) return NextResponse.json({ error: "Falta userId" }, { status: 400 });
+
+  try {
+    const targetUser = await prisma.user.findUnique({ where: { id: userId } });
+    if (targetUser?.companyId !== adminUser?.companyId) {
+        return NextResponse.json({ error: "Pertenece a otra empresa o no encontrado." }, { status: 403 });
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { companyId: null, role: 'USER', canCreateMatrices: false, canCreateInspections: false }
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json({ error: "Fallo al expulsar usuario" }, { status: 500 });
+  }
+}
