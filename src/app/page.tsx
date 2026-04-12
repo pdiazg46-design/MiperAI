@@ -139,31 +139,33 @@ export default function Dashboard() {
         </section>
 
         {/* Módulos de Terreno B2B: Destacado en Móvil, Panel en PC */}
-        {/* Titular especial solo para celulares o en modo simulador */}
-        <div className={`${isSimulatorEnabled ? 'flex' : 'md:hidden flex'} items-center justify-between mb-6 px-2 mt-2 gap-4`}>
-           <div className="flex-1">
-             <h2 className="text-2xl font-extrabold text-slate-800 leading-tight">Bienvenido a <br/> Terreno</h2>
-             <p className="text-xs text-slate-500 mt-1 leading-snug pr-2">¿Qué actividad operativa requiere registro?</p>
-           </div>
-           <div 
-             onClick={handleAvatarClick}
-             className="w-16 h-16 rounded-full bg-slate-200 border-4 border-white shadow-xl flex items-center justify-center text-slate-500 overflow-hidden shrink-0 animate-in zoom-in duration-500 -translate-y-3 cursor-pointer hover:scale-105 transition-transform relative group"
-           >
-             {avatarUrl ? (
-               <img src={avatarUrl} alt="Avatar Usuario" className="w-full h-full object-cover" />
-             ) : (
-               <User className="w-8 h-8 text-slate-400" />
-             )}
-             <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-               <Camera className="w-6 h-6 text-white" />
+        {/* Titular especial solo para celulares o en modo simulador (Se oculta para centrar inmersivamente el banner educativo) */}
+        {(isLoadingProjects || projects.length > 0) && (
+          <div className={`${isSimulatorEnabled ? 'flex' : 'md:hidden flex'} items-center justify-between mb-6 px-2 mt-2 gap-4`}>
+             <div className="flex-1">
+               <h2 className="text-2xl font-extrabold text-slate-800 leading-tight">Bienvenido a <br/> Terreno</h2>
+               <p className="text-xs text-slate-500 mt-1 leading-snug pr-2">¿Qué actividad operativa requiere registro?</p>
              </div>
-           </div>
-        </div>
+             <div 
+               onClick={handleAvatarClick}
+               className="w-16 h-16 rounded-full bg-slate-200 border-4 border-white shadow-xl flex items-center justify-center text-slate-500 overflow-hidden shrink-0 animate-in zoom-in duration-500 -translate-y-3 cursor-pointer hover:scale-105 transition-transform relative group"
+             >
+               {avatarUrl ? (
+                 <img src={avatarUrl} alt="Avatar Usuario" className="w-full h-full object-cover" />
+               ) : (
+                 <User className="w-8 h-8 text-slate-400" />
+               )}
+               <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                 <Camera className="w-6 h-6 text-white" />
+               </div>
+             </div>
+          </div>
+        )}
 
         {/* Banner Educativo Móvil - Solo aparece si no hay proyectos y se está en vista móvil/simulador */}
         {!isLoadingProjects && projects.length === 0 && (
-          <div className={`mb-10 ${isSimulatorEnabled ? 'block' : 'block md:hidden'} animate-in fade-in zoom-in-95 duration-700`}>
-            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 rounded-3xl p-6 md:p-8 shadow-2xl border border-blue-800 text-white text-center relative overflow-hidden group">
+          <div className={`min-h-[calc(100vh-140px)] w-full flex flex-col justify-center ${isSimulatorEnabled ? 'flex' : 'flex md:hidden'} animate-in fade-in zoom-in-95 duration-700`}>
+            <div className="w-full bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 rounded-3xl p-6 md:p-8 shadow-2xl border border-blue-800 text-white text-center relative overflow-hidden group">
               <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl pointer-events-none transition-transform group-hover:scale-110"></div>
               <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
               
