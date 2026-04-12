@@ -78,9 +78,9 @@ export default function UserJourneySimple() {
                       desc="Le dices a la plataforma qué trabajo vas a realizar (Ej: 'Soldar en un techo'). La Inteligencia Artificial analiza el trabajo y en segundos te arma una lista completa de peligros y cómo cuidarte."
                    />
                    <FeatureBlock
-                      icon={<AlertTriangle className="text-red-400" />}
-                      title="Paso 3: El Límite"
-                      desc="Puedes ver toda esa información en pantalla, pero si quieres descargarla en un documento PDF formal para entregarlo a tu jefe, el sistema te avisará que tu prueba gratuita de 15 días terminó y debes comprar el plan PRO."
+                      icon={<CheckCircle2 className="text-emerald-400" />}
+                      title="Paso 3: Tu Matriz en Terreno"
+                      desc="Ya tienes en pantalla una matriz completa que puedes ver y usar directamente desde tu celular o computadora. ¡La prevención ya está de tu lado durante todos tus 15 días de prueba!"
                    />
                 </div>
              </div>
