@@ -305,9 +305,13 @@ export default function Dashboard() {
               projects.map(p => (
                 <div key={p.id} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
                   <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="text-xs bg-slate-100 hover:bg-blue-50 text-blue-600 font-medium px-3 py-1 rounded-full border border-slate-200 hover:border-blue-200 transition-colors">
-                      Duplicar
-                    </button>
+                    <a 
+                      href={`/api/projects/${p.id}/report`}
+                      download
+                      className="text-[10px] bg-slate-100 hover:bg-emerald-50 text-emerald-600 font-bold px-3 py-1 rounded-full border border-slate-200 hover:border-emerald-200 transition-colors uppercase flex items-center gap-1 shadow-sm"
+                    >
+                      <FileText className="w-3 h-3" /> Generar DOCX
+                    </a>
                   </div>
                   <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">{p.company || 'MiperAI Demo'}</p>
                   <h4 className="font-bold text-lg text-slate-800 mb-2 truncate">{p.name}</h4>
