@@ -302,20 +302,15 @@ export default function InspeccionPage() {
                              const recognition = new SpeechRecognition();
                              (window as any).currentRecognition = recognition;
                              recognition.lang = 'es-CL';
-                             recognition.continuous = true;
-                             recognition.interimResults = true;
+                             recognition.continuous = false; // Fixes the infinite repeat bug on Android
+                             recognition.interimResults = false;
                              
                              recognition.onstart = () => setIsRecording(true);
                              
                              recognition.onresult = (event: any) => {
-                                let finalTranscript = '';
-                                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                                  if (event.results[i].isFinal) {
-                                    finalTranscript += event.results[i][0].transcript;
-                                  }
-                                }
-                                if (finalTranscript) {
-                                   setAudioNote(prev => prev ? prev + " " + finalTranscript : finalTranscript);
+                                const transcript = event.results[0][0].transcript;
+                                if (transcript) {
+                                   setAudioNote(prev => prev ? prev + " " + transcript : transcript);
                                 }
                              };
                              
