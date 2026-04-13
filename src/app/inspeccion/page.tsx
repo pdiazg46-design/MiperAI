@@ -170,6 +170,23 @@ export default function InspeccionPage() {
                         <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
                       </div>
                     </div>
+                    {selectedProjectId && (() => {
+                      const proj = projects.find(p => p.id === selectedProjectId);
+                      if (!proj) return null;
+                      const ok = proj.inspections?.filter((i: any) => i.reportType === 'cumplimiento').length || 0;
+                      const faltas = proj.inspections?.filter((i: any) => i.reportType === 'falta').length || 0;
+                      return (
+                        <div className="flex gap-2 mt-3 pt-3 border-t border-slate-700/50">
+                           <div className="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded border border-slate-700">📋 {proj.astLogs?.length || 0} AST</div>
+                           {(ok > 0 || faltas > 0) && (
+                             <>
+                               <div className="text-xs bg-green-500/10 text-green-400 px-2 py-1 rounded border border-green-500/20">✨ {ok} Positivas</div>
+                               <div className="text-xs bg-red-500/10 text-red-400 px-2 py-1 rounded border border-red-500/20">⚠️ {faltas} Faltas</div>
+                             </>
+                           )}
+                        </div>
+                      );
+                    })()}
                  </div>
 
                  <div>

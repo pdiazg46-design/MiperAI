@@ -59,10 +59,18 @@ export default function InspeccionesReportView() {
           <div className="relative z-10">
             <h2 className="text-2xl md:text-3xl font-black text-slate-800 mb-2 truncate">{project.name}</h2>
             <p className="text-slate-500 font-medium text-lg mb-6">Empresa: {project.company || 'Terreno'}</p>
-            <div className="flex items-center gap-2">
-              <span className="bg-orange-100 text-orange-800 px-4 py-2 rounded-xl text-sm font-extrabold flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="bg-orange-100 text-orange-800 px-4 py-2 rounded-xl text-sm font-extrabold flex items-center gap-2 border border-orange-200">
                 <ShieldCheck className="w-5 h-5" />
-                {project.inspections?.length || 0} Inspecciones IA
+                {project.inspections?.length || 0} Total
+              </span>
+              <span className="bg-green-100 text-green-800 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-1.5 border border-green-200">
+                <Zap className="w-4 h-4" />
+                {project.inspections?.filter((i: any) => i.reportType === 'cumplimiento').length || 0} Ok
+              </span>
+              <span className="bg-red-100 text-red-800 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-1.5 border border-red-200">
+                <AlertTriangle className="w-4 h-4" />
+                {project.inspections?.filter((i: any) => i.reportType === 'falta').length || 0} Faltas
               </span>
             </div>
           </div>
