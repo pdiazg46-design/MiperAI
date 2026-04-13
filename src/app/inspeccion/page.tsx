@@ -123,8 +123,8 @@ export default function InspeccionPage() {
           procedureId: selectedProcedureId,
           taskName: selectedTask,
           photoData: compressedPhotoBody, 
-          audioData: audioNote,
-          transcription: audioNote && audioNote.startsWith('data:') ? '' : audioNote,
+          audioData: null,
+          transcription: audioNote,
           reportType: reportType
         })
       });
@@ -275,42 +275,68 @@ export default function InspeccionPage() {
               </div>
 
               <div className={`bg-slate-800 rounded-2xl p-4 border border-slate-700/50 shadow-lg transition-opacity`}>
-                 <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Paso 2: Evaluación Técnica</h2>
+                 <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Paso 2: Tipo de Reporte y Contexto</h2>
                  
                  <div className="space-y-4">
                     <div className="flex gap-2 mb-2">
                        <button onClick={() => setReportType('falta')} className={`flex-1 text-[10px] uppercase tracking-wider py-2 rounded-md font-bold border transition-colors ${reportType === 'falta' ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-slate-800 border-slate-700 text-slate-500 hover:text-slate-400'}`}>Simular Falta</button>
                        <button onClick={() => setReportType('cumplimiento')} className={`flex-1 text-[10px] uppercase tracking-wider py-2 rounded-md font-bold border transition-colors ${reportType === 'cumplimiento' ? 'bg-green-500/20 text-green-400 border-green-500/50' : 'bg-slate-800 border-slate-700 text-slate-500 hover:text-slate-400'}`}>Simular Felicidad</button>
                     </div>
-                    <button 
-                      onClick={() => fileInputAudioRef.current?.click()}
-                      className={`w-full flex items-center justify-center gap-3 p-5 rounded-xl font-bold transition-all shadow-lg select-none ${audioNote.startsWith('data:audio') ? 'bg-orange-500/10 border border-orange-500/50 text-orange-500' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-                    >
-                       <Mic className="w-6 h-6" />
-                       {audioNote.startsWith('data:audio') ? 'Reemplazar Audio' : 'Grabar Evidencia de Voz'}
-                    </button>
-                    <input type="file" accept="audio/*" capture="environment" className="hidden" ref={fileInputAudioRef} onChange={handleAudioUpload}/>
-                     
-                     <p className="text-[10px] text-center text-slate-500 px-4">
-                        Toca el botón para usar la grabadora nativa de tu teléfono y adjuntar el audio como evidencia forense.
-                     </p>
+                     <div className="flex gap-2 mb-3">
+                        <button 
+                          onClick={(e) => {
+                             e.preventDefault();
+                             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                                alert("Tu navegador no soporta dictado por voz. Por favor escribe el reporte manualmente.");
+                                return;
+                             }
+                             const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+                             const recognition = new SpeechRecognition();
+                             recognition.lang = 'es-CL';
+                             recognition.continuous = false;
+                             recognition.interimResults = false;
+                             
+                             recognition.onstart = () => setIsRecording(true);
+                             
+                             recognition.onresult = (event: any) => {
+                                const transcript = event.results[0][0].transcript;
+                                setAudioNote(prev => prev ? prev + " " + transcript : transcript);
+                             };
+                             
+                             recognition.onerror = (event: any) => {
+                                console.error(event.error);
+                                alert("Error en el dictado: " + event.error);
+                             };
+                             
+                             recognition.onend = () => setIsRecording(true ? false : false); // Force state off
+                             recognition.start();
+                          }}
+                          className={`w-full flex items-center justify-center gap-3 p-4 rounded-xl font-bold transition-all shadow-sm select-none ${isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                        >
+                           <Mic className="w-5 h-5" />
+                           {isRecording ? 'Escuchando Voz...' : 'Dictar Reporte por Voz'}
+                        </button>
+                     </div>
 
-                     {audioNote && audioNote.startsWith('data:audio') && (
-                        <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-700 flex flex-col gap-2">
-                           <p className="text-xs text-orange-400 uppercase font-bold mb-1">Audio Adjunto:</p>
-                           <audio controls src={audioNote} className="w-full h-10" />
-                           <button onClick={() => setAudioNote('')} className="text-xs font-bold text-red-400 mt-1 uppercase tracking-wider hover:text-red-300">Borrar Grabación</button>
-                        </div>
-                     )}
+                     <textarea 
+                        value={audioNote.startsWith('data:') ? '' : audioNote} // Clean legacy base64 if cached
+                        onChange={(e) => setAudioNote(e.target.value)}
+                        placeholder="Usa el botón para dictar o escribe el contexto de tu hallazgo aquí..."
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 font-medium focus:ring-2 focus:ring-emerald-500 outline-none text-sm min-h-[100px] resize-none"
+                     ></textarea>
+                     
+                     <p className="text-[10px] text-center text-slate-500 mt-2">
+                        El dictado por voz es gratuito, no consume IA y se convierte inmediatamente a texto editable.
+                     </p>
                   </div>
                </div>
 
               <button 
                 onClick={simulateProcessing}
                 disabled={!selectedProjectId || !selectedProcedureId || !selectedTask}
-                className={`w-full flex items-center justify-center gap-2 p-4 rounded-xl font-bold text-lg shadow-xl transition-all ${(!selectedProjectId || !selectedProcedureId || !selectedTask) ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700' : 'bg-orange-600 text-white hover:bg-orange-500 hover:scale-[1.02]'}`}
+                className={`w-full flex items-center justify-center gap-2 p-4 rounded-xl font-bold text-lg shadow-xl transition-all ${(!selectedProjectId || !selectedProcedureId || !selectedTask) ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700' : 'bg-emerald-600 text-white hover:bg-emerald-500 hover:scale-[1.02]'}`}
               >
-                 <Zap className="w-5 h-5" /> Analizar Hallazgo con IA
+                 <Zap className="w-5 h-5" /> Guardar Registro en Bitácora
               </button>
            </div>
         )}
@@ -338,52 +364,35 @@ export default function InspeccionPage() {
                  <div className="inline-flex bg-green-500/20 text-green-400 p-3 rounded-full mb-2 border border-green-500/30">
                     <ShieldAlert className="w-8 h-8" />
                  </div>
-                 <h2 className="text-2xl font-extrabold text-white">Informe Generado</h2>
-                 <p className="text-slate-400 text-sm">El sistema ha estructurado tu inspección normativamente.</p>
+                 <h2 className="text-2xl font-extrabold text-white">Registro Guardado</h2>
+                 <p className="text-slate-400 text-sm">Tu evidencia ha sido almacenada correctamente y sincronizada en el servidor corporativo.</p>
               </div>
 
               <div className="bg-white text-slate-900 rounded-2xl overflow-hidden shadow-2xl">
                  <div className={`${reportType === 'falta' ? 'bg-red-600' : 'bg-green-600'} px-4 py-3 flex items-center justify-between text-white`}>
                     <span className="font-bold uppercase tracking-wider text-xs flex items-center gap-2">
                       {reportType === 'falta' ? <ShieldAlert className="w-4 h-4"/> : <Sparkles className="w-4 h-4"/>}
-                      {reportType === 'falta' ? 'Hallazgo Crítico (Falta)' : 'Hallazgo Positivo (100% Cumplimiento)'}
+                      {reportType === 'falta' ? 'Hallazgo Reportado (Falta)' : 'Reporte Positivo (Logro en Terreno)'}
                     </span>
-                    <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-bold">14 Oct 2026</span>
+                    <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-bold">Registro Manual</span>
                  </div>
                  
                  <div className="p-5 space-y-5">
                     {photoUrl && (
-                       <img src={photoUrl} className="w-full aspect-video object-cover rounded-lg shadow-sm border border-slate-200" alt="Evidencia" />
+                       <div className="relative">
+                          <span className="absolute top-2 right-2 bg-black/60 backdrop-blur text-white px-2 py-1 rounded text-[10px] font-bold z-10 border border-white/10 uppercase tracking-wider">
+                             Evidencia Adjunta al Servidor
+                          </span>
+                          <img src={photoUrl} className="w-full aspect-video object-cover rounded-lg shadow-sm border border-slate-200" alt="Evidencia" />
+                       </div>
                     )}
                     
-                    <div>
-                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Descripción del Hallazgo</h3>
-                        <p className="font-semibold text-slate-800">
-                          {extractedData?.description || "Procesando..."}
+                    <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Detalle de Sincronización</h3>
+                        <p className="font-semibold text-slate-800 text-sm">
+                          {extractedData?.description || "Registro guardado sin incidencias."}
                         </p>
                     </div>
-
-                    <div className={`bg-slate-50 border-l-4 ${reportType === 'falta' ? 'border-red-500' : 'border-green-500'} p-3 rounded-r-lg`}>
-                        <h3 className={`text-xs font-bold uppercase tracking-wider mb-1 ${reportType === 'falta' ? 'text-red-700' : 'text-green-700'}`}>
-                          {reportType === 'falta' ? 'Infracción Legal Incurrida' : 'Normativa Cumplida a Cabalidad'}
-                        </h3>
-                        <ul className="text-xs text-slate-700 space-y-2">
-                           {extractedData?.rules?.map((rule: any, i: number) => (
-                              <li key={i}><strong className="text-slate-900">{rule.norm}:</strong> "{rule.text}"</li>
-                           ))}
-                        </ul>
-                    </div>
-
-                    {reportType === 'falta' && extractedData?.correctiveActions?.length > 0 && (
-                        <div>
-                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Medida Correctiva Inmediata</h3>
-                            <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg text-amber-900 text-sm font-medium space-y-1">
-                               {extractedData.correctiveActions.map((action: string, idx: number) => (
-                                 <p key={idx}>{idx + 1}. {action}</p>
-                               ))}
-                            </div>
-                        </div>
-                    )}
                  </div>
               </div>
 
