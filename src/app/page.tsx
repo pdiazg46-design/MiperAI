@@ -237,49 +237,46 @@ export default function Dashboard() {
         {/* Mosaico AST / Reportes (Se oculta en móvil si no hay proyectos) */}
         <section className={`mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ${!isLoadingProjects && projects.length === 0 ? (isSimulatorEnabled ? 'hidden' : 'hidden md:grid') : 'grid'} grid-cols-1 ${isSimulatorEnabled ? '' : 'md:grid-cols-2'} gap-6 flex-col`}>
            {/* Visor AST */}
-           <Link href="/ast" className="block w-full rounded-3xl bg-gradient-to-br from-emerald-400 to-teal-600 p-[2px] hover:scale-[1.02] transition-transform shadow-lg group">
-             <div className="bg-white rounded-[22px] px-5 py-6 h-full flex flex-col justify-between group-hover:bg-emerald-50/80 transition-colors">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
-                     <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center shadow-inner leading-none font-black text-2xl">
-                        AST
-                     </div>
-                     <div className="bg-emerald-500 text-white p-2 rounded-full shadow-md group-hover:bg-emerald-600 transition-colors">
-                        <ChevronRight className="w-5 h-5" />
-                     </div>
-                  </div>
-                  <div>
-                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-700 mb-2">
-                      <ClipboardCheck className="w-3 h-3" /> Pizarra Interactiva
-                    </div>
-                    <h3 className="text-xl font-extrabold text-slate-800 leading-tight">Charla Diaria <br/> (Visor AST)</h3>
-                    <p className="text-slate-500 text-xs mt-2">Transforma tu Matriz en un checklist digital para que el equipo revise peligros y controles en faena.</p>
-                  </div>
-                </div>
+           {/* Visor AST */}
+           <Link href="/ast" className="block w-full rounded-2xl md:rounded-3xl bg-gradient-to-br from-emerald-400 to-teal-600 p-[2px] hover:scale-[1.02] transition-transform shadow-md md:shadow-lg group">
+             <div className="bg-white rounded-[14px] md:rounded-[22px] p-3 md:px-5 md:py-6 h-full flex items-center md:flex-col md:items-start justify-between group-hover:bg-emerald-50/80 transition-colors gap-3 md:gap-4">
+                 <div className="w-12 h-12 md:w-14 md:h-14 bg-emerald-100 text-emerald-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner leading-none font-black text-xl md:text-2xl shrink-0">
+                    AST
+                 </div>
+                 
+                 <div className="flex-1 min-w-0">
+                   <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] md:text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-700 mb-1">
+                     <ClipboardCheck className="w-2.5 h-2.5 md:w-3 md:h-3" /> Pizarra
+                   </div>
+                   <h3 className="text-sm md:text-xl font-extrabold text-slate-800 leading-tight truncate">Charla Diaria</h3>
+                   <p className="text-slate-500 text-[10px] md:text-xs mt-0.5 md:mt-2 line-clamp-1 md:line-clamp-none">Transforma tu Matriz en checklist.</p>
+                 </div>
+
+                 <div className="bg-emerald-500 text-white p-1.5 md:p-2 rounded-full shadow-md group-hover:bg-emerald-600 transition-colors shrink-0">
+                    <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
+                 </div>
              </div>
            </Link>
 
            {/* Reporte de Hallazgos */}
-           <Link href="/inspeccion" className="block w-full rounded-3xl bg-gradient-to-br from-orange-400 to-red-500 p-[2px] hover:scale-[1.02] transition-transform shadow-lg group">
-             <div className="bg-white rounded-[22px] px-5 py-6 h-full flex flex-col justify-between group-hover:bg-orange-50/80 transition-colors">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
-                     <div className="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center shadow-inner relative overflow-hidden">
-                        <Camera className="w-6 h-6 absolute top-[14px]" />
-                        <Mic className="w-3 h-3 absolute bottom-2 right-2 text-orange-400" />
-                     </div>
-                     <div className="bg-orange-500 text-white p-2 rounded-full shadow-md group-hover:bg-orange-600 transition-colors">
-                        <ChevronRight className="w-5 h-5" />
-                     </div>
-                  </div>
-                  <div>
-                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-700 mb-2">
-                      <Zap className="w-3 h-3" /> Output Multimodal
-                    </div>
-                    <h3 className="text-xl font-extrabold text-slate-800 leading-tight">Reporte de <br/> Hallazgos AI</h3>
-                    <p className="text-slate-500 text-xs mt-2">Documenta comportamientos, levanta alertas o felicita al instante usando fotos y dictado de voz.</p>
-                  </div>
-                </div>
+           <Link href="/inspeccion" className="block w-full rounded-2xl md:rounded-3xl bg-gradient-to-br from-orange-400 to-red-500 p-[2px] hover:scale-[1.02] transition-transform shadow-md md:shadow-lg group">
+             <div className="bg-white rounded-[14px] md:rounded-[22px] p-3 md:px-5 md:py-6 h-full flex items-center md:flex-col md:items-start justify-between group-hover:bg-orange-50/80 transition-colors gap-3 md:gap-4">
+                 <div className="w-12 h-12 md:w-14 md:h-14 bg-orange-100 text-orange-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner relative overflow-hidden shrink-0">
+                    <Camera className="w-5 h-5 md:w-6 md:h-6 absolute top-[10px] md:top-[14px]" />
+                    <Mic className="w-2.5 h-2.5 md:w-3 md:h-3 absolute bottom-2 right-2 text-orange-400" />
+                 </div>
+                 
+                 <div className="flex-1 min-w-0">
+                   <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] md:text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-700 mb-1">
+                     <Zap className="w-2.5 h-2.5 md:w-3 md:h-3" /> Output Rápido
+                   </div>
+                   <h3 className="text-sm md:text-xl font-extrabold text-slate-800 leading-tight truncate">Reporte de Campo</h3>
+                   <p className="text-slate-500 text-[10px] md:text-xs mt-0.5 md:mt-2 line-clamp-1 md:line-clamp-none">Documenta a través de dictado forense.</p>
+                 </div>
+
+                 <div className="bg-orange-500 text-white p-1.5 md:p-2 rounded-full shadow-md group-hover:bg-orange-600 transition-colors shrink-0">
+                    <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
+                 </div>
              </div>
            </Link>
         </section>
