@@ -42,18 +42,37 @@ export default function InspeccionPage() {
 
   const [compressedPhotoBody, setCompressedPhotoBody] = useState<string | null>(null);
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // Preview inmediato
       const url = URL.createObjectURL(file);
       setPhotoUrl(url);
 
-      // Compresión al vuelo (Client-side)
+      const MAX_WIDTH = 800;
+
+      // Compresión eficiente en memoria (Evita "Memoria Insuficiente" en Safari/Android)
+      if (typeof window !== 'undefined' && 'createImageBitmap' in window) {
+        try {
+           const bitmap = await window.createImageBitmap(file, { resizeWidth: MAX_WIDTH });
+           const canvas = document.createElement('canvas');
+           canvas.width = bitmap.width;
+           canvas.height = bitmap.height;
+           const ctx = canvas.getContext('2d');
+           if (ctx) {
+              ctx.drawImage(bitmap, 0, 0);
+              setCompressedPhotoBody(canvas.toDataURL('image/jpeg', 0.6));
+              return;
+           }
+        } catch(err) {
+           console.warn("Fallo de motor VRAM, usando fallback de compresión", err);
+        }
+      }
+
+      // Fallback tradicional si createImageBitmap no está soportado o falla
       const img = new window.Image();
       img.onload = () => {
          const canvas = document.createElement('canvas');
-         const MAX_WIDTH = 800; 
          let width = img.width;
          let height = img.height;
          if (width > MAX_WIDTH) {
@@ -70,6 +89,7 @@ export default function InspeccionPage() {
             const base64str = canvas.toDataURL('image/jpeg', 0.6);
             setCompressedPhotoBody(base64str);
          }
+         URL.revokeObjectURL(url); // Limpieza de RAM forzada
       };
       img.src = url;
     }
