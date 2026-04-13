@@ -82,7 +82,8 @@ export async function GET() {
       orderBy: { createdAt: 'desc' },
       include: {
         procedures: true,
-        astLogs: { orderBy: { createdAt: 'desc' } }
+        astLogs: { orderBy: { createdAt: 'desc' } },
+        inspections: { orderBy: { createdAt: 'desc' } }
       }
     });
     return NextResponse.json(projects);

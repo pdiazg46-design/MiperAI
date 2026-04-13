@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { PlusCircle, Search, FileText, ShieldAlert, FolderSync, Camera, Mic, Zap, ChevronRight, ClipboardCheck, User } from 'lucide-react';
+import { PlusCircle, Search, FileText, ShieldAlert, FolderSync, Camera, Mic, Zap, ChevronRight, ClipboardCheck, User, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useDeviceSimulator } from '@/components/DeviceSimulatorProvider';
 import { useSession } from 'next-auth/react';
@@ -314,14 +314,29 @@ export default function Dashboard() {
                   <p className="text-sm text-slate-500 font-light mb-4 line-clamp-2">
                     {p.procedures && p.procedures.length > 0 ? p.procedures[0].name : 'Procedimiento General'}
                   </p>
-                  {p.astLogs && p.astLogs.length > 0 && (
-                     <div className="mb-4">
-                       <Link href={`/proyecto/${p.id}/charlas`} className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-bold transition-colors border border-emerald-200">
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    {p.astLogs && p.astLogs.length > 0 && (
+                       <Link href={`/proyecto/${p.id}/charlas`} className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-bold transition-colors border border-emerald-200 shadow-sm">
                          <ClipboardCheck className="w-4 h-4" />
                          {p.astLogs.length} Charla{p.astLogs.length !== 1 ? 's' : ''} AST (Ver)
                        </Link>
-                     </div>
-                  )}
+                    )}
+                    {p.inspections && p.inspections.filter((i: any) => i.reportType === 'cumplimiento').length > 0 && (
+                       <Link href={`/proyecto/${p.id}/charlas`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 hover:bg-green-100 rounded-lg text-xs font-bold transition-colors border border-green-200 shadow-sm">
+                         <Sparkles className="w-4 h-4" />
+                         {p.inspections.filter((i: any) => i.reportType === 'cumplimiento').length} Ok
+                       </Link>
+                    )}
+                    {p.inspections && p.inspections.filter((i: any) => i.reportType === 'falta').length > 0 && (
+                       <Link href={`/proyecto/${p.id}/charlas`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg text-xs font-bold transition-colors border border-red-200 shadow-sm">
+                         <ShieldAlert className="w-4 h-4" />
+                         {p.inspections.filter((i: any) => i.reportType === 'falta').length} Falta{p.inspections.filter((i: any) => i.reportType === 'falta').length !== 1 ? 's' : ''}
+                       </Link>
+                    )}
+                    {((!p.astLogs || p.astLogs.length === 0) && (!p.inspections || p.inspections.length === 0)) && (
+                       <span className="text-xs text-slate-400 font-medium italic">Sin registros en terreno aún</span>
+                    )}
+                  </div>
                   <div className="flex items-center justify-between mt-6">
                     <span className="text-[11px] font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-md">
                       {new Date(p.createdAt).toLocaleDateString()}
