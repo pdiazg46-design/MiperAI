@@ -63,7 +63,29 @@ export default function ASTViewerPage() {
     reader.onload = (event) => {
       const base64str = event.target?.result as string;
       if (type === 'photo') {
-         setPhotosData(prev => [...prev, base64str]);
+         // Comprimir preventivamente en el cliente para evitar limites de Vercel/Neondb (413 Payload Too Large)
+         const img = new window.Image(); /* prevent React errors */
+         img.onload = () => {
+           const canvas = document.createElement('canvas');
+           let width = img.width;
+           let height = img.height;
+           const MAX_WIDTH = 800;
+           
+           if (width > MAX_WIDTH) {
+             height = Math.round(height * (MAX_WIDTH / width));
+             width = MAX_WIDTH;
+           }
+           
+           canvas.width = width;
+           canvas.height = height;
+           const ctx = canvas.getContext('2d');
+           ctx?.drawImage(img, 0, 0, width, height);
+           
+           // Bajar fuertemente la calidad para web (0.6)
+           const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
+           setPhotosData(prev => [...prev, compressedBase64]);
+         };
+         img.src = base64str;
       } else {
          setAudiosData(prev => [...prev, base64str]);
       }
