@@ -324,13 +324,13 @@ export default function Dashboard() {
                     {p.inspections && p.inspections.filter((i: any) => i.reportType === 'cumplimiento').length > 0 && (
                        <Link href={`/proyecto/${p.id}/charlas`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 hover:bg-green-100 rounded-lg text-xs font-bold transition-colors border border-green-200 shadow-sm">
                          <Sparkles className="w-4 h-4" />
-                         {p.inspections.filter((i: any) => i.reportType === 'cumplimiento').length} Ok
+                         {p.inspections.filter((i: any) => i.reportType === 'cumplimiento').length} Insp. Positiva{p.inspections.filter((i: any) => i.reportType === 'cumplimiento').length !== 1 ? 's' : ''}
                        </Link>
                     )}
                     {p.inspections && p.inspections.filter((i: any) => i.reportType === 'falta').length > 0 && (
                        <Link href={`/proyecto/${p.id}/charlas`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg text-xs font-bold transition-colors border border-red-200 shadow-sm">
                          <ShieldAlert className="w-4 h-4" />
-                         {p.inspections.filter((i: any) => i.reportType === 'falta').length} Falta{p.inspections.filter((i: any) => i.reportType === 'falta').length !== 1 ? 's' : ''}
+                         {p.inspections.filter((i: any) => i.reportType === 'falta').length} Insp. Negativa{p.inspections.filter((i: any) => i.reportType === 'falta').length !== 1 ? 's' : ''}
                        </Link>
                     )}
                     {((!p.astLogs || p.astLogs.length === 0) && (!p.inspections || p.inspections.length === 0)) && (
