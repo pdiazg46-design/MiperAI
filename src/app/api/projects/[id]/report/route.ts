@@ -65,7 +65,9 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
         );
       });
     } else {
-      children.push(new Paragraph({ text: 'No se han registrado Charlas AST en este proyecto.', italics: true }));
+      children.push(new Paragraph({ 
+        children: [new TextRun({ text: 'No se han registrado Charlas AST en este proyecto.', italics: true })]
+      }));
     }
 
     // Sección Hallazgos en Terreno
@@ -108,7 +110,9 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
         );
       });
     } else {
-      children.push(new Paragraph({ text: 'No se han registrado inspecciones de campo.', italics: true }));
+      children.push(new Paragraph({ 
+         children: [new TextRun({ text: 'No se han registrado inspecciones de campo.', italics: true })]
+      }));
     }
 
     const doc = new Document({
@@ -120,7 +124,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
 
     const buffer = await Packer.toBuffer(doc);
 
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'Content-Disposition': `attachment; filename=Reporte_MiperAI_${project.id}.docx`,
