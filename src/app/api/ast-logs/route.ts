@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
+export const maxDuration = 60; // Evita que celulares con mala conexión fallen por timeout de 10s (Vercel Default)
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {

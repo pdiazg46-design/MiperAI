@@ -139,8 +139,8 @@ export default function ASTViewerPage() {
       });
       if (!res.ok) throw new Error();
       setSuccess(true);
-    } catch(err) {
-      alert("Error enviando reporte a BD.");
+    } catch(err: any) {
+      alert("Error enviando reporte a BD: " + (err.message || "Error desconocido. Intente acortar el audio o revisar su conexión 3G/4G."));
     } finally {
       setIsSubmitting(false);
     }
