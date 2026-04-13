@@ -10,7 +10,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       where: { id },
       include: { 
         procedures: true,
-        astLogs: { orderBy: { createdAt: 'desc' } }
+        astLogs: { orderBy: { createdAt: 'desc' } },
+        inspections: { orderBy: { createdAt: 'desc' } }
       }
     });
     
