@@ -4,6 +4,8 @@ import { generateObject } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { z } from 'zod';
 
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   try {
     const data = await request.json();

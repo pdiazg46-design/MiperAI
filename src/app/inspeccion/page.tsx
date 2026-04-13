@@ -76,8 +76,8 @@ export default function InspeccionPage() {
   };
 
   const simulateProcessing = async () => {
-    if(!photoUrl || !selectedProjectId || !selectedProcedureId || !selectedTask) {
-      alert('Por favor complete: Proyecto, Procedimiento, Tarea y Fotografía obligatoria.');
+    if(!compressedPhotoBody || !selectedProjectId || !selectedProcedureId || !selectedTask) {
+      alert('Por favor complete: Proyecto, Procedimiento, Tarea y asegúrese de que la fotografía haya terminado de procesarse.');
       return;
     }
     setStep(2);
@@ -89,7 +89,7 @@ export default function InspeccionPage() {
           projectId: selectedProjectId,
           procedureId: selectedProcedureId,
           taskName: selectedTask,
-          photoData: compressedPhotoBody || photoUrl, // Mandamos logica real minimizada
+          photoData: compressedPhotoBody, 
           audioData: audioNote,
           transcription: audioNote,
           reportType: reportType
@@ -215,8 +215,8 @@ export default function InspeccionPage() {
                           <Camera className="w-8 h-8" />
                        </div>
                        <div className="text-center">
-                          <p className="font-bold text-slate-300">Tomar Fotografía</p>
-                          <p className="text-xs text-slate-500 mt-1">O subir desde galería</p>
+                          <p className="font-bold text-slate-300">Fotografía en Terreno</p>
+                          <p className="text-xs text-slate-500 mt-1">Obligatorio captura en vivo</p>
                        </div>
                        <input type="file" accept="image/*" capture="environment" className="hidden" ref={fileInputRef} onChange={handlePhotoUpload}/>
                     </div>
@@ -257,8 +257,8 @@ export default function InspeccionPage() {
 
               <button 
                 onClick={simulateProcessing}
-                disabled={!photoUrl || !selectedProjectId || !selectedProcedureId || !selectedTask}
-                className={`w-full flex items-center justify-center gap-2 p-4 rounded-xl font-bold text-lg shadow-xl transition-all ${(!photoUrl || !selectedProjectId || !selectedProcedureId || !selectedTask) ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700' : 'bg-orange-600 text-white hover:bg-orange-500 hover:scale-[1.02]'}`}
+                disabled={!compressedPhotoBody || !selectedProjectId || !selectedProcedureId || !selectedTask}
+                className={`w-full flex items-center justify-center gap-2 p-4 rounded-xl font-bold text-lg shadow-xl transition-all ${(!compressedPhotoBody || !selectedProjectId || !selectedProcedureId || !selectedTask) ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700' : 'bg-orange-600 text-white hover:bg-orange-500 hover:scale-[1.02]'}`}
               >
                  <Zap className="w-5 h-5" /> Analizar Hallazgo con IA
               </button>
