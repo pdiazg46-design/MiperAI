@@ -16,6 +16,20 @@ export default function InspeccionPage() {
   const [projects, setProjects] = useState<any[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState('');
   const [selectedProcedureId, setSelectedProcedureId] = useState('');
+  const [selectedTask, setSelectedTask] = useState('');
+
+  // Extract maneuvers from active procedure to populate the supervised task dropdown
+  const activeProject = projects.find(p => p.id === selectedProjectId);
+  const activeProcedure = activeProject?.procedures?.find((p: any) => p.id === selectedProcedureId);
+  const parsedManeuvers = React.useMemo(() => {
+    if (!activeProcedure?.content) return [];
+    try {
+      const data = JSON.parse(activeProcedure.content);
+      return Array.isArray(data) ? data : (data.maneuvers || []);
+    } catch {
+      return [];
+    }
+  }, [activeProcedure]);
 
   useEffect(() => {
     fetch('/api/projects')
@@ -26,6 +40,8 @@ export default function InspeccionPage() {
       .catch(console.error);
   }, []);
 
+  const [compressedPhotoBody, setCompressedPhotoBody] = useState<string | null>(null);
+
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -33,26 +49,26 @@ export default function InspeccionPage() {
       const url = URL.createObjectURL(file);
       setPhotoUrl(url);
 
-      // Compresión al vuelo (Client-side) para ahorrar ancho de banda y almacenamiento S3
-      const img = new Image();
+      // Compresión al vuelo (Client-side)
+      const img = new window.Image();
       img.onload = () => {
          const canvas = document.createElement('canvas');
-         // Restringimos a max 800px de ancho que es ideal para abaratar OpenAI Vision
          const MAX_WIDTH = 800; 
-         const scaleSize = MAX_WIDTH / img.width;
-         canvas.width = MAX_WIDTH;
-         canvas.height = img.height * scaleSize;
+         let width = img.width;
+         let height = img.height;
+         if (width > MAX_WIDTH) {
+            height = Math.round(height * (MAX_WIDTH / width));
+            width = MAX_WIDTH;
+         }
+         
+         canvas.width = width;
+         canvas.height = height;
          
          const ctx = canvas.getContext('2d');
          if(ctx) {
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            // Exporta a JPEG con 60% de calidad reduciendo el peso de ~5MB a ~100KB
-            canvas.toBlob((blob) => {
-               if(blob) {
-                 console.log(`Optimización de Evidencia: ${(file.size/1024/1024).toFixed(2)}MB --> ${(blob.size/1024/1024).toFixed(2)}MB`);
-                 // setCompressedFile(blob); // Esto es lo que enviaremos al backend en Producción
-               }
-            }, 'image/jpeg', 0.6);
+            ctx.drawImage(img, 0, 0, width, height);
+            const base64str = canvas.toDataURL('image/jpeg', 0.6);
+            setCompressedPhotoBody(base64str);
          }
       };
       img.src = url;
@@ -60,8 +76,8 @@ export default function InspeccionPage() {
   };
 
   const simulateProcessing = async () => {
-    if(!photoUrl || !selectedProjectId) {
-      alert('Por favor, asegúrate de seleccionar un "Proyecto Activo" y de cargar la fotografía.');
+    if(!photoUrl || !selectedProjectId || !selectedProcedureId || !selectedTask) {
+      alert('Por favor complete: Proyecto, Procedimiento, Tarea y Fotografía obligatoria.');
       return;
     }
     setStep(2);
@@ -71,7 +87,9 @@ export default function InspeccionPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           projectId: selectedProjectId,
-          photoData: photoUrl, // Omitimos base64 inmenso en prototipo
+          procedureId: selectedProcedureId,
+          taskName: selectedTask,
+          photoData: compressedPhotoBody || photoUrl, // Mandamos logica real minimizada
           audioData: audioNote,
           transcription: audioNote,
           reportType: reportType
@@ -138,14 +156,38 @@ export default function InspeccionPage() {
                     <div className="relative">
                       <select 
                         value={selectedProcedureId}
-                        onChange={(e) => setSelectedProcedureId(e.target.value)}
+                        onChange={(e) => {
+                          setSelectedProcedureId(e.target.value);
+                          setSelectedTask(''); // reset task
+                        }}
                         disabled={!selectedProjectId}
                         className="appearance-none w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 font-medium focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none cursor-pointer text-sm disabled:opacity-50"
                       >
                         <option value="">Selecciona el Procedimiento de Riesgo...</option>
-                        {projects.find(p => p.id === selectedProjectId)?.procedures?.map((proc: any) => (
+                        {activeProject?.procedures?.map((proc: any) => (
                            <option key={proc.id} value={proc.id}>{proc.name}</option>
                         ))}
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                      </div>
+                    </div>
+                 </div>
+
+                 <div>
+                    <h2 className="flex items-center gap-2 text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Tarea Supervisada</h2>
+                    <div className="relative">
+                      <select 
+                        value={selectedTask}
+                        onChange={(e) => setSelectedTask(e.target.value)}
+                        disabled={!selectedProcedureId || parsedManeuvers.length === 0}
+                        className="appearance-none w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 font-medium focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none cursor-pointer text-sm disabled:opacity-50"
+                      >
+                        <option value="">Selecciona la Tarea Específica...</option>
+                        {parsedManeuvers.map((maneuver: any, i: number) => {
+                           const mName = maneuver.taskOriginalName || maneuver.result?.task || `Maniobra ${i+1}`;
+                           return <option key={i} value={mName}>{mName}</option>
+                        })}
                       </select>
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
                         <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
@@ -215,7 +257,8 @@ export default function InspeccionPage() {
 
               <button 
                 onClick={simulateProcessing}
-                className={`w-full flex items-center justify-center gap-2 p-4 rounded-xl font-bold text-lg shadow-xl hover:bg-orange-500 transition-colors ${photoUrl ? 'bg-orange-600 text-white' : 'bg-slate-800 text-slate-500 cursor-not-allowed'}`}
+                disabled={!photoUrl || !selectedProjectId || !selectedProcedureId || !selectedTask}
+                className={`w-full flex items-center justify-center gap-2 p-4 rounded-xl font-bold text-lg shadow-xl transition-all ${(!photoUrl || !selectedProjectId || !selectedProcedureId || !selectedTask) ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700' : 'bg-orange-600 text-white hover:bg-orange-500 hover:scale-[1.02]'}`}
               >
                  <Zap className="w-5 h-5" /> Analizar Hallazgo con IA
               </button>
