@@ -158,12 +158,16 @@ export default function InspeccionesReportView() {
                                <img src={log.photoData} alt="Foto" className="w-full h-full object-contain" />
                              </div>
                           )}
-                          {log.transcription && (
+                          {(log.transcription || log.audioData) && (
                              <div className="bg-slate-50 border border-slate-200 p-4 rounded-2xl flex flex-col justify-center">
                                <div className="flex items-center gap-2 font-bold text-sm text-slate-500 mb-2 uppercase tracking-wider">
-                                 <Mic className="w-4 h-4" /> Transcripción de Audio
+                                 <Mic className="w-4 h-4" /> Registro Forense Oral
                                </div>
-                               <p className="text-sm text-slate-700 italic font-medium">"{log.transcription}"</p>
+                               {log.audioData && log.audioData.startsWith('data:audio') ? (
+                                 <audio controls src={log.audioData} className="w-full h-10 mt-1" />
+                               ) : (
+                                 <p className="text-sm text-slate-700 italic font-medium">"{log.transcription || log.audioData}"</p>
+                               )}
                              </div>
                           )}
                         </div>

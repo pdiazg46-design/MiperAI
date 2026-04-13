@@ -42,6 +42,17 @@ export default function InspeccionPage() {
 
   const [compressedPhotoBody, setCompressedPhotoBody] = useState<string | null>(null);
 
+  const fileInputAudioRef = useRef<HTMLInputElement>(null);
+  const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+       setAudioNote(event.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -270,28 +281,27 @@ export default function InspeccionPage() {
                        <button onClick={() => setReportType('cumplimiento')} className={`flex-1 text-[10px] uppercase tracking-wider py-2 rounded-md font-bold border transition-colors ${reportType === 'cumplimiento' ? 'bg-green-500/20 text-green-400 border-green-500/50' : 'bg-slate-800 border-slate-700 text-slate-500 hover:text-slate-400'}`}>Simular Felicidad</button>
                     </div>
                     <button 
-                      onPointerDown={() => setIsRecording(true)}
-                      onPointerUp={() => { 
-                         setIsRecording(false); 
-                         setAudioNote(reportType === 'falta' 
-                           ? 'El trabajador en el andamio del segundo piso está trabajando sin línea de vida amarrada y el andamio carece de rodapié.' 
-                           : 'Todo el personal en el sector B está utilizando correctamente su equipo para trabajo en altura, andamios certificados y buena actitud.'); 
-                      }}
-                      onPointerLeave={() => { if(isRecording) { setIsRecording(false); setAudioNote('Grabación terminada.'); } }}
-                      className={`w-full flex items-center justify-center gap-3 p-5 rounded-xl font-bold transition-all shadow-lg select-none ${isRecording ? 'bg-blue-500 text-white scale-[0.98]' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                      onClick={() => fileInputAudioRef.current?.click()}
+                      className={`w-full flex items-center justify-center gap-3 p-5 rounded-xl font-bold transition-all shadow-lg select-none ${audioNote.startsWith('data:audio') ? 'bg-orange-500/10 border border-orange-500/50 text-orange-500' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
                     >
-                       <Mic className={`w-6 h-6 ${isRecording ? 'animate-pulse' : ''}`} />
-                       {isRecording ? 'Escuchando... (suelta al terminar)' : 'Mantener para Hablar'}
+                       <Mic className="w-6 h-6" />
+                       {audioNote.startsWith('data:audio') ? 'Reemplazar Audio' : 'Grabar Evidencia de Voz'}
                     </button>
-                    
-                    {audioNote && (
-                        <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
-                           <p className="text-xs text-slate-400 uppercase font-bold mb-1">Transcripción Whisper AI:</p>
-                           <p className="text-sm text-slate-300 italic">"{audioNote}"</p>
+                    <input type="file" accept="audio/*" capture="environment" className="hidden" ref={fileInputAudioRef} onChange={handleAudioUpload}/>
+                     
+                     <p className="text-[10px] text-center text-slate-500 px-4">
+                        Toca el botón para usar la grabadora nativa de tu teléfono y adjuntar el audio como evidencia forense.
+                     </p>
+
+                     {audioNote && audioNote.startsWith('data:audio') && (
+                        <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-700 flex flex-col gap-2">
+                           <p className="text-xs text-orange-400 uppercase font-bold mb-1">Audio Adjunto:</p>
+                           <audio controls src={audioNote} className="w-full h-10" />
+                           <button onClick={() => setAudioNote('')} className="text-xs font-bold text-red-400 mt-1 uppercase tracking-wider hover:text-red-300">Borrar Grabación</button>
                         </div>
-                    )}
-                 </div>
-              </div>
+                     )}
+                  </div>
+               </div>
 
               <button 
                 onClick={simulateProcessing}

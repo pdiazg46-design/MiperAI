@@ -15,6 +15,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Falta projectId para relacionar Inspección.' }, { status: 400 });
     }
 
+    // Prevent feeding raw Base64 audio into the LLM text context
+    const finalTranscription = (audioData && audioData.startsWith('data:audio')) 
+       ? "[El inspector ha adjuntado una nota de voz analógica en el servidor. Evalúa predominantemente la imagen fotográfica]" 
+       : (transcription || 'No hay audio');
+
     // Construir los mensajes para el modelo Multimodal
     const messages: any[] = [
       {
@@ -22,7 +27,7 @@ export async function POST(request: Request) {
         content: `Eres un prevencionista de riesgos experto (normativa minera chilena, Decreto Supremo 594, Ley 16.744).
 Tu misión es auditar una fotografía tomada en terreno subida por un inspector.
 El inspector dice que corresponde a la tarea: "${data.taskName || 'Desconocida'}" y al procedimiento: "${data.procedureName || 'Desconocido'}".
-El inspector también pudo haber dejado un reporte verbal: "${transcription || 'No hay audio'}".
+El inspector también pudo haber dejado un reporte verbal: "${finalTranscription}".
         
 INSTRUCCIONES CRÍTICAS:
 1. Evalúa si la fotografía TIENE ALGO QUE VER con una faena de construcción, minería, industria o la tarea descrita. Si la foto es un animal, comida, un meme, o totalmente irracional para una inspección de trabajo, DEBES setear "isRelevant": false y explicar en description por qué rechazas la foto.
@@ -32,7 +37,7 @@ INSTRUCCIONES CRÍTICAS:
       {
         role: "user",
         content: [
-          { type: "text", text: `Por favor analiza esta fotografía. Considera el audio reportado: "${transcription}". Tipo de reporte exigido por el inspector: ${reportType}.` }
+          { type: "text", text: `Por favor analiza esta fotografía. Considera el audio reportado: "${finalTranscription}". Tipo de reporte exigido por el inspector: ${reportType}.` }
         ]
       }
     ];
