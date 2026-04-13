@@ -121,7 +121,7 @@ export default function InspeccionPage() {
          setStep(3);
       } else {
          console.error('API Error Response:', data);
-         alert(\`Error del servidor: \${data.error || 'Fallo desconocido al procesar con IA'}\`);
+         alert(`Error del servidor: ${data.error || 'Fallo desconocido al procesar con IA'}`);
          setStep(1);
       }
     } catch(e) {

@@ -85,6 +85,6 @@ INSTRUCCIONES CRÍTICAS:
 
   } catch (error: any) {
     console.error('Error procesando la inspección:', error);
-    return NextResponse.json({ error: \`Error del servidor: \${error?.message || String(error)}\` }, { status: 500 });
+    return NextResponse.json({ error: `Error del servidor: ${error?.message || String(error)}` }, { status: 500 });
   }
 }

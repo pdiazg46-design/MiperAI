@@ -84,13 +84,13 @@ export default function InspeccionesReportView() {
               const date = new Date(log.createdAt);
               
               return (
-                <div key={log.id} className={\`bg-white rounded-3xl shadow-sm border overflow-hidden relative group transition-all \${isFalta ? 'border-red-200 hover:border-red-300' : 'border-green-200 hover:border-green-300'}\`}>
+                <div key={log.id} className={`bg-white rounded-3xl shadow-sm border overflow-hidden relative group transition-all ${isFalta ? 'border-red-200 hover:border-red-300' : 'border-green-200 hover:border-green-300'}`}>
                   <div className="hidden md:block absolute top-0 right-0 m-6 bg-slate-100 text-slate-400 font-black tracking-wider px-3 py-1 text-xs rounded-full border border-slate-200">
                     ID-INSP: #{log.id.slice(-8).toUpperCase()}
                   </div>
                   
-                  <div className={\`p-6 md:p-8 border-b flex flex-col md:flex-row md:items-center gap-6 \${isFalta ? 'bg-red-50/50 border-red-100' : 'bg-green-50/50 border-green-100'}\`}>
-                     <div className={\`w-16 h-16 bg-white border rounded-2xl flex items-center justify-center shadow-sm shrink-0 \${isFalta ? 'border-red-200 text-red-600' : 'border-green-200 text-green-600'}\`}>
+                  <div className={`p-6 md:p-8 border-b flex flex-col md:flex-row md:items-center gap-6 ${isFalta ? 'bg-red-50/50 border-red-100' : 'bg-green-50/50 border-green-100'}`}>
+                     <div className={`w-16 h-16 bg-white border rounded-2xl flex items-center justify-center shadow-sm shrink-0 ${isFalta ? 'border-red-200 text-red-600' : 'border-green-200 text-green-600'}`}>
                        {isFalta ? <AlertTriangle className="w-8 h-8" /> : <ShieldCheck className="w-8 h-8" />}
                      </div>
                      <div>
