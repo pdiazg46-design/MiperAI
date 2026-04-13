@@ -4,7 +4,7 @@ import { ArrowLeft, Smartphone, AlertTriangle, CheckSquare, Square, ChevronDown,
 import Link from 'next/link';
 
 export default function ASTViewerPage() {
-  const [expandedManeuver, setExpandedManeuver] = useState<number | null>(0);
+  const [expandedManeuver, setExpandedManeuver] = useState<number | null>(null);
   const [checkedControls, setCheckedControls] = useState<Record<string, boolean>>({});
 
   const [dbProjects, setDbProjects] = useState<any[]>([]);
