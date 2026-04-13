@@ -124,7 +124,7 @@ export default function InspeccionPage() {
           taskName: selectedTask,
           photoData: compressedPhotoBody, 
           audioData: audioNote,
-          transcription: audioNote,
+          transcription: audioNote && audioNote.startsWith('data:') ? '' : audioNote,
           reportType: reportType
         })
       });

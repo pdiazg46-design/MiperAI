@@ -78,9 +78,9 @@ INSTRUCCIONES CRÍTICAS:
     const log = await prisma.inspectionLog.create({
       data: {
         projectId,
-        photoData: photoData ? "base64_reducido_via_canvas_o_s3_url" : null,
-        audioData: audioData ? "url_del_audio" : null,
-        transcription: transcription || "Transcripción no proveída",
+        photoData: photoData || null,
+        audioData: audioData || null,
+        transcription: finalTranscription,
         reportType: reportType || 'falta',
         extractedItems: JSON.stringify(extractedData),
       }
