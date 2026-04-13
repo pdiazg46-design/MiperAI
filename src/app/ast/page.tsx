@@ -80,24 +80,28 @@ export default function ASTViewerPage() {
     }
   };
 
-  const submitASTLog = async () => {
+  const submitASTLog = async (targetManeuverIdx: number) => {
     if (!activeProject) return;
     setIsSubmitting(true);
     
-    // Armar el objeto de controles aprobados extrayendo el texto real de la matriz
+    // Armar el objeto de controles aprobados SOLO para la tarea seleccionada
     const checkedTexts: string[] = [];
     Object.keys(checkedControls).forEach(cId => {
       if (checkedControls[cId]) {
          const parts = cId.split('_'); // Ej: c_0_0_0
          if (parts.length === 4) {
            const m = parseInt(parts[1]);
-           const r = parseInt(parts[2]);
-           const c = parseInt(parts[3]);
-           const text = parsedManeuvers[m]?.result?.risks?.[r]?.controls?.[c];
-           if (text) checkedTexts.push(text);
+           if (m === targetManeuverIdx) {
+             const r = parseInt(parts[2]);
+             const c = parseInt(parts[3]);
+             const text = parsedManeuvers[m]?.result?.risks?.[r]?.controls?.[c];
+             if (text) checkedTexts.push(text);
+           }
          }
       }
     });
+
+    const maneuverName = parsedManeuvers[targetManeuverIdx]?.taskOriginalName || parsedManeuvers[targetManeuverIdx]?.result?.task;
 
     try {
       const res = await fetch('/api/ast-logs', {
@@ -105,7 +109,7 @@ export default function ASTViewerPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           projectId: activeProject.id,
-          procedureName: activeProcedure?.name || 'General',
+          procedureName: maneuverName || activeProcedure?.name || 'General',
           photoData: photosData.length > 0 ? JSON.stringify(photosData) : null,
           audioData: audiosData.length > 0 ? JSON.stringify(audiosData) : null,
           checkedControls: checkedTexts
@@ -314,7 +318,7 @@ export default function ASTViewerPage() {
                                        </div>
                                     )}
 
-                                    <button onClick={submitASTLog} disabled={isSubmitting} className="w-full bg-emerald-600 text-white font-bold p-4 rounded-xl flex items-center justify-center gap-2 hover:bg-emerald-700 shadow-md active:scale-[0.98] transition-all disabled:opacity-50 mt-2">
+                                    <button onClick={() => submitASTLog(mIdx)} disabled={isSubmitting} className="w-full bg-emerald-600 text-white font-bold p-4 rounded-xl flex items-center justify-center gap-2 hover:bg-emerald-700 shadow-md active:scale-[0.98] transition-all disabled:opacity-50 mt-2">
                                        {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin"/> : <CheckSquare className="w-5 h-5" />}
                                        {isSubmitting ? 'Guardando en BD...' : 'Aprobar y Firmar'}
                                     </button>
