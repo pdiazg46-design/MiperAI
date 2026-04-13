@@ -235,11 +235,25 @@ export default function ASTViewerPage() {
                              onClick={() => setExpandedManeuver(expandedManeuver === mIdx ? null : mIdx)}
                              className={`w-full flex items-center justify-between p-4 text-left transition-colors ${expandedManeuver === mIdx ? 'bg-slate-50' : 'hover:bg-slate-50'}`}
                           >
-                             <div className="flex items-center gap-3 pr-4">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition-colors ${expandedManeuver === mIdx ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'}`}>
+                             <div className="flex items-start gap-3 pr-4 w-full">
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 mt-0.5 transition-colors ${expandedManeuver === mIdx ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'}`}>
                                    {mIdx + 1}
                                 </div>
-                                <h3 className="font-bold text-slate-800 text-sm leading-tight">{maneuver.taskOriginalName || maneuver.result?.task}</h3>
+                                <div className="flex-1">
+                                   <h3 className="font-bold text-slate-800 text-sm leading-tight mb-0.5">{maneuver.taskOriginalName || maneuver.result?.task}</h3>
+                                   {(activeProject?.astLogs?.filter((log: any) => log.procedureName === (maneuver.taskOriginalName || maneuver.result?.task)) || []).length > 0 && (
+                                      <div className="flex flex-wrap gap-1 items-center mt-1.5">
+                                         <span className="text-[9px] font-bold text-emerald-700 bg-emerald-100 border border-emerald-200 px-1.5 py-0.5 rounded shadow-sm inline-flex items-center gap-1">
+                                            <CheckSquare className="w-3 h-3" /> {(activeProject?.astLogs?.filter((log: any) => log.procedureName === (maneuver.taskOriginalName || maneuver.result?.task)) || []).length} Ejec.
+                                         </span>
+                                         {(activeProject?.astLogs?.filter((log: any) => log.procedureName === (maneuver.taskOriginalName || maneuver.result?.task)) || []).slice(0, 3).map((log: any, i: number) => (
+                                            <span key={i} className="text-[8px] font-bold text-slate-500 bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded shadow-sm">
+                                              {new Date(log.createdAt).toLocaleDateString('es-CL', { day: '2-digit', month: 'short' })}
+                                            </span>
+                                         ))}
+                                      </div>
+                                   )}
+                                </div>
                              </div>
                              {expandedManeuver === mIdx ? <ChevronUp className="w-5 h-5 text-slate-400 shrink-0"/> : <ChevronDown className="w-5 h-5 text-slate-400 shrink-0"/>}
                           </button>
