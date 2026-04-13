@@ -110,3 +110,8 @@ Las fases operacionales de campo exigen priorizar latencia cero y solidez probat
 ### 9.3 Móvil Single-Screen Concept
 *   En vista B2B de faena (`/page.tsx` modo móvil), queda vetado el formato de listado vertical pesado. Todas las sub-aplicaciones primarias (Visor AST e Inspección de Hallazgos) implementan un diseño de condensación horizontal (`Single-Screen Flex-Row`). 
 *   **Regla Visual:** El usuario de campo nunca debe someterse a operaciones de *Scroll* vertical para descubrir las botoneras en su base de trabajo central. Los módulos se encogen asimétricamente y truncan textos largos garantizando el acceso táctil en solo una vista (Single-Screen).
+
+<br/>
+
+## 10. Pendientes Programados (Próximos Sprints)
+*   **Gestión Multi-Tenant (B2B):** Vincular operativamente el registro del "Nombre de la Empresa" a todas las suscripciones de nivel `PRO`, para que el administrador central pueda firmar y adjudicar el sistema a cargo de una organización o rut corporativo específico.
