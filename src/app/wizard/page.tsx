@@ -553,8 +553,19 @@ export default function WizardPage() {
                   <p className="font-bold text-slate-700 text-sm">Actualizar Matriz Antigua</p>
                   <p className="text-[10px] text-slate-500 mt-1 px-2 leading-tight">Sube tu archivo (Excel, Word o PDF) y la IA extraerá y estandarizará normativamente la matriz vieja.</p>
                </div>
-               <button className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 px-4 rounded-lg shadow-sm transition-colors uppercase tracking-wide">
-                  Cargar Matriz Anterior
+               <input 
+                 type="file" 
+                 ref={fileInputRef} 
+                 onChange={handleFileUpload} 
+                 className="hidden" 
+                 accept=".pdf,.doc,.docx,.xls,.xlsx"
+               />
+               <button 
+                 onClick={() => fileInputRef.current?.click()}
+                 className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 px-4 rounded-lg shadow-sm transition-colors uppercase tracking-wide flex items-center justify-center gap-2"
+                 disabled={isParsing}
+               >
+                  {isParsing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Cargar Matriz Anterior'}
                </button>
             </div>
           )}
