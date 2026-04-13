@@ -92,3 +92,21 @@ MiperAI ha evolucionado de una herramienta transaccional individual a una **plat
 El sistema ha erradicado el frotamiento burocrático de que un minero "se cree una cuenta". Los usuarios son *Forjados en Clave* por sus gerentes.
 *   **Auto-Forjado y Sombra**: Cuando el *Administrador Corporativo* sube un flujo de Excel masivo (o añade manuales), las bases de datos de Prisma generan cuentas instantáneas vinculadas estrictamente a su `companyId`, estableciendo por defecto la contraseña global `Miper2026*`.
 *   **Bloqueo de Primer Acceso (Túnel PxC)**: Por regulaciones severas de seguridad de la información informátia frente al cruce de accesos civiles y corporativos, todo usuario forjado nace con el flag `mustChangePassword = true`. Al efectuar su log-in inaugural, no pueden renderizar ni interactuar con los módulos de MiperAI sin antes declarar legalmente su propia contraseña bajo un flujo bloqueante de pantalla completa, desarticulando el conocimiento global de los gerentes sobre las claves personales y liberando de retención legal a la plataforma.
+
+<br/>
+
+## 9. Células de Eficiencia y Desacople de IA (Módulo Terreno)
+
+Las fases operacionales de campo exigen priorizar latencia cero y solidez probatoria por encima del lujo del procesamiento en modelos largos (Gen-AI). Las inspecciones no se validan por un LLM; se validan mediante la captura pura de la responsabilidad humana.
+
+### 9.1 Dictado Forense (Native STT)
+*   Se prohíbe el uso de transferencias masivas de datos Blob/Audio hacia el storage de Vercel/Neon para los audios de campo.
+*   En su lugar, el proyecto incorpora el **Native Web Speech API** para Speech-To-Text en tiempo real. Se exige usar el modo temporal pasivo (`continuous: false`, `interimResults: false`) para evadir el bug sistémico de "Eco de Bucle Infinito" característico de los navegadores móviles basados en Chromium (Android), logrando dictados de una sola ráfaga, 100% precisos y gratuitos, que se convierten a texto manual editable de forma inmediata.
+
+### 9.2 Reportabilidad DOCX Dinámica (Client-to-Buffer)
+*   **Agnosticismo del Frontend:** El panel de `Historial de Proyectos` desecha botones redundantes a favor de la consolidación de informes gerenciales. 
+*   Para descargar consolidaciones formales, se ha implantado el motor `docx`, que amalgama las matrices AST, Hallazgos y transcripciones nativas STT, forzando la compilación en un `Uint8Array` dentro de la Serverless Function (`RouteHandler`) para compaginar estrictamente con las políticas de compatibilidad de `NextResponse` en Next.js 15.
+
+### 9.3 Móvil Single-Screen Concept
+*   En vista B2B de faena (`/page.tsx` modo móvil), queda vetado el formato de listado vertical pesado. Todas las sub-aplicaciones primarias (Visor AST e Inspección de Hallazgos) implementan un diseño de condensación horizontal (`Single-Screen Flex-Row`). 
+*   **Regla Visual:** El usuario de campo nunca debe someterse a operaciones de *Scroll* vertical para descubrir las botoneras en su base de trabajo central. Los módulos se encogen asimétricamente y truncan textos largos garantizando el acceso táctil en solo una vista (Single-Screen).
