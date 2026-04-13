@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Clock, ShieldCheck, CheckSquare, Camera, Mic, MapPin, ClipboardCheck, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Clock, ShieldCheck, CheckSquare, Camera, Mic, MapPin, ClipboardCheck, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CharlasReportView() {
@@ -11,6 +11,11 @@ export default function CharlasReportView() {
   const id = params?.id as string;
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [expandedLogs, setExpandedLogs] = useState<Record<string, boolean>>({});
+
+  const toggleLog = (logId: string) => {
+    setExpandedLogs(prev => ({ ...prev, [logId]: !prev[logId] }));
+  };
 
   useEffect(() => {
     if (id) {
@@ -126,20 +131,30 @@ export default function CharlasReportView() {
                   </div>
                   
                   <div className="p-6 md:p-8">
-                     <h4 className="font-black text-slate-700 mb-4 flex items-center gap-2 uppercase tracking-tight text-sm">
-                       <CheckSquare className="w-5 h-5 text-emerald-500" /> Controles Verificados ({checks.length})
-                     </h4>
+                     <button
+                       onClick={() => toggleLog(log.id)} 
+                       className="w-full flex items-center justify-between font-black text-slate-700 hover:text-emerald-700 transition-colors mb-4 uppercase tracking-tight text-sm focus:outline-none bg-slate-50/50 hover:bg-slate-100 p-3 rounded-xl border border-slate-100"
+                     >
+                       <span className="flex items-center gap-2 text-left">
+                         <CheckSquare className="w-5 h-5 text-emerald-500" /> Controles Verificados ({checks.length})
+                       </span>
+                       <span className="bg-white border border-slate-200 p-1.5 rounded-full text-slate-500">
+                         {expandedLogs[log.id] ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                       </span>
+                     </button>
                      
-                     {checks.length === 0 ? (
-                       <p className="text-red-500 text-sm font-bold italic py-4 bg-red-50 px-4 rounded-xl border border-red-100">El trabajador cerró el AST sin verificar ningún control de la matriz.</p>
-                     ) : (
-                       <ul className="space-y-3 mb-8">
-                         {checks.map((chk: string, i: number) => (
-                           <li key={i} className="text-sm font-semibold text-slate-700 bg-gradient-to-r from-emerald-50 to-white p-3 md:p-4 rounded-xl border border-emerald-100 flex items-start gap-3 shadow-sm">
-                              <span className="text-emerald-500 shrink-0 mt-0.5 bg-white rounded-full p-0.5 shadow-sm">✓</span> {chk}
-                           </li>
-                         ))}
-                       </ul>
+                     {expandedLogs[log.id] && (
+                       checks.length === 0 ? (
+                         <p className="text-red-500 text-sm font-bold italic py-4 bg-red-50 px-4 rounded-xl border border-red-100 mb-8">El trabajador cerró el AST sin verificar ningún control de la matriz.</p>
+                       ) : (
+                         <ul className="space-y-3 mb-8 animate-in slide-in-from-top-2 fade-in">
+                           {checks.map((chk: string, i: number) => (
+                             <li key={i} className="text-sm font-semibold text-slate-700 bg-gradient-to-r from-emerald-50 to-white p-3 md:p-4 rounded-xl border border-emerald-100 flex items-start gap-3 shadow-sm">
+                                <span className="text-emerald-500 shrink-0 mt-0.5 bg-white rounded-full p-0.5 shadow-sm">✓</span> {chk}
+                             </li>
+                           ))}
+                         </ul>
+                       )
                      )}
 
                      {(photosArray.length > 0 || audiosArray.length > 0) && (
