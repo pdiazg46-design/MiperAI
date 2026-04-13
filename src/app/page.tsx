@@ -143,6 +143,14 @@ export default function Dashboard() {
         {(isLoadingProjects || projects.length > 0) && (
           <div className={`${isSimulatorEnabled ? 'flex' : 'md:hidden flex'} items-center justify-between mb-6 px-2 mt-2 gap-4`}>
              <div className="flex-1">
+               <div className="flex items-center gap-2 mb-1">
+                 <span className="text-xs font-bold text-slate-400">
+                   {(session?.user as any)?.name || 'Usuario'}
+                 </span>
+                 <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-sm uppercase tracking-wider ${(session?.user as any)?.subscriptionTier === 'PRO' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-600'}`}>
+                   {(session?.user as any)?.subscriptionTier || 'FREE'}
+                 </span>
+               </div>
                <h2 className="text-2xl font-extrabold text-slate-800 leading-tight">Bienvenido a <br/> Terreno</h2>
                <p className="text-xs text-slate-500 mt-1 leading-snug pr-2">¿Qué actividad operativa requiere registro?</p>
              </div>
