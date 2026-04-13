@@ -56,13 +56,11 @@ export default function InspeccionPage() {
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Preview inmediato
       const url = URL.createObjectURL(file);
-      setPhotoUrl(url);
-
       const MAX_WIDTH = 800;
 
       // Compresión eficiente en memoria (Evita "Memoria Insuficiente" en Safari/Android)
+      // Nota: NO seteamos photoUrl al url nativo porque renderizar una foto 8K en el DOM inmediatamente explota la VRAM.
       if (typeof window !== 'undefined' && 'createImageBitmap' in window) {
         try {
            const bitmap = await window.createImageBitmap(file, { resizeWidth: MAX_WIDTH });
@@ -72,7 +70,10 @@ export default function InspeccionPage() {
            const ctx = canvas.getContext('2d');
            if (ctx) {
               ctx.drawImage(bitmap, 0, 0);
-              setCompressedPhotoBody(canvas.toDataURL('image/jpeg', 0.6));
+              const compressedStr = canvas.toDataURL('image/jpeg', 0.6);
+              setCompressedPhotoBody(compressedStr);
+              setPhotoUrl(compressedStr); // Usamos la miniatura para la pantalla
+              URL.revokeObjectURL(url);
               return;
            }
         } catch(err) {
@@ -99,6 +100,7 @@ export default function InspeccionPage() {
             ctx.drawImage(img, 0, 0, width, height);
             const base64str = canvas.toDataURL('image/jpeg', 0.6);
             setCompressedPhotoBody(base64str);
+            setPhotoUrl(base64str); // Usamos la miniatura para la pantalla
          }
          URL.revokeObjectURL(url); // Limpieza de RAM forzada
       };
