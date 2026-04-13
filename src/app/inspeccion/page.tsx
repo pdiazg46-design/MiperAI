@@ -120,7 +120,8 @@ export default function InspeccionPage() {
          setExtractedData(data.extractedData);
          setStep(3);
       } else {
-         alert('Error al grabar el informe en NeonDB Postgres.');
+         console.error('API Error Response:', data);
+         alert(\`Error del servidor: \${data.error || 'Fallo desconocido al procesar con IA'}\`);
          setStep(1);
       }
     } catch(e) {

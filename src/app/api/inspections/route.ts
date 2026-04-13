@@ -38,10 +38,11 @@ INSTRUCCIONES CRÍTICAS:
     ];
 
     if (photoData && photoData.startsWith('data:image')) {
-       // Support base64 image
+       // Support base64 image for Vercel AI SDK
+       const base64Data = photoData.split(',')[1];
        messages[1].content.push({
-         type: "image_url",
-         image_url: { url: photoData }
+         type: "image",
+         image: base64Data
        });
     }
 
@@ -82,8 +83,8 @@ INSTRUCCIONES CRÍTICAS:
 
     return NextResponse.json({ success: true, log, extractedData });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error procesando la inspección:', error);
-    return NextResponse.json({ error: 'Error del servidor al procesar la inspección.' }, { status: 500 });
+    return NextResponse.json({ error: \`Error del servidor: \${error?.message || String(error)}\` }, { status: 500 });
   }
 }
