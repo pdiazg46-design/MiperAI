@@ -22,9 +22,9 @@ export default function InspeccionPage() {
   const activeProject = projects.find(p => p.id === selectedProjectId);
   const activeProcedure = activeProject?.procedures?.find((p: any) => p.id === selectedProcedureId);
   const parsedManeuvers = React.useMemo(() => {
-    if (!activeProcedure?.content) return [];
+    if (!activeProcedure?.jsonPayload) return [];
     try {
-      const data = JSON.parse(activeProcedure.content);
+      const data = JSON.parse(activeProcedure.jsonPayload);
       return Array.isArray(data) ? data : (data.maneuvers || []);
     } catch {
       return [];
