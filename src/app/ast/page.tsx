@@ -270,6 +270,55 @@ export default function ASTViewerPage() {
                                       </div>
                                    </div>
                                 ))}
+
+                                 {/* BLOQUE DE MULTIMEDIA Y FIRMA INTEGRADO AL ACORDEÓN */}
+                                 <div className="mt-6 pt-6 border-t border-slate-200">
+                                    <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2 mb-4"><ClipboardCheck className="w-4 h-4 text-emerald-600"/> Adjuntos Especiales y Firma</h3>
+                                    
+                                    <div className="grid grid-cols-2 gap-3 mb-4">
+                                       <button onClick={() => fileInputPhotoRef.current?.click()} className={`flex flex-col items-center justify-center p-3 border rounded-xl transition-all ${photosData.length > 0 ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-600'}`}>
+                                          <Camera className={`w-5 h-5 mb-1 ${photosData.length > 0 ? 'text-emerald-500' : ''}`}/>
+                                          <span className="text-[10px] font-bold uppercase tracking-wider">Añadir Foto</span>
+                                       </button>
+                                       <button onClick={() => fileInputAudioRef.current?.click()} className={`flex flex-col items-center justify-center p-3 border rounded-xl transition-all ${audiosData.length > 0 ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-600'}`}>
+                                          <Mic className={`w-5 h-5 mb-1 ${audiosData.length > 0 ? 'text-emerald-500' : ''}`}/>
+                                          <span className="text-[10px] font-bold uppercase tracking-wider">Grabar Audio</span>
+                                       </button>
+                                    </div>
+
+                                    {/* Previsualización */}
+                                    {(photosData.length > 0 || audiosData.length > 0) && (
+                                       <div className="mb-4 space-y-2">
+                                          {photosData.map((photoStr, idx) => (
+                                            <div key={`photo-${idx}`} className="flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-right-4">
+                                              <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-slate-200 shadow-sm">
+                                                <img src={photoStr} alt="Previsualización" className="object-cover w-full h-full" />
+                                              </div>
+                                              <span className="text-[11px] font-bold text-slate-500">Fotografía #{idx + 1}</span>
+                                              <button onClick={() => removeAttachment(idx, 'photo')} className="w-6 h-6 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
+                                                <span className="font-bold text-xs">×</span>
+                                              </button>
+                                            </div>
+                                          ))}
+
+                                          {audiosData.map((audioStr, idx) => (
+                                            <div key={`audio-${idx}`} className="flex items-center justify-between bg-emerald-50 p-2 rounded-xl border border-emerald-100 shadow-sm animate-in fade-in slide-in-from-right-4 gap-2">
+                                              <div className="flex-1 w-full max-w-[200px]">
+                                                <audio controls src={audioStr} className="w-full h-8" />
+                                              </div>
+                                              <button onClick={() => removeAttachment(idx, 'audio')} className="w-6 h-6 rounded-full bg-red-50 text-red-500 flex items-center justify-center shrink-0 hover:bg-red-100 transition-colors">
+                                                <span className="font-bold text-xs">×</span>
+                                              </button>
+                                            </div>
+                                          ))}
+                                       </div>
+                                    )}
+
+                                    <button onClick={submitASTLog} disabled={isSubmitting} className="w-full bg-emerald-600 text-white font-bold p-4 rounded-xl flex items-center justify-center gap-2 hover:bg-emerald-700 shadow-md active:scale-[0.98] transition-all disabled:opacity-50 mt-2">
+                                       {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin"/> : <CheckSquare className="w-5 h-5" />}
+                                       {isSubmitting ? 'Guardando en BD...' : 'Aprobar y Firmar'}
+                                    </button>
+                                 </div>
                              </div>
                           )}
                        </div>
@@ -277,67 +326,9 @@ export default function ASTViewerPage() {
                  </div>
                )}
                
-               {/* --------------------
-                   NUEVA ZONA: CAPTURAS MULTIMEDIA (BITÁCORA REAL)
-                   -------------------- */}
-               {parsedManeuvers.length > 0 && (
-                 <div className="mt-8 mb-6 p-4 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-4">
-                    <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2"><ClipboardCheck className="w-4 h-4 text-emerald-600"/> Adjuntos Especiales de Bitácora</h3>
-                    
-                    <input type="file" accept="image/*" capture="environment" className="hidden" ref={fileInputPhotoRef} onChange={(e) => handleCapture(e, 'photo')} />
-                    <input type="file" accept="audio/*" capture="environment" className="hidden" ref={fileInputAudioRef} onChange={(e) => handleCapture(e, 'audio')} />
-
-                    <div className="grid grid-cols-2 gap-3">
-                       <button onClick={() => fileInputPhotoRef.current?.click()} className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all ${photosData.length > 0 ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-600'}`}>
-                          <Camera className={`w-6 h-6 mb-2 ${photosData.length > 0 ? 'text-emerald-500' : ''}`}/>
-                          <span className="text-[10px] font-bold uppercase tracking-wider">Añadir Foto</span>
-                       </button>
-                       <button onClick={() => fileInputAudioRef.current?.click()} className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all ${audiosData.length > 0 ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-600'}`}>
-                          <Mic className={`w-6 h-6 mb-2 ${audiosData.length > 0 ? 'text-emerald-500' : ''}`}/>
-                          <span className="text-[10px] font-bold uppercase tracking-wider">Grabar Audio</span>
-                       </button>
-                    </div>
-
-                    {/* Previsualización en Lista de Adjuntos */}
-                    {(photosData.length > 0 || audiosData.length > 0) && (
-                       <div className="mt-4 space-y-3">
-                          {photosData.map((photoStr, idx) => (
-                            <div key={`photo-${idx}`} className="flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-200 shadow-sm animate-in fade-in slide-in-from-right-4">
-                              <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-200 shadow-sm">
-                                <img src={photoStr} alt="Previsualización" className="object-cover w-full h-full" />
-                              </div>
-                              <span className="text-xs font-bold text-slate-500">Fotografía #{idx + 1}</span>
-                              <button onClick={() => removeAttachment(idx, 'photo')} className="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
-                                <span className="font-bold">×</span>
-                              </button>
-                            </div>
-                          ))}
-
-                          {audiosData.map((audioStr, idx) => (
-                            <div key={`audio-${idx}`} className="flex items-center justify-between bg-emerald-50 p-2 rounded-xl border border-emerald-100 shadow-sm animate-in fade-in slide-in-from-right-4 gap-2">
-                              <div className="flex-1 w-full max-w-[200px]">
-                                <audio controls src={audioStr} className="w-full h-8" />
-                              </div>
-                              <button onClick={() => removeAttachment(idx, 'audio')} className="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center shrink-0 hover:bg-red-100 transition-colors">
-                                <span className="font-bold">×</span>
-                              </button>
-                            </div>
-                          ))}
-                       </div>
-                    )}
-                 </div>
-               )}
-
-               {/* FIRMA Y ENVÍO */}
-               {parsedManeuvers.length > 0 && (
-                 <div className="mt-8 mb-4 px-2">
-                    <button onClick={submitASTLog} disabled={isSubmitting} className="w-full bg-emerald-600 text-white font-bold p-4 rounded-xl flex items-center justify-center gap-2 hover:bg-emerald-700 shadow-xl shadow-emerald-600/20 active:scale-[0.98] transition-all disabled:opacity-50">
-                       {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin"/> : <CheckSquare className="w-5 h-5" />}
-                       {isSubmitting ? 'Guardando en BD...' : 'Aprobar y Firmar AST'}
-                    </button>
-                    <p className="text-center text-[11px] text-slate-400 mt-3 font-medium">Las verificaciones y anexos multimedia se integrarán al proyecto matriz en NeonDB.</p>
-                 </div>
-               )}
+               {/* Inputs ocultos globales de multimedia */}
+               <input type="file" accept="image/*" capture="environment" className="hidden" ref={fileInputPhotoRef} onChange={(e) => handleCapture(e, 'photo')} />
+               <input type="file" accept="audio/*" capture="environment" className="hidden" ref={fileInputAudioRef} onChange={(e) => handleCapture(e, 'audio')} />
              </>
            )}
         </main>
