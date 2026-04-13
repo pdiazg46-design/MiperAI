@@ -86,7 +86,7 @@ export default function Dashboard() {
               <p className={`${isSimulatorEnabled ? 'hidden' : 'hidden md:block'} text-[10px] md:text-xs uppercase font-bold tracking-wider text-slate-500`}>Matriz Inteligente de Peligros y Riesgos</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 md:pr-[240px]">
             <div 
               onClick={handleAvatarClick}
               className={`${isSimulatorEnabled ? 'hidden' : 'hidden md:flex'} w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-200 border-2 border-white shadow-md items-center justify-center text-slate-500 overflow-hidden shrink-0 cursor-pointer hover:ring-2 hover:ring-blue-500 hover:ring-offset-1 transition-all relative group`}
