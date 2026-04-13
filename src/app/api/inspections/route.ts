@@ -20,11 +20,8 @@ export async function POST(request: Request) {
        ? "[El inspector ha adjuntado una nota de voz analógica en el servidor. Evalúa predominantemente la imagen fotográfica]" 
        : (transcription || 'No hay audio');
 
-    // Construir los mensajes para el modelo Multimodal
-    const messages: any[] = [
-      {
-        role: "system",
-        content: `Eres un prevencionista de riesgos experto (normativa minera chilena, Decreto Supremo 594, Ley 16.744).
+    const systemPrompt = photoData 
+      ? `Eres un prevencionista de riesgos experto (normativa minera chilena, Decreto Supremo 594, Ley 16.744).
 Tu misión es auditar una fotografía tomada en terreno subida por un inspector.
 El inspector dice que corresponde a la tarea: "${data.taskName || 'Desconocida'}" y al procedimiento: "${data.procedureName || 'Desconocido'}".
 El inspector también pudo haber dejado un reporte verbal: "${finalTranscription}".
@@ -33,11 +30,30 @@ INSTRUCCIONES CRÍTICAS:
 1. Evalúa si la fotografía TIENE ALGO QUE VER con una faena de construcción, minería, industria o la tarea descrita. Si la foto es un animal, comida, un meme, o totalmente irracional para una inspección de trabajo, DEBES setear "isRelevant": false y explicar en description por qué rechazas la foto.
 2. Si es medianamente relevante, analiza los riesgos o el cumplimiento y llena los campos restantes.
 3. Si reportType es "falta", busca desviaciones graves. Si es "cumplimiento", destaca la correcta ejecución.`
+      : `Eres un prevencionista de riesgos experto (normativa minera chilena, Decreto Supremo 594, Ley 16.744).
+Tu misión es generar un reporte de inspección en terreno a partir de una confirmación manual (Sin fotografía de respaldo).
+El inspector confirmó que su hallazgo corresponde a la tarea: "${data.taskName || 'Desconocida'}" y al procedimiento: "${data.procedureName || 'Desconocido'}".
+El inspector dejó la siguiente evidencia verbal adjunta en el sistema: "${finalTranscription}".
+        
+INSTRUCCIONES CRÍTICAS:
+1. Como no hay fotografía que auditar, asume que el reporte en terreno del inspector es 100% verídico y setea "isRelevant": true siempre.
+2. Basado en la tarea y el tipo de reporte ("${reportType || 'falta'}"), genera una descripción técnica profunda de la desviación o cumplimiento. Invita elementos propios de la minería o construcción.
+3. Si reportType es "falta", sugiere normativas violadas altamente probables y acciones correctivas inmediatas duras. Si es "cumplimiento", destaca la correcta ejecución y felicita la iniciativa.`;
+
+    const userPrompt = photoData
+      ? `Por favor analiza esta fotografía. Considera el audio reportado: "${finalTranscription}". Tipo de reporte exigido por el inspector: ${reportType}.`
+      : `Por favor genera el reporte técnico para este hallazgo sin evidencia visual. Considera el indicio del audio: "${finalTranscription}". Tipo de reporte manual: ${reportType}.`;
+
+    // Construir los mensajes para el modelo Multimodal Texto/Imagen
+    const messages: any[] = [
+      {
+        role: "system",
+        content: systemPrompt
       },
       {
         role: "user",
         content: [
-          { type: "text", text: `Por favor analiza esta fotografía. Considera el audio reportado: "${finalTranscription}". Tipo de reporte exigido por el inspector: ${reportType}.` }
+          { type: "text", text: userPrompt }
         ]
       }
     ];

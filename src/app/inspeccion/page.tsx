@@ -109,8 +109,8 @@ export default function InspeccionPage() {
   };
 
   const simulateProcessing = async () => {
-    if(!compressedPhotoBody || !selectedProjectId || !selectedProcedureId || !selectedTask) {
-      alert('Por favor complete: Proyecto, Procedimiento, Tarea y asegúrese de que la fotografía haya terminado de procesarse.');
+    if(!selectedProjectId || !selectedProcedureId || !selectedTask) {
+      alert('Por favor complete: Proyecto, Procedimiento y Tarea.');
       return;
     }
     setStep(2);
@@ -248,7 +248,7 @@ export default function InspeccionPage() {
               </div>
 
               <div className="bg-slate-800 rounded-2xl p-4 border border-slate-700/50 shadow-lg">
-                 <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Paso 1: Evidencia Visual</h2>
+                 <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Paso 1: Evidencia Visual (Opcional)</h2>
                  
                  {photoUrl ? (
                     <div className="relative rounded-xl overflow-hidden aspect-video bg-black border border-slate-700">
@@ -267,15 +267,15 @@ export default function InspeccionPage() {
                        </div>
                        <div className="text-center">
                           <p className="font-bold text-slate-300">Fotografía en Terreno</p>
-                          <p className="text-xs text-slate-500 mt-1">Obligatorio captura en vivo</p>
+                          <p className="text-xs text-slate-500 mt-1">Opcional para mejorar reporte IA</p>
                        </div>
                        <input type="file" accept="image/*" capture="environment" className="hidden" ref={fileInputRef} onChange={handlePhotoUpload}/>
                     </div>
                  )}
               </div>
 
-              <div className={`bg-slate-800 rounded-2xl p-4 border border-slate-700/50 shadow-lg transition-opacity ${!photoUrl ? 'opacity-50 pointer-events-none' : ''}`}>
-                 <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Paso 2: Dictado de Voz</h2>
+              <div className={`bg-slate-800 rounded-2xl p-4 border border-slate-700/50 shadow-lg transition-opacity`}>
+                 <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Paso 2: Evaluación Técnica</h2>
                  
                  <div className="space-y-4">
                     <div className="flex gap-2 mb-2">
@@ -307,8 +307,8 @@ export default function InspeccionPage() {
 
               <button 
                 onClick={simulateProcessing}
-                disabled={!compressedPhotoBody || !selectedProjectId || !selectedProcedureId || !selectedTask}
-                className={`w-full flex items-center justify-center gap-2 p-4 rounded-xl font-bold text-lg shadow-xl transition-all ${(!compressedPhotoBody || !selectedProjectId || !selectedProcedureId || !selectedTask) ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700' : 'bg-orange-600 text-white hover:bg-orange-500 hover:scale-[1.02]'}`}
+                disabled={!selectedProjectId || !selectedProcedureId || !selectedTask}
+                className={`w-full flex items-center justify-center gap-2 p-4 rounded-xl font-bold text-lg shadow-xl transition-all ${(!selectedProjectId || !selectedProcedureId || !selectedTask) ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700' : 'bg-orange-600 text-white hover:bg-orange-500 hover:scale-[1.02]'}`}
               >
                  <Zap className="w-5 h-5" /> Analizar Hallazgo con IA
               </button>
