@@ -279,8 +279,8 @@ export default function InspeccionPage() {
                  
                  <div className="space-y-4">
                     <div className="flex gap-2 mb-2">
-                       <button onClick={() => setReportType('falta')} className={`flex-1 text-[10px] uppercase tracking-wider py-2 rounded-md font-bold border transition-colors ${reportType === 'falta' ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-slate-800 border-slate-700 text-slate-500 hover:text-slate-400'}`}>Simular Falta</button>
-                       <button onClick={() => setReportType('cumplimiento')} className={`flex-1 text-[10px] uppercase tracking-wider py-2 rounded-md font-bold border transition-colors ${reportType === 'cumplimiento' ? 'bg-green-500/20 text-green-400 border-green-500/50' : 'bg-slate-800 border-slate-700 text-slate-500 hover:text-slate-400'}`}>Simular Felicidad</button>
+                       <button onClick={() => setReportType('falta')} className={`flex-1 text-[10px] uppercase tracking-wider py-2 rounded-md font-bold border transition-colors ${reportType === 'falta' ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-slate-800 border-slate-700 text-slate-500 hover:text-slate-400'}`}>Reportar Falta</button>
+                       <button onClick={() => setReportType('cumplimiento')} className={`flex-1 text-[10px] uppercase tracking-wider py-2 rounded-md font-bold border transition-colors ${reportType === 'cumplimiento' ? 'bg-green-500/20 text-green-400 border-green-500/50' : 'bg-slate-800 border-slate-700 text-slate-500 hover:text-slate-400'}`}>Felicitación</button>
                     </div>
                      <div className="flex gap-2 mb-3">
                         <button 
@@ -290,31 +290,55 @@ export default function InspeccionPage() {
                                 alert("Tu navegador no soporta dictado por voz. Por favor escribe el reporte manualmente.");
                                 return;
                              }
+
+                             // Si ya está grabando, lo detenemos
+                             if (isRecording && (window as any).currentRecognition) {
+                                (window as any).currentRecognition.stop();
+                                setIsRecording(false);
+                                return;
+                             }
+
                              const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
                              const recognition = new SpeechRecognition();
+                             (window as any).currentRecognition = recognition;
                              recognition.lang = 'es-CL';
-                             recognition.continuous = false;
-                             recognition.interimResults = false;
+                             recognition.continuous = true;
+                             recognition.interimResults = true;
                              
                              recognition.onstart = () => setIsRecording(true);
                              
                              recognition.onresult = (event: any) => {
-                                const transcript = event.results[0][0].transcript;
-                                setAudioNote(prev => prev ? prev + " " + transcript : transcript);
+                                let finalTranscript = '';
+                                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                                  if (event.results[i].isFinal) {
+                                    finalTranscript += event.results[i][0].transcript;
+                                  }
+                                }
+                                if (finalTranscript) {
+                                   setAudioNote(prev => prev ? prev + " " + finalTranscript : finalTranscript);
+                                }
                              };
                              
                              recognition.onerror = (event: any) => {
-                                console.error(event.error);
-                                alert("Error en el dictado: " + event.error);
+                                console.warn("Dictado advertencia:", event.error);
+                                if(event.error === 'not-allowed') {
+                                   alert('Debes dar permisos de micrófono en el navegador para dictar.');
+                                }
+                                setIsRecording(false);
                              };
                              
-                             recognition.onend = () => setIsRecording(true ? false : false); // Force state off
-                             recognition.start();
+                             recognition.onend = () => setIsRecording(false);
+                             
+                             try {
+                                recognition.start();
+                             } catch(err) {
+                                console.log("Recognition already started");
+                             }
                           }}
                           className={`w-full flex items-center justify-center gap-3 p-4 rounded-xl font-bold transition-all shadow-sm select-none ${isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
                         >
                            <Mic className="w-5 h-5" />
-                           {isRecording ? 'Escuchando Voz...' : 'Dictar Reporte por Voz'}
+                           {isRecording ? 'Detener Grabación' : 'Dictar Reporte por Voz'}
                         </button>
                      </div>
 
