@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { generateObject } from 'ai';
+import { openai } from '@ai-sdk/openai';
+import { z } from 'zod';
 
 export async function POST(request: Request) {
   try {
@@ -9,10 +12,6 @@ export async function POST(request: Request) {
     if (!projectId) {
       return NextResponse.json({ error: 'Falta projectId para relacionar Inspección.' }, { status: 400 });
     }
-
-    import { generateObject } from 'ai';
-    import { openai } from '@ai-sdk/openai';
-    import { z } from 'zod';
 
     // Construir los mensajes para el modelo Multimodal
     const messages: any[] = [
