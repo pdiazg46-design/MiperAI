@@ -338,10 +338,10 @@ export default function InspeccionPage() {
               </div>
 
               <div className="flex gap-3 pt-4">
-                 <button className="flex-1 bg-blue-600 text-white font-bold p-4 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-700 shadow-lg">
-                    <FileDown className="w-5 h-5" /> Exportar Informe
-                 </button>
-                 <button onClick={() => { setStep(1); setPhotoUrl(null); setAudioNote(''); }} className="bg-slate-800 text-slate-300 font-bold p-4 rounded-xl hover:bg-slate-700 transition-colors">
+                 <Link href="/" className="flex-1 bg-blue-600 text-white font-bold p-4 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-700 shadow-lg transition-colors">
+                    Volver al Escritorio
+                 </Link>
+                 <button onClick={() => { setStep(1); setPhotoUrl(null); setAudioNote(''); }} className="bg-slate-800 text-slate-300 font-bold p-4 px-6 rounded-xl hover:bg-slate-700 transition-colors">
                     Nueva
                  </button>
               </div>

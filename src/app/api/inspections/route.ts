@@ -10,28 +10,62 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Falta projectId para relacionar Inspección.' }, { status: 400 });
     }
 
-    // "Dummy" de la IA para presentar a BHP, pero permitiendo guardado real en base de datos.
-    // Futuro: Aquí se conecta el fetch a OpenAI gpt-4-vision-preview
-    const extractedData = {
-      description: reportType === 'falta' 
-        ? "Trabajo en andamio a altura sin línea de vida asegurada y plataforma incompleta (falta rodapié)."
-        : "Uso ejemplar de Elementos de Protección Personal (EPP). Arnés enganchado a línea de vida y andamio estructural completamente normado con rodapiés vigentes.",
-      rules: reportType === 'falta'
-        ? [
-            { norm: 'D.S. N° 594, Art. 53', text: 'Todo trabajador que labore a alturas mayores de 1.8 metros deberá usar cinturón de seguridad o arnés...' },
-            { norm: 'NCh 998, Of.1999', text: 'Los andamios deben contar con barandas protectoras y rodapiés en todos los costados expuestos...' }
-          ]
-        : [
-            { norm: 'D.S. N° 594, Art. 53', text: 'Cumple a cabalidad normativa de protección contra caídas en altura.' }
-          ],
-      correctiveActions: reportType === 'falta'
-        ? [
-            'Detener las faenas en andamio nivel 2 de inmediato.',
-            'Proveer y obligar el enganche continuo de arnés.',
-            'Instalar rodapié lateral en plataforma antes de retomar.'
-          ]
-        : []
-    };
+    import { generateObject } from 'ai';
+    import { openai } from '@ai-sdk/openai';
+    import { z } from 'zod';
+
+    // Construir los mensajes para el modelo Multimodal
+    const messages: any[] = [
+      {
+        role: "system",
+        content: `Eres un prevencionista de riesgos experto (normativa minera chilena, Decreto Supremo 594, Ley 16.744).
+Tu misión es auditar una fotografía tomada en terreno subida por un inspector.
+El inspector dice que corresponde a la tarea: "${data.taskName || 'Desconocida'}" y al procedimiento: "${data.procedureName || 'Desconocido'}".
+El inspector también pudo haber dejado un reporte verbal: "${transcription || 'No hay audio'}".
+        
+INSTRUCCIONES CRÍTICAS:
+1. Evalúa si la fotografía TIENE ALGO QUE VER con una faena de construcción, minería, industria o la tarea descrita. Si la foto es un animal, comida, un meme, o totalmente irracional para una inspección de trabajo, DEBES setear "isRelevant": false y explicar en description por qué rechazas la foto.
+2. Si es medianamente relevante, analiza los riesgos o el cumplimiento y llena los campos restantes.
+3. Si reportType es "falta", busca desviaciones graves. Si es "cumplimiento", destaca la correcta ejecución.`
+      },
+      {
+        role: "user",
+        content: [
+          { type: "text", text: `Por favor analiza esta fotografía. Considera el audio reportado: "${transcription}". Tipo de reporte exigido por el inspector: ${reportType}.` }
+        ]
+      }
+    ];
+
+    if (photoData && photoData.startsWith('data:image')) {
+       // Support base64 image
+       messages[1].content.push({
+         type: "image_url",
+         image_url: { url: photoData }
+       });
+    }
+
+    const { object } = await generateObject({
+      model: openai('gpt-4o'),
+      schema: z.object({
+        isRelevant: z.boolean().describe("Falso si la fotografía es una broma, un meme, animales, o no guarda ninguna relación lógica con un entorno industrial/laboral."),
+        description: z.string().describe("Descripción en 2 líneas de lo que se ve y su veredicto (Aprobado o Rechazado). Indicar con firmeza si la foto fue rechazada por irrelevante."),
+        rules: z.array(z.object({
+          norm: z.string().describe("Ej: D.S. N° 594, Art. 53, o NCh 998"),
+          text: z.string().describe("Resumen de la regla legal aplicada")
+        })).describe("Leyes chilenas violadas o cumplidas en la foto. Vacío si es irrelevante."),
+        correctiveActions: z.array(z.string()).describe("Acciones correctivas inmediatas. Vacío si es cumplimiento o irrelevante.")
+      }),
+      messages
+    });
+
+    const extractedData = object;
+    
+    if (!extractedData.isRelevant) {
+       // Modificamos a modo de severa advertencia administrativa
+       extractedData.description = "⚠️ RECHAZO AUTOMÁTICO: La inteligencia artificial ha determinado que la fotografía subida no corresponde a una faena industrial, construcción o entorno de trabajo aplicable. Este intento de vulneración normativa ha sido registrado.";
+       extractedData.rules = [];
+       extractedData.correctiveActions = ["Recibir amonestación verbal por mal uso de la plataforma de registro legal.", "Repetir fotografía en el sitio exacto de trabajo."];
+    }
 
     // Grabación física transaccional a PostgreSQL (Neon)
     const log = await prisma.inspectionLog.create({
