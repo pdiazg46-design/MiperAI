@@ -511,18 +511,18 @@ export default function WizardPage() {
       <div className="flex flex-col md:flex-row flex-1 relative w-full">
       {/* Sidebar de Proyecto (Carrito) */}
       <aside className="w-full md:w-80 bg-white border-r border-slate-200 md:min-h-screen flex flex-col md:sticky md:top-0 z-40 shadow-sm order-2 md:order-1 h-[40vh] md:h-screen">
-        <div className="p-5 border-b border-slate-200 bg-slate-50/50">
-          <Link href="/" className="flex bg-slate-800 text-white hover:bg-slate-900 px-4 py-2.5 rounded-xl mb-6 font-bold shadow-md items-center justify-center gap-2 transition-all">
-            <ArrowLeft className="w-5 h-5"/> Volver al Panel Principal
+        <div className="p-3 border-b border-slate-200 bg-slate-50/50 flex flex-col shrink-0">
+          <Link href="/" className="flex bg-slate-800 text-white hover:bg-slate-900 px-3 py-2 rounded-xl mb-3 font-bold shadow-md items-center justify-center gap-2 transition-all text-sm">
+            <ArrowLeft className="w-4 h-4"/> Volver al Panel Principal
           </Link>
-          <div className="flex flex-col mb-5 space-y-4 bg-slate-100/50 p-3 rounded-xl border border-slate-200">
+          <div className="flex flex-col mb-2 space-y-3 bg-slate-100/50 p-3 rounded-xl border border-slate-200">
             <div>
               <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">Define el Nombre del Proyecto</label>
               <input 
                 type="text" 
                 value={projectName}
                 onChange={(e)=>setProjectName(e.target.value)}
-                className="w-full text-sm font-bold text-slate-800 bg-white border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-3 py-2.5 outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-400"
+                className="w-full text-xs font-bold text-slate-800 bg-white border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-2.5 py-1.5 outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-400"
                 placeholder="Ej: Construcción Edificio B..."
               />
             </div>
@@ -533,7 +533,7 @@ export default function WizardPage() {
                 type="text" 
                 value={procedureName}
                 onChange={(e)=>setProcedureName(e.target.value)}
-                className="w-full text-sm font-bold text-slate-800 bg-white border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-3 py-2.5 outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-400"
+                className="w-full text-xs font-bold text-slate-800 bg-white border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-2.5 py-1.5 outline-none transition-all shadow-sm placeholder:font-normal placeholder:text-slate-400"
                 placeholder="Ej: Montaje de Andamios..."
               />
             </div>
@@ -543,7 +543,7 @@ export default function WizardPage() {
               <select 
                 value={industria} 
                 onChange={(e) => setIndustria(e.target.value)}
-                className="w-full text-sm font-semibold text-slate-700 bg-white border border-slate-300 hover:border-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-3 py-2 outline-none transition-all shadow-sm"
+                className="w-full text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:border-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg px-2.5 py-1.5 outline-none transition-all shadow-sm"
               >
                 <option value="Construcción">Construcción / Obras Civiles</option>
                 <option value="Telecomunicaciones">Telecomunicaciones</option>
@@ -556,10 +556,10 @@ export default function WizardPage() {
               </select>
             </div>
             
-            <div className="mt-2 text-slate-500 bg-blue-50/70 p-3 rounded-lg border border-blue-100 flex items-start gap-2 shadow-inner">
-              <Lightbulb className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-              <p className="text-[10px] leading-relaxed">
-                <strong>Tip de Inteligencia:</strong> Mientras más completos y precisos sean estos nombres (ejs: Ubicaciones, detalles, maquinaria), <strong>mejor será el contexto</strong> que tomará la IA para extraer y predecir los riesgos correctos.
+            <div className="mt-1 text-slate-500 bg-blue-50/70 p-2 rounded-lg border border-blue-100 flex items-start gap-2 shadow-inner">
+              <Lightbulb className="w-3 h-3 text-amber-500 shrink-0 mt-0.5" />
+              <p className="text-[9px] leading-relaxed">
+                <strong>Tip:</strong> Agrega detalles y ubicaciones precisas para dar un <strong>mejor contexto</strong> a la Inteligencia Artificial.
               </p>
             </div>
           </div>
