@@ -80,6 +80,18 @@ export default function WizardPage() {
   const [appMode, setAppMode] = useState('ai');
   const [projectId, setProjectId] = useState<string | null>(null);
 
+  // Advertencia de cambios sin guardar al cerrar o recargar la pestaña
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (accumulatedTasks.length > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [accumulatedTasks.length]);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
@@ -523,9 +535,18 @@ export default function WizardPage() {
       {/* Sidebar de Proyecto (Carrito) */}
       <aside className="w-full md:w-80 bg-white border-r border-slate-200 md:min-h-screen flex flex-col md:sticky md:top-0 z-40 shadow-sm order-2 md:order-1 h-[40vh] md:h-screen">
         <div className="p-3 border-b border-slate-200 bg-slate-50/50 flex flex-col shrink-0">
-          <Link href="/" className="flex bg-slate-800 text-white hover:bg-slate-900 px-3 py-2 rounded-xl mb-3 font-bold shadow-md items-center justify-center gap-2 transition-all text-sm">
+          <button 
+            onClick={() => {
+              if (accumulatedTasks.length > 0) {
+                const conf = window.confirm("Tienes maniobras sin guardar en la nube. ¿Estás seguro de que deseas salir y perder tu progreso?");
+                if (!conf) return;
+              }
+              router.push('/');
+            }}
+            className="flex w-full bg-slate-800 text-white hover:bg-slate-900 px-3 py-2 rounded-xl mb-3 font-bold shadow-md items-center justify-center gap-2 transition-all text-sm"
+          >
             <ArrowLeft className="w-4 h-4"/> Volver al Panel Principal
-          </Link>
+          </button>
           <div className="flex flex-col mb-2 space-y-3 bg-slate-100/50 p-3 rounded-xl border border-slate-200">
             <div>
               <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">Define el Nombre del Proyecto</label>
