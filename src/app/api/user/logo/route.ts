@@ -3,6 +3,23 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
+export async function GET(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = (session?.user as any)?.id;
+    if (!userId) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+
+    const user = await prisma.user.findUnique({ where: { id: userId }, include: { company: true } });
+    if (!user?.company?.logo) {
+      return NextResponse.json({ logo: null });
+    }
+
+    return NextResponse.json({ logo: user.company.logo });
+  } catch (error) {
+    return NextResponse.json({ error: "Error interno" }, { status: 500 });
+  }
+}
+
 export async function PATCH(req: Request) {
   try {
     const session = await getServerSession(authOptions);

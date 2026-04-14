@@ -331,7 +331,14 @@ export default function WizardPage() {
     try {
       // Usamos tanto el proyecto como el procedimiento para el documento
       const documentTitle = `${projectName} - ${procedureName}`;
-      const companyLogo = (session?.user as any)?.companyLogo || null;
+      let companyLogo = null;
+      try {
+        const raw = await fetch('/api/user/logo');
+        if (raw.ok) {
+          const temp = await raw.json();
+          if (temp.logo) companyLogo = temp.logo;
+        }
+      } catch (e) {}
       const blob = await generateMatrixDocxBlob(documentTitle, accumulatedTasks, companyLogo);
       
       const url = window.URL.createObjectURL(blob);

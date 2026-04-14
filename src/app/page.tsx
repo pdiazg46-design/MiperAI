@@ -9,6 +9,7 @@ export default function Dashboard() {
   const { isSimulatorEnabled } = useDeviceSimulator();
   const { data: session } = useSession();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [companyLogo, setCompanyLogo] = useState<string | null>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -18,6 +19,13 @@ export default function Dashboard() {
         .then(data => {
            if(data.image) setAvatarUrl(data.image);
            else if (session.user?.image) setAvatarUrl(session.user.image);
+        })
+        .catch(() => {});
+
+      fetch('/api/user/logo')
+        .then(res => res.json())
+        .then(data => {
+           if(data.logo) setCompanyLogo(data.logo);
         })
         .catch(() => {});
     }
@@ -155,7 +163,7 @@ export default function Dashboard() {
             >
               <input type="file" ref={logoInputRef} onChange={handleCompanyLogoUpload} accept="image/*" className="hidden" />
               {/* Display dynamic session logo or default to IT-S */}
-              <img src={(session?.user as any)?.companyLogo || "/logo.png"} alt="SaaS Logo" className="max-w-[80px] md:max-w-[100px] max-h-8 md:max-h-10 object-contain" />
+              <img src={companyLogo || "/logo.png"} alt="SaaS Logo" className="max-w-[80px] md:max-w-[100px] max-h-8 md:max-h-10 object-contain" />
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                  <Camera className="w-4 h-4 text-white" />
               </div>
