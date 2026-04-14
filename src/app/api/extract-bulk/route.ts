@@ -38,7 +38,9 @@ export async function POST(req: Request) {
     Tu trabajo es estructurar la Matriz MIPER del proyecto rompiendo el trabajo en múltiples maniobras GRANULARES y SECUENCIALES.
     Identifica TODAS y cada una de las maniobras o fases operativas mencionadas en ese texto, SEPARÁNDOLAS estrictamente en elementos independientes dentro del array 'tareas'. 
     
-    REGLA CRÍTICA N°1: PROHIBIDO agrupar todo en 1 sola tarea general. Extrae las sub-fases operativas en múltiples tareas.
+    REGLA CRÍTICA N°0 (GRANULARIDAD OBLIGATORIA): ES OBLIGATORIO QUE FRAGMENTES EL DOCUMENTO EN UN MÍNIMO DE 5 TAREAS/MANIOBRAS DISTINTAS. ¡Bajo ninguna circunstancia puedes resumir todo el documento en 1 sola tarea general! Si el procedimiento es corto, divídelo en sus pasos lógicos más pequeños (ej: 1. Preparación área, 2. Traslado de materiales, 3. Maniobra principal fase 1, 4. Maniobra fase 2, 5. Desarme o limpieza).
+
+    REGLA CRÍTICA N°1: PROHIBIDO agrupar todo en 1 sola tarea general. Extrae las sub-fases operativas en múltiples tareas. Cada tarea debe representar un paso secuencial distinto en la ejecución real en terreno.
     
     REGLA CRÍTICA N°2: EXCLUYE TOTALMENTE tareas administrativas, genéricas o preliminares. IGNORA pasos como "Realizar charla de seguridad", "Verificar EPP", "Completar AST", "Reunión de coordinación". SOLAMENTE extrae MANIOBRAS FÍSICAS OPERACIONALES DIRECTAS.
     
