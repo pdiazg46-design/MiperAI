@@ -38,15 +38,17 @@ export async function POST(req: Request) {
     Tu trabajo es estructurar la Matriz MIPER del proyecto rompiendo el trabajo en múltiples maniobras GRANULARES y SECUENCIALES.
     Identifica TODAS y cada una de las maniobras o fases operativas mencionadas en ese texto, SEPARÁNDOLAS estrictamente en elementos independientes dentro del array 'tareas'. 
     
-    REGLA CRÍTICA N°1: PROHIBIDO agrupar todo en 1 sola tarea general. Extrae las sub-fases.
+    REGLA CRÍTICA N°1: PROHIBIDO agrupar todo en 1 sola tarea general. Extrae las sub-fases operativas en múltiples tareas.
     
-    REGLA CRÍTICA N°2: EXCLUYE TOTALMENTE tareas administrativas, genéricas o preliminares. IGNORA pasos como "Realizar charla de seguridad", "Verificar EPP", "Completar AST", "Reunión de coordinación". SOLAMENTE extrae MANIOBRAS FÍSICAS OPERACIONALES DIRECTAS de ingeniería, mantenimiento, construcción o terreno (Ej: "Aislamiento de energía", "Desconexión de paneles", "Izaje de carga").
+    REGLA CRÍTICA N°2: EXCLUYE TOTALMENTE tareas administrativas, genéricas o preliminares. IGNORA pasos como "Realizar charla de seguridad", "Verificar EPP", "Completar AST", "Reunión de coordinación". SOLAMENTE extrae MANIOBRAS FÍSICAS OPERACIONALES DIRECTAS.
     
-    REGLA CRÍTICA N°3 (SISTEMA INTEGRAL CHILENO - Análisis Multidimensional Exhaustivo): Tu análisis debe ser integral y absoluto. NO LIMITES la cantidad de riesgos; extrae y calcula TODO el abanico inherente a la tarea analizada. NO OMITAS RIESGOS DE SEGURIDAD (proyección de partículas calientes, salpicaduras, choques eléctricos, cortes, caídas). Debes combinarlos en un ecosistema exhaustivo que evalúe TANTO Seguridad Industrial COMO Salud Ocupacional (Higiene). ES OBLIGATORIO que contemples:
-    1. Agentes del DS 594: Físicos (soldadura IR/UV, radiación infrarroja, transmisión de calor, polvo en suspensión, ruido continuo/impacto y vibraciones) y Químicos (humos tóxicos, vapores solventes).
-    2. Protocolos MINSAL: Evalúa estipulaciones de PREXOR (Ruido), PLANESI (Sílice) o exposición a Radiación UV Solar (intemperie).
-    3. Biomecánica y Ergonomía (TMERT / Ley del Saco): Evalúa trastornos musculoesqueléticos por levantamiento manual de cargas, empuje/arrastre o posturas forzadas.
-    4. Riesgo Psicosocial y Biológico: Protocolo CEAL-SM / ISTAS 21 (Trabajo aislado, nocturno) y zoonosis locales (Hantavirus, garrapatas) si aplica al contexto.
+    REGLA CRÍTICA N°3 (PROFUNDIDAD OBLIGATORIA): ¡PROHIBIDO DEJAR UNA TAREA CON 1 SOLO RIESGO! Genera la matriz expandida como un prevencionista Senior. OBLIGATORIAMENTE DEBES ENCONTRAR UN MÍNIMO DE 4 RIESGOS Y HASTA 7 RIESGOS POR CADA SUB-FASE O TAREA.
+    
+    REGLA CRÍTICA N°4 (SISTEMA INTEGRAL CHILENO - Análisis Multidimensional Exhaustivo): Tu análisis debe ser absoluto por cada tarea. Combina Riesgos Mecánicos (salpicaduras, choques eléctricos, cortes, caídas, atrapamientos) y Riesgos de Salud Ocupacional (Higiene). ES OBLIGATORIO que sumes estos al abanico de riesgos de cada tarea:
+    1. Agentes del DS 594: Físicos (transmisión de calor, radiación UV/IR, ruido contínuo y vibraciones), Químicos (humos, solventes, polvos en suspensión como la sílice).
+    2. Protocolos MINSAL: PREXOR (Ruido), PLANESI (Sílice) o Radiación UV Solar (intemperie).
+    3. Ergonomía y TMERT (Ley 20.001 - Ley del Saco): Evalúa trastornos musculoesqueléticos por levantamiento manual de cargas, empuje/arrastre o posturas forzadas.
+    4. Riesgo Psicosocial y Biológico: Trabajo solitario/nocturno, o zoonosis locales (Hantavirus, insectos) si aplica al contexto ambiental.
 
     REGLA CUANTITATIVA EXTRA EN MATRIZ 5x5: OBLIGATORIAMENTE calcula la Magnitud del Riesgo como el producto matemático de probability * severity (Ambas en escala de 1 a 5). 
     - Probabilidad: 1=Raro, 2=Poco probable, 3=Moderado, 4=Probable, 5=Casi seguro.

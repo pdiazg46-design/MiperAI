@@ -205,8 +205,16 @@ export default function WizardPage() {
         body: formData,
       });
       
+      if (!res.ok) {
+        const errText = await res.text();
+        if (res.status === 413 || errText.includes('Entity Too Large') || errText.includes('Request En')) {
+           throw new Error("El archivo es demasiado pesado (excede el límite de 4.5 MB de Vercel). Por favor comprímalo o suba un archivo más ligero.");
+        }
+        let parsedErr;
+        try { parsedErr = JSON.parse(errText); } catch(e) {}
+        throw new Error(parsedErr?.error || `Error del servidor (${res.status})`);
+      }
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
 
       setProcedimiento(data.text);
       await performAutoMap(data.text);
@@ -544,31 +552,6 @@ export default function WizardPage() {
           
 
 
-          {appMode === 'import' && (
-            <div className="mt-4 flex flex-col items-center justify-center gap-3 p-5 bg-blue-50 border-2 border-dashed border-blue-300 rounded-xl text-center">
-               <div className="bg-white p-2 rounded-full shadow-sm">
-                 <Upload className="w-6 h-6 text-blue-500" />
-               </div>
-               <div>
-                  <p className="font-bold text-slate-700 text-sm">Actualizar Matriz Antigua</p>
-                  <p className="text-[10px] text-slate-500 mt-1 px-2 leading-tight">Sube tu archivo (Excel, Word o PDF) y la IA extraerá y estandarizará normativamente la matriz vieja.</p>
-               </div>
-               <input 
-                 type="file" 
-                 ref={fileInputRef} 
-                 onChange={handleFileUpload} 
-                 className="hidden" 
-                 accept=".pdf,.doc,.docx,.xls,.xlsx"
-               />
-               <button 
-                 onClick={() => fileInputRef.current?.click()}
-                 className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 px-4 rounded-lg shadow-sm transition-colors uppercase tracking-wide flex items-center justify-center gap-2"
-                 disabled={isParsing}
-               >
-                  {isParsing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Cargar Matriz Anterior'}
-               </button>
-            </div>
-          )}
         </div>
         
         <div className="flex-1 overflow-y-auto p-2 space-y-1.5 bg-slate-50 md:bg-transparent">
@@ -770,6 +753,21 @@ export default function WizardPage() {
                              {risk.controls.map((c: string, i: number) => <li key={i}>{c}</li>)}
                            </ul>
                         </td>
+                        <td className="px-2 py-4 text-center align-middle border-l border-slate-200">
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const updatedRisks = previewData.result.risks.filter((_: any, i: number) => i !== aIdx);
+                              const updatedPreview = { ...previewData, result: { ...previewData.result, risks: updatedRisks } };
+                              setPreviewData(updatedPreview);
+                              setAccumulatedTasks(prev => prev.map(t => t === previewData ? updatedPreview : t));
+                            }}
+                            className="text-slate-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors inline-flex justify-center items-center"
+                            title="Eliminar este riesgo"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
                      </tr>
                    ))}
                  </tbody>
@@ -811,8 +809,41 @@ export default function WizardPage() {
         {step === 1 && (
           <div className={`grid grid-cols-1 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500 ${appMode === 'ai' ? 'lg:grid-cols-2' : ''}`}>
              
+             {appMode === 'import' && (
+               (isParsing || isBulkGenerating) ? <AILoadingScanner /> :
+                <div className="space-y-6 flex flex-col justify-center bg-white p-6 md:p-12 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 max-w-2xl mx-auto w-full">
+                  <div className="text-center space-y-3">
+                    <div className="mx-auto w-16 h-16 bg-blue-100 text-blue-600 flex items-center justify-center rounded-2xl shadow-inner border border-blue-200">
+                      <Upload className="w-8 h-8" />
+                    </div>
+                    <h2 className="text-2xl font-extrabold text-slate-800">Actualizar Matriz Antigua 🔄</h2>
+                    <p className="text-slate-500 text-sm px-4">Sube tu archivo antiguo (Excel, Word o PDF) y la IA extraerá y estandarizará normativamente todas las maniobras encontradas en la matriz vieja.</p>
+                  </div>
+                  
+                  <div className="flex flex-col items-center justify-center p-8 bg-blue-50/50 border-2 border-dashed border-blue-300 rounded-2xl transition-all hover:bg-blue-50 hover:border-blue-400 mt-2">
+                      <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload} />
+                      
+                      <button 
+                        onClick={() => {
+                           if (!projectName.trim() || !procedureName.trim()) {
+                              setShowValidationAlert(true);
+                              return;
+                           }
+                           fileInputRef.current?.click();
+                        }} 
+                        disabled={isParsing || isBulkGenerating} 
+                        className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-xl shadow-lg font-bold text-sm transition-colors uppercase tracking-wide disabled:opacity-50"
+                      >
+                        {(isParsing || isBulkGenerating) ? <Loader2 className="w-6 h-6 animate-spin"/> : <Upload className="w-6 h-6" />}
+                        {isParsing ? 'Procesando Archivo...' : isBulkGenerating ? 'Mapeando Riesgos...' : 'Cargar Matriz Anterior'}
+                      </button>
+                  </div>
+                </div>
+             )}
+             
              {/* LEFT COLUMN: Upload Document (Masivo IA) */}
              {appMode === 'ai' && (
+               (isParsing || isBulkGenerating) ? <AILoadingScanner /> :
                <div className="space-y-6 flex flex-col justify-center bg-white p-6 md:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200">
                   <div className="text-center space-y-3">
                     <div className="mx-auto w-14 h-14 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-2xl shadow-inner border border-indigo-200">
@@ -947,7 +978,8 @@ export default function WizardPage() {
                        <th className="px-4 py-3 border-r border-slate-700 w-[18%]">Peligro</th>
                        <th className="px-4 py-3 border-r border-slate-700 w-1/5">Riesgo / Incidente</th>
                        <th className="px-4 py-3 border-r border-slate-700 text-center w-[12%]">Magnitud (PxS)</th>
-                       <th className="px-4 py-3">Controles Establecidos</th>
+                       <th className="px-4 py-3 border-r border-slate-700">Controles Establecidos</th>
+                       <th className="px-2 py-3 text-center w-[5%] bg-slate-900"><Trash2 className="w-4 h-4 mx-auto text-slate-400" /></th>
                      </tr>
                    </thead>
                    <tbody className="divide-y divide-slate-200">
@@ -979,6 +1011,18 @@ export default function WizardPage() {
                              <ul className="list-disc pl-4 text-xs text-slate-600 space-y-1">
                                {risk.controls.map((c: string, i: number) => <li key={i}>{c}</li>)}
                              </ul>
+                          </td>
+                          <td className="px-2 py-4 text-center align-middle border-l border-slate-200">
+                            <button 
+                              onClick={() => {
+                                const updatedRisks = matrixResult.risks.filter((_: any, i: number) => i !== aIdx);
+                                setMatrixResult({ ...matrixResult, risks: updatedRisks });
+                              }}
+                              className="text-slate-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors inline-flex justify-center items-center"
+                              title="Eliminar este riesgo"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </td>
                        </tr>
                      ))}
