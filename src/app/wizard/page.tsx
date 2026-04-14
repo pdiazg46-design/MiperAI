@@ -82,9 +82,11 @@ export default function WizardPage() {
 
   // Advertencia de cambios sin guardar al cerrar o recargar la pestaña o navegar Atrás
   useEffect(() => {
+    const hasUnsavedChanges = accumulatedTasks.length > 0 || projectName.trim() !== '' || procedureName.trim() !== '' || taskName.trim() !== '';
+
     // Intercepción de Cierre (F5, Cerrar pestaña)
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (accumulatedTasks.length > 0) {
+      if (hasUnsavedChanges) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -93,8 +95,8 @@ export default function WizardPage() {
 
     // Intercepción del Botón Atrás del Navegador
     const handlePopState = (e: PopStateEvent) => {
-      if (accumulatedTasks.length > 0) {
-        const confirmLeave = window.confirm("Tienes maniobras sin guardar en la nube. ¿Estás seguro de que deseas salir y perder tu progreso?");
+      if (hasUnsavedChanges) {
+        const confirmLeave = window.confirm("Tienes configuraciones o maniobras sin guardar. ¿Estás seguro de que deseas salir y perder tu progreso?");
         if (!confirmLeave) {
           window.history.pushState(null, '', window.location.href);
         } else {
@@ -105,14 +107,17 @@ export default function WizardPage() {
       }
     };
     
-    window.history.pushState(null, '', window.location.href);
-    window.addEventListener('popstate', handlePopState);
+    // Solo inyectar pushState si hay cambios reales, para no romper el Back button cuando recién entran
+    if (hasUnsavedChanges) {
+       window.history.pushState(null, '', window.location.href);
+       window.addEventListener('popstate', handlePopState);
+    }
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [accumulatedTasks.length]);
+  }, [accumulatedTasks.length, projectName, procedureName, taskName]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -559,8 +564,9 @@ export default function WizardPage() {
         <div className="p-3 border-b border-slate-200 bg-slate-50/50 flex flex-col shrink-0">
           <button 
             onClick={() => {
-              if (accumulatedTasks.length > 0) {
-                const conf = window.confirm("Tienes maniobras sin guardar en la nube. ¿Estás seguro de que deseas salir y perder tu progreso?");
+              const hasUnsavedChanges = accumulatedTasks.length > 0 || projectName.trim() !== '' || procedureName.trim() !== '' || taskName.trim() !== '';
+              if (hasUnsavedChanges) {
+                const conf = window.confirm("Tienes configuraciones o maniobras sin guardar. ¿Estás seguro de que deseas salir y perder tu progreso?");
                 if (!conf) return;
               }
               router.push('/');
