@@ -178,7 +178,8 @@ export async function generateMatrixDocxBlob(projectName: string, tasks: any[], 
               ...(companyLogoBase64 ? [
                   new ImageRun({
                      data: Uint8Array.from(atob(companyLogoBase64.replace(/^data:image\/\w+;base64,/, "")), c => c.charCodeAt(0)),
-                     transformation: { width: 100, height: 100 }
+                     transformation: { width: 100, height: 100 },
+                     type: companyLogoBase64.includes('image/jpeg') || companyLogoBase64.includes('image/jpg') ? 'jpg' : 'png'
                   }),
               ] : []),
               new TextRun({ text: "Matriz de Identificación de Peligros y Evaluación de Riesgos (MiperAI)", bold: true, size: 32, color: "000000", font: "Arial", break: companyLogoBase64 ? 1 : 0 })

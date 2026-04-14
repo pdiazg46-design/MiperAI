@@ -34,7 +34,8 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
           children: [
             new ImageRun({
               data: Uint8Array.from(atob(companyLogo.replace(/^data:image\/\w+;base64,/, "")), c => c.charCodeAt(0)),
-              transformation: { width: 100, height: 100 }
+              transformation: { width: 100, height: 100 },
+              type: companyLogo.includes('image/jpeg') || companyLogo.includes('image/jpg') ? 'jpg' : 'png'
             })
           ]
         })
