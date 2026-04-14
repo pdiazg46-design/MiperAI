@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     `;
 
     const result = await generateObject({
-      model: openai('gpt-4o-mini'),
+      model: openai('gpt-4o'),
       temperature: 0.1, // Restringe la creatividad, da análisis normativos estables
       schema: BulkMatrixSchema,
       prompt: promptText,
