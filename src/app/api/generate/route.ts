@@ -45,7 +45,8 @@ export async function POST(req: Request) {
       Genera la Matriz MIPER (Identificación de Peligros y Evaluación de Riesgos) para esta tarea:
       Tarea: ${taskName}
       Contexto adicional: ${JSON.stringify(context)}
-      
+      ${context?.enfGenero === 'yes' ? '\n      REGLA DE GÉNERO Y MATERNIDAD (¡CRÍTICO!): Como el usuario indicó presencia femenina o gestante en la cuadrilla, DEBES identificar y separar los riesgos asociados a diferencias biológicas y legales. Específicamente, evalúa y diferencia la reducción de carga manual a 20kg (Ley del Saco, Ley 20.001) para mujeres, y prohíbe/evalúa la exposición de trabajadoras embarazadas a fuerza excesiva o riesgos químicos teratogénicos (Art. 202 Código del Trabajo). Agrega las medidas de control diferenciadas correspondientes.\n' : ''}
+      ${context?.inclusion === 'yes' ? '\n      REGLA DE INCLUSIÓN Y DISCAPACIDAD (LEY 21.015 CRÍTICA): Como el usuario indicó presencia de personal con discapacidad (física, sensorial o cognitiva) en la cuadrilla, DEBES evaluar la vulnerabilidad específica (ej: incapacidad de oír alarmas convencionales, problemas de movilidad en vías de escape o manipulación). Obligatoriamente, incluye medidas de control de Accesibilidad Universal (ej: alarmas estroboscópicas, señalética en braille/lectura fácil, rampas, o ajustes ergonómicos/físicos razonables adaptados).\n' : ''}
       Identifica de manera EXHAUSTIVA todos los riesgos inherentes a la maniobra. 
       REGLA N°0: OBLIGATORIAMENTE DEBES ENCONTRAR UN MÍNIMO DE 6 RIESGOS. No te limites, si hay más, decláralos todos.
       
