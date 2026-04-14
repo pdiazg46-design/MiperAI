@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { PlusCircle, Search, FileText, ShieldAlert, FolderSync, Camera, Mic, Zap, ChevronRight, ClipboardCheck, User, Sparkles } from 'lucide-react';
+import { PlusCircle, Search, FileText, ShieldAlert, FolderSync, Camera, Mic, Zap, ChevronRight, ClipboardCheck, User, Sparkles, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useDeviceSimulator } from '@/components/DeviceSimulatorProvider';
 import { useSession } from 'next-auth/react';
@@ -63,6 +63,23 @@ export default function Dashboard() {
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const deleteProject = async (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!confirm("¿Seguro que deseas eliminar este proyecto y todos sus reportes operativos? Esta acción es irreversible.")) return;
+
+    try {
+      const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setProjects(prev => prev.filter(p => p.id !== id));
+      } else {
+        alert("Fallo al eliminar proyecto.");
+      }
+    } catch {
+      alert("Error de conexión.");
+    }
   };
 
   return (
@@ -309,14 +326,21 @@ export default function Dashboard() {
             ) : (
               projects.map(p => (
                 <div key={p.id} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
                     <a 
                       href={`/api/projects/${p.id}/report`}
                       download
-                      className="text-[10px] bg-slate-100 hover:bg-emerald-50 text-emerald-600 font-bold px-3 py-1 rounded-full border border-slate-200 hover:border-emerald-200 transition-colors uppercase flex items-center gap-1 shadow-sm"
+                      className="text-[10px] bg-slate-100 hover:bg-emerald-50 text-emerald-600 font-bold px-3 py-1.5 rounded-full border border-slate-200 hover:border-emerald-200 transition-colors uppercase flex items-center gap-1 shadow-sm"
                     >
-                      <FileText className="w-3 h-3" /> Generar DOCX
+                      <FileText className="w-3 h-3" /> DOCX
                     </a>
+                    <button 
+                      onClick={(e) => deleteProject(p.id, e)}
+                      className="bg-slate-100 hover:bg-red-50 text-red-500 p-1.5 rounded-full border border-slate-200 hover:border-red-200 transition-colors shadow-sm"
+                      title="Eliminar Proyecto"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                   <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">{p.company || 'MiperAI Demo'}</p>
                   <h4 className="font-bold text-lg text-slate-800 mb-2 truncate">{p.name}</h4>

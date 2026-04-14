@@ -78,6 +78,30 @@ export default function AdminDashboard() {
       setProcessingId(null);
     }
   };
+  const changeUserCompany = async (userId: string, currentCompany: string) => {
+    const newCompany = prompt(`Ingrese el nombre de la corporación B2B para este usuario (dejar en blanco para remover):`, currentCompany || '');
+    if (newCompany === null) return;
+
+    setProcessingId(userId);
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, newCompany })
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setUsers(users.map(u => u.id === userId ? { ...u, company: updated.company } : u));
+      } else {
+        alert("Fallo al actualizar B2B.");
+      }
+    } catch (e) {
+      alert("Error de red.");
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
 
   if (status === 'loading' || loading) {
     return <div className="min-h-screen bg-zinc-950 flex items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-blue-500" /></div>;
@@ -133,6 +157,7 @@ export default function AdminDashboard() {
                   <th className="p-5">Rol</th>
                   <th className="p-5">Plan Actual</th>
                   <th className="p-5">Uso (API / Matrices)</th>
+                  <th className="p-5">Módulo B2B</th>
                   <th className="p-5 text-right">Acciones Administrativas</th>
                 </tr>
               </thead>
@@ -170,6 +195,17 @@ export default function AdminDashboard() {
                     </td>
                     <td className="p-5">
                         <span className="text-base font-mono font-bold text-zinc-200">{u.queriesUsed || 0}</span>
+                    </td>
+                    <td className="p-5">
+                       <div className="flex flex-col items-start gap-1">
+                          {u.company?.name ? (
+                            <span className="text-xs font-bold bg-blue-900/40 text-blue-300 px-2 py-1 rounded border border-blue-800/50 uppercase">
+                              {u.company.name}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-zinc-500 italic">Sin Asignar</span>
+                          )}
+                       </div>
                     </td>
                     <td className="p-5 text-right">
                       {u.role !== 'ADMIN' && (
@@ -212,6 +248,16 @@ export default function AdminDashboard() {
                                 <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
                              </div>
                            </div>
+                           
+                           {/* Editar B2B */}
+                           <button 
+                              onClick={() => changeUserCompany(u.id, u.company?.name)}
+                              disabled={processingId === u.id}
+                              className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold px-3 py-2.5 rounded-lg border border-zinc-700 transition-colors"
+                              title="Vincular Empresa B2B"
+                           >
+                             B2B
+                           </button>
 
                         </div>
                       )}

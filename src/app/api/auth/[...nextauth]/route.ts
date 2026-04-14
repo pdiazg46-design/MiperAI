@@ -22,7 +22,8 @@ export const authOptions = {
 
         try {
           const user = await prisma.user.findUnique({
-            where: { email: credentials.email }
+            where: { email: credentials.email },
+            include: { company: true }
           });
 
           if (!user || !user.password) {
@@ -54,6 +55,7 @@ export const authOptions = {
         token.role = user.role;
         token.createdAt = user.createdAt;
         token.mustChangePassword = user.mustChangePassword;
+        token.companyName = typeof user.company === 'object' && user.company !== null ? user.company.name : null;
       }
       
       // Update session handling
@@ -70,6 +72,7 @@ export const authOptions = {
         session.user.role = token.role;
         session.user.createdAt = token.createdAt;
         session.user.mustChangePassword = token.mustChangePassword;
+        session.user.companyName = token.companyName;
       }
       return session;
     },

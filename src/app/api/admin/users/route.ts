@@ -22,6 +22,9 @@ export async function GET(req: Request) {
         subscriptionTier: true,
         queriesUsed: true,
         createdAt: true,
+        company: {
+          select: { name: true }
+        },
       },
       orderBy: { createdAt: 'desc' }
     });
@@ -40,7 +43,7 @@ export async function PATCH(req: Request) {
   }
 
   try {
-    const { userId, newTier, newRole } = await req.json();
+    const { userId, newTier, newRole, newCompany } = await req.json();
     
     if (!userId) {
       return NextResponse.json({ error: "Falta userId" }, { status: 400 });
@@ -50,14 +53,27 @@ export async function PATCH(req: Request) {
     if (newTier) dataToUpdate.subscriptionTier = newTier;
     if (newRole) dataToUpdate.role = newRole;
 
+    if (newCompany !== undefined) {
+      if (newCompany === null || newCompany.trim() === '') {
+        dataToUpdate.companyId = null;
+      } else {
+        let company = await prisma.company.findFirst({ where: { name: newCompany.trim() } });
+        if (!company) {
+          company = await prisma.company.create({ data: { name: newCompany.trim() } });
+        }
+        dataToUpdate.companyId = company.id;
+      }
+    }
+
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: dataToUpdate,
-      select: { id: true, email: true, subscriptionTier: true, role: true }
+      select: { id: true, email: true, subscriptionTier: true, role: true, company: { select: { name: true } } }
     });
 
     return NextResponse.json(updatedUser);
   } catch (error) {
-    return NextResponse.json({ error: "Fallo al actualizar el plan" }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ error: "Fallo al actualizar el plan u operario B2B" }, { status: 500 });
   }
 }

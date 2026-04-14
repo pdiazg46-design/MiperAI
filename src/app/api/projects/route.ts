@@ -9,8 +9,10 @@ export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id;
+    const sessionCompany = (session?.user as any)?.companyName;
 
     const { projectId, projectName, procedureName, tasksPayload, companyName } = await req.json();
+    const finalCompany = sessionCompany || companyName || 'MiperAI Demo';
 
     if (projectId) {
       // Intentar actualizar el proyecto existente
@@ -26,7 +28,7 @@ export async function POST(req: Request) {
           where: { id: projectId },
           data: {
             name: projectName || 'Nuevo Proyecto Seguro',
-            company: companyName || existingProject.company,
+            company: sessionCompany || companyName || existingProject.company,
           }
         });
         
@@ -47,7 +49,7 @@ export async function POST(req: Request) {
     const project = await prisma.project.create({
       data: {
         name: projectName || 'Nuevo Proyecto Seguro',
-        company: companyName || 'ACME Corp',
+        company: finalCompany,
         userId: userId || null,
         procedures: {
           create: {
