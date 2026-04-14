@@ -65,6 +65,9 @@ MiperAI maneja múltiples suscripciones cruzadas en la base de datos para bloque
 > 
 > 2.  **El Loop Silencioso del Soft Router (SPA):** Si el Frontend utiliza `router.push('/ruta_protegida')` tras el registro/login, Next.js emite un Soft Navigation Transition (obteniendo el RSC Payload). Si hubo alguna ligera inestabilidad de cookie o demora en la sincronización, el archivo `middleware.ts` rechazará el fetch de React abortando el RSC. Esto ocasiona que el usuario sea redirigido de vuelta al origen *sin cambiar físicamente la URL del Browser*, dejando un estado React local perpetuo (`loading === true`) que hace que los Spinners jamás se detengan.
 >     *   **Regla Institucional:** Tras un suceso de Login o Registro donde NextAuth emite una nueva jerarquía estructural (cookies firmadas con `NEXTAUTH_SECRET`), el frontend **debe** aplicar invariablemente `window.location.href = '/'` para ejecutar un Hard Reload en el browser. Esto limpia los contextos de React, asegura el flush del microtask queue y materializa sin fallos la persistencia universal de la aplicación al llegar al Dashboard Principal.
+>
+> 3.  **El Monstruo de la Cookie (Error 431 / 500 HTML):** Si el servidor de Vercel intercepta una respuesta Web con cabeceras `Set-Cookie` excesivamente largas (como ocurre si Prisma inyecta involuntariamente una imagen Base64 masiva del modelo `User.company.logo` o `User.image` en la sesión de NextAuth), el Edge Server lanzará un brutal corte a nivel Firewall (Header Fields Too Large), devolviendo un esqueleto `<!DOCTYPE html>` que estrella el parser de nuestro `signIn()`. 
+>     *   **Regla Institucional:** Toda consulta de Prisma asociada a la autorización de NextAuth (`authorize`) debe aislarse agresivamente usando selectores `.select({ name: true })` para evadir los blobs Base64 u otros datos ultra-pesados (`user.image`, `company.logo`). Además, se exige incrustar el mandato `delete token.picture;` en los callbacks de JWT para exterminar cualquier mapeo automático por defecto que haga el Provider de credenciales, amurallando la cookie bajo el límite estricto mundial de ~4KB.
 
 ### 7.1 Estado de Despliegue: Producción Activa (Vercel y Neon)
 
@@ -113,5 +116,12 @@ Las fases operacionales de campo exigen priorizar latencia cero y solidez probat
 
 <br/>
 
-## 10. Pendientes Programados (Próximos Sprints)
-*   **Gestión Multi-Tenant (B2B):** Vincular operativamente el registro del "Nombre de la Empresa" a todas las suscripciones de nivel `PRO`, para que el administrador central pueda firmar y adjudicar el sistema a cargo de una organización o rut corporativo específico.
+## 10. Hitos Consolidados (Identidad Visual B2B)
+El soporte Multi-Tenant escaló oficialmente integrando una capa de Identidad Visual Corporativa completa:
+*   **Almacenamiento de Marca:** Las empresas pueden inyectar su logo corporativo vía Base64 directamente a su ecosistema PostgreSQL. Esto alimenta en latencia cero las interfaces visuales (Dashboard) y los renderizadores de texto forense (`ImageRun` en DOCX generator, respetando el polimorfismo dinámico nativo entre tipologías JPG/PNG para no violar el compilador TypeSafe de `docx` v8.2+).
+*   **Auto-Gestión y Persistencia Desacoplada:** El logo se maneja 100% de manera asíncrona mediante endpoints paralelos (`/api/user/logo`) liberando permanentemente el canal JWT de NextAuth para evitar la denegación de servicios por sobrecarga de cookies en Vercel.
+*   **Restauración de Proyectos PxC:** El componente de Generación de Matrices (`Wizard`) está provisto de endpoints de Inyección en reversa (`GET /api/projects/:id`), posibilitando reactivar configuraciones pasadas completas pasando parámetros por query (`?projectId=`), preservando la resiliencia en el ecosistema.
+
+## 11. Pendientes Programados (Próximos Sprints)
+*   **Validación Estricta Front-End de Base64:** Implementar restricciones de peso pre-carga para logos e imágenes (Ej: máximo 200KB), truncando el envío antes que intercepte un rechazo Nginx `413 Payload Too Large` desde el servidor en nube.
+*   **Re-sincronización Masiva B2B:** Habilitar un pipeline de actualización para el Centro de Mando Admin en que se autorice la subida de un JSON estructurado de faenas, acoplando instantáneamente a usuarios con macro-reglas B2B (Procedimientos por defecto vinculados al RUT).
