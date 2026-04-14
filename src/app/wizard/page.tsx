@@ -73,7 +73,8 @@ export default function WizardPage() {
   const [step, setStep] = useState(1);
   const [taskName, setTaskName] = useState('');
   const [altura, setAltura] = useState<string|null>(null);
-  const [enfGenero, setEnfGenero] = useState<string|null>(null);
+  const [enfFemenino, setEnfFemenino] = useState<string|null>(null);
+  const [enfGestante, setEnfGestante] = useState<string|null>(null);
   const [inclusion, setInclusion] = useState<string|null>(null);
   
   const [appMode, setAppMode] = useState('ai');
@@ -268,7 +269,7 @@ export default function WizardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           taskName: taskName, 
-          context: { altura, industria, procedimientoBase: procedimiento, enfGenero, inclusion } 
+          context: { altura, industria, procedimientoBase: procedimiento, enfFemenino, enfGestante, inclusion } 
         }),
       });
       
@@ -295,7 +296,8 @@ export default function WizardPage() {
     // Reset wizard to step 1
     setTaskName('');
     setAltura(null);
-    setEnfGenero(null);
+    setEnfFemenino(null);
+    setEnfGestante(null);
     setInclusion(null);
     setMatrixResult(null);
     setStep(1);
@@ -960,15 +962,25 @@ export default function WizardPage() {
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-slate-200 mt-4">
-                  <p className="font-semibold text-slate-800 mb-3">2. ¿La cuadrilla involucra personal femenino o en etapa de gestación?</p>
+                  <p className="font-semibold text-slate-800 mb-2">2. ¿La cuadrilla involucra personal femenino (no gestante)?</p>
+                  <p className="text-[10px] text-slate-500 mb-3 leading-tight block">Aplica Ley del Saco (Límite 20kg) y biometría.</p>
                   <div className="flex gap-2">
-                    <button onClick={() => setEnfGenero('yes')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${enfGenero === 'yes' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>Sí (Aplicar Enfoque)</button>
-                    <button onClick={() => setEnfGenero('no')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${enfGenero === 'no' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>No / No Aplica</button>
+                    <button onClick={() => setEnfFemenino('yes')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${enfFemenino === 'yes' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>Sí (Aplicar Enfoque)</button>
+                    <button onClick={() => setEnfFemenino('no')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${enfFemenino === 'no' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>No</button>
                   </div>
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-slate-200 mt-4">
-                  <p className="font-semibold text-slate-800 mb-3">3. ¿La cuadrilla involucra personal con discapacidad (Ley 21.015)?</p>
+                  <p className="font-semibold text-slate-800 mb-2">3. ¿La cuadrilla involucra personas gestantes temporalmente?</p>
+                  <p className="text-[10px] text-slate-500 mb-3 leading-tight block">Aplica fuertes restricciones Art. 202 (Teratogénesis / Fuerzas).</p>
+                  <div className="flex gap-2">
+                    <button onClick={() => setEnfGestante('yes')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${enfGestante === 'yes' ? 'bg-rose-500 text-white border-rose-500 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>Sí (Aplicar Enfoque)</button>
+                    <button onClick={() => setEnfGestante('no')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${enfGestante === 'no' ? 'bg-rose-500 text-white border-rose-500 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>No</button>
+                  </div>
+                </div>
+
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 mt-4">
+                  <p className="font-semibold text-slate-800 mb-3">4. ¿La cuadrilla involucra personal con discapacidad (Ley 21.015)?</p>
                   <div className="flex gap-2">
                     <button onClick={() => setInclusion('yes')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${inclusion === 'yes' ? 'bg-emerald-600 text-white border-emerald-600 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>Sí (Aplicar Ajustes)</button>
                     <button onClick={() => setInclusion('no')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${inclusion === 'no' ? 'bg-emerald-600 text-white border-emerald-600 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>No / No Aplica</button>
@@ -982,7 +994,7 @@ export default function WizardPage() {
               </button>
               <button 
                 onClick={runAIAlgorithm}
-                disabled={!altura || !enfGenero || !inclusion}
+                disabled={!altura || !enfFemenino || !enfGestante || !inclusion}
                 className="w-2/3 flex items-center justify-center gap-2 bg-slate-900 text-white p-4 rounded-xl font-bold shadow-lg disabled:opacity-50 hover:-translate-y-1 transition-all"
               >
                 Analizar Riesgos <ShieldAlert className="w-5 h-5 text-yellow-400" />
