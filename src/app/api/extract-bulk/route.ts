@@ -23,7 +23,7 @@ const BulkMatrixSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const { procedimientoBase, industria, procedureName } = await req.json();
+    const { procedimientoBase, industria, procedureName, context } = await req.json();
 
     if (!procedimientoBase || procedimientoBase.trim().length === 0) {
       return NextResponse.json({ error: "Falta proporcionar el texto del procedimiento base." }, { status: 400 });
@@ -36,6 +36,10 @@ export async function POST(req: Request) {
     
     ${procedimientoBase}
     
+    ${context?.enfFemenino === 'yes' ? '\n      REGLA TRABAJADORA FEMENINA (LEY 20.001): El usuario indicó presencia femenina en la cuadrilla. DEBES evaluar y establecer la reducción estricta de límites de carga manual a máximo 20kg y exigir sustitución o ayuda mecánica en caso de superarlo. Aplica ajustes antropométricos en los EPP en todas las tareas correspondientes.\n' : ''}
+    ${context?.enfGestante === 'yes' ? '\n      REGLA PROTECCIÓN A LA MATERNIDAD (ART. 202 CRÍTICO): El usuario indicó presencia de trabajadoras gestantes. OBLIGATORIAMENTE DEBES PROHIBIR O MODIFICAR riesgos de exposición a sustancias teratogénicas, radiación, trabajo nocturno prolongado, permanecer de pie o realizar esfuerzo físico. El control principal frente a estos riesgos críticos es la REUBICACIÓN temporal a labores compatibles/administrativas.\n' : ''}
+    ${context?.inclusion === 'yes' ? '\n      REGLA DE INCLUSIÓN Y DISCAPACIDAD (LEY 21.015 CRÍTICA): Como el usuario indicó presencia de personal con discapacidad (física, sensorial o cognitiva) en la cuadrilla, DEBES identificar y segregar la vulnerabilidad en vías de escape e incluir medidas de control de Accesibilidad Universal (alarmas estroboscópicas/vibratorias, señalética adaptada, rutas o apoyos biomecánicos precisos).\n' : ''}
+
     Tu trabajo es estructurar la Matriz MIPER del proyecto rompiendo el trabajo en múltiples maniobras GRANULARES y SECUENCIALES.
     Identifica TODAS y cada una de las maniobras o fases operativas mencionadas en ese texto, SEPARÁNDOLAS estrictamente en elementos independientes dentro del array 'tareas'. 
     

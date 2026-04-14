@@ -235,7 +235,12 @@ export default function WizardPage() {
       const res = await fetch('/api/extract-bulk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ procedimientoBase, industria, procedureName }),
+        body: JSON.stringify({ 
+          procedimientoBase, 
+          industria, 
+          procedureName, 
+          context: { enfFemenino, enfGestante, inclusion } 
+        }),
       });
       
       const data = await res.json();
@@ -560,6 +565,34 @@ export default function WizardPage() {
                 <option value="Forestal">Forestal y Maderero</option>
                 <option value="Otro">Otro sector</option>
               </select>
+            </div>
+
+            <div className="pt-2 border-t border-slate-200/60 mt-1 flex flex-col gap-2">
+              <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-0.5">Composición de la Cuadrilla</label>
+              
+              <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-sm flex flex-col">
+                <span className="text-[10px] font-bold text-slate-700 mb-1 leading-tight">Personal Femenino (Ley 20.001)</span>
+                <div className="flex gap-1">
+                  <button onClick={() => setEnfFemenino('yes')} className={`flex-1 rounded py-1 text-[10px] font-bold transition-all ${enfFemenino === 'yes' ? 'bg-indigo-600 text-white shadow-inner' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Sí</button>
+                  <button onClick={() => setEnfFemenino('no')} className={`flex-1 rounded py-1 text-[10px] font-bold transition-all ${enfFemenino === 'no' ? 'bg-indigo-600 text-white shadow-inner' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>No</button>
+                </div>
+              </div>
+
+              <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-sm flex flex-col">
+                <span className="text-[10px] font-bold text-slate-700 mb-1 leading-tight">Gestantes (Art. 202 Teratogénesis)</span>
+                <div className="flex gap-1">
+                  <button onClick={() => setEnfGestante('yes')} className={`flex-1 rounded py-1 text-[10px] font-bold transition-all ${enfGestante === 'yes' ? 'bg-rose-500 text-white shadow-inner' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Sí</button>
+                  <button onClick={() => setEnfGestante('no')} className={`flex-1 rounded py-1 text-[10px] font-bold transition-all ${enfGestante === 'no' ? 'bg-rose-500 text-white shadow-inner' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>No</button>
+                </div>
+              </div>
+
+              <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-sm flex flex-col">
+                <span className="text-[10px] font-bold text-slate-700 mb-1 leading-tight">Discapacidad (Ley 21.015)</span>
+                <div className="flex gap-1">
+                  <button onClick={() => setInclusion('yes')} className={`flex-1 rounded py-1 text-[10px] font-bold transition-all ${inclusion === 'yes' ? 'bg-emerald-600 text-white shadow-inner' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Sí</button>
+                  <button onClick={() => setInclusion('no')} className={`flex-1 rounded py-1 text-[10px] font-bold transition-all ${inclusion === 'no' ? 'bg-emerald-600 text-white shadow-inner' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>No</button>
+                </div>
+              </div>
             </div>
             
             <div className="mt-1 text-slate-500 bg-blue-50/70 p-2 rounded-lg border border-blue-100 flex items-start gap-2 shadow-inner">
@@ -994,7 +1027,7 @@ export default function WizardPage() {
               </button>
               <button 
                 onClick={runAIAlgorithm}
-                disabled={!altura || !enfFemenino || !enfGestante || !inclusion}
+                disabled={!altura}
                 className="w-2/3 flex items-center justify-center gap-2 bg-slate-900 text-white p-4 rounded-xl font-bold shadow-lg disabled:opacity-50 hover:-translate-y-1 transition-all"
               >
                 Analizar Riesgos <ShieldAlert className="w-5 h-5 text-yellow-400" />
