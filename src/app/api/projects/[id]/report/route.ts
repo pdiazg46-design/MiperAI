@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, ImageRun } from 'docx';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
+    const session = await getServerSession(authOptions);
+    const companyLogo = (session?.user as any)?.companyLogo;
 
     const project = await prisma.project.findUnique({
       where: { id },
@@ -21,6 +25,21 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
 
     // Preparar contenido para Word
     const children: any[] = [];
+
+    if (companyLogo) {
+      children.push(
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 200 },
+          children: [
+            new ImageRun({
+              data: Uint8Array.from(atob(companyLogo.replace(/^data:image\/\w+;base64,/, "")), c => c.charCodeAt(0)),
+              transformation: { width: 100, height: 100 }
+            })
+          ]
+        })
+      );
+    }
 
     // Título Principal
     children.push(

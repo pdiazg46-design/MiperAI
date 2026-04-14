@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { ShieldAlert, Users, Crown, Loader2, Home, Gift, Zap, Briefcase } from 'lucide-react';
+import { ShieldAlert, Users, Crown, Loader2, Home, Gift, Zap, Briefcase, ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdminDashboard() {
@@ -13,6 +13,8 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingUserId, setUploadingUserId] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -102,6 +104,41 @@ export default function AdminDashboard() {
     }
   };
 
+  const triggerLogoUpload = (userId: string) => {
+     setUploadingUserId(userId);
+     fileInputRef.current?.click();
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+     const file = e.target.files?.[0];
+     if (!file || !uploadingUserId) return;
+     const reader = new FileReader();
+     reader.onloadend = async () => {
+        const base64 = reader.result as string;
+        setProcessingId(uploadingUserId);
+        try {
+           const res = await fetch('/api/admin/users', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId: uploadingUserId, newLogoBase64: base64 })
+           });
+           if (res.ok) {
+              const updated = await res.json();
+              setUsers(users.map(u => u.id === uploadingUserId ? { ...u, company: updated.company } : u));
+              alert("Logo asociado correctamente");
+           } else {
+              alert("Fallo al subir logo.");
+           }
+        } catch (err) {
+           alert("Error de conexión al subir logo");
+        } finally {
+           setProcessingId(null);
+           setUploadingUserId(null);
+        }
+     };
+     reader.readAsDataURL(file);
+  };
+
 
   if (status === 'loading' || loading) {
     return <div className="min-h-screen bg-zinc-950 flex items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-blue-500" /></div>;
@@ -109,6 +146,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-slate-200 p-6 md:p-12 font-sans relative overflow-hidden">
+       <input type="file" ref={fileInputRef} onChange={handleLogoUpload} accept="image/*" className="hidden" />
       {/* Fondo Neon */}
       <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none -z-10" />
       <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none -z-10" />
@@ -199,9 +237,12 @@ export default function AdminDashboard() {
                     <td className="p-5">
                        <div className="flex flex-col items-start gap-1">
                           {u.company?.name ? (
-                            <span className="text-xs font-bold bg-blue-900/40 text-blue-300 px-2 py-1 rounded border border-blue-800/50 uppercase">
-                              {u.company.name}
-                            </span>
+                            <div className="flex items-center gap-2">
+                               {u.company.logo && <img src={u.company.logo} className="w-6 h-6 object-contain bg-white rounded-sm" alt="logo" />}
+                               <span className="text-xs font-bold bg-blue-900/40 text-blue-300 px-2 py-1 rounded border border-blue-800/50 uppercase">
+                                 {u.company.name}
+                               </span>
+                            </div>
                           ) : (
                             <span className="text-xs text-zinc-500 italic">Sin Asignar</span>
                           )}
@@ -250,6 +291,16 @@ export default function AdminDashboard() {
                            </div>
                            
                            {/* Editar B2B */}
+                           {u.company?.name && (
+                              <button 
+                                 onClick={() => triggerLogoUpload(u.id)}
+                                 disabled={processingId === u.id}
+                                 className="bg-zinc-800 hover:bg-zinc-700 text-purple-400 p-2 rounded-lg border border-zinc-700 transition-colors"
+                                 title="Subir Logo Corporativo"
+                              >
+                                 <ImageIcon className="w-4 h-4" />
+                              </button>
+                           )}
                            <button 
                               onClick={() => changeUserCompany(u.id, u.company?.name)}
                               disabled={processingId === u.id}

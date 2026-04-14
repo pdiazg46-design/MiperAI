@@ -1,6 +1,6 @@
-import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, HeadingLevel, AlignmentType, WidthType, Footer, BorderStyle, ExternalHyperlink } from "docx";
+import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, HeadingLevel, AlignmentType, WidthType, Footer, BorderStyle, ExternalHyperlink, ImageRun } from "docx";
 
-export async function generateMatrixDocxBlob(projectName: string, tasks: any[]) {
+export async function generateMatrixDocxBlob(projectName: string, tasks: any[], companyLogoBase64?: string | null) {
   const tableRows: TableRow[] = [];
   
   // Encabezado
@@ -175,7 +175,13 @@ export async function generateMatrixDocxBlob(projectName: string, tasks: any[]) 
             alignment: AlignmentType.CENTER,
             spacing: { before: 100, after: 150 },
             children: [
-              new TextRun({ text: "Matriz de Identificación de Peligros y Evaluación de Riesgos (MiperAI)", bold: true, size: 32, color: "000000", font: "Arial" })
+              ...(companyLogoBase64 ? [
+                  new ImageRun({
+                     data: Uint8Array.from(atob(companyLogoBase64.replace(/^data:image\/\w+;base64,/, "")), c => c.charCodeAt(0)),
+                     transformation: { width: 100, height: 100 }
+                  }),
+              ] : []),
+              new TextRun({ text: "Matriz de Identificación de Peligros y Evaluación de Riesgos (MiperAI)", bold: true, size: 32, color: "000000", font: "Arial", break: companyLogoBase64 ? 1 : 0 })
             ]
           }),
           new Paragraph({

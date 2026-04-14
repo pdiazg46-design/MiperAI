@@ -56,6 +56,7 @@ export const authOptions = {
         token.createdAt = user.createdAt;
         token.mustChangePassword = user.mustChangePassword;
         token.companyName = typeof user.company === 'object' && user.company !== null ? user.company.name : null;
+        token.companyLogo = typeof user.company === 'object' && user.company !== null ? user.company.logo : null;
       }
       
       // Update session handling
@@ -73,6 +74,7 @@ export const authOptions = {
         session.user.createdAt = token.createdAt;
         session.user.mustChangePassword = token.mustChangePassword;
         session.user.companyName = token.companyName;
+        session.user.companyLogo = token.companyLogo;
       }
       return session;
     },

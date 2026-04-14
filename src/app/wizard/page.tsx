@@ -331,7 +331,8 @@ export default function WizardPage() {
     try {
       // Usamos tanto el proyecto como el procedimiento para el documento
       const documentTitle = `${projectName} - ${procedureName}`;
-      const blob = await generateMatrixDocxBlob(documentTitle, accumulatedTasks);
+      const companyLogo = (session?.user as any)?.companyLogo || null;
+      const blob = await generateMatrixDocxBlob(documentTitle, accumulatedTasks, companyLogo);
       
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');

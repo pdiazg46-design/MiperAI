@@ -23,7 +23,7 @@ export async function GET(req: Request) {
         queriesUsed: true,
         createdAt: true,
         company: {
-          select: { name: true }
+          select: { name: true, logo: true }
         },
       },
       orderBy: { createdAt: 'desc' }
@@ -43,7 +43,7 @@ export async function PATCH(req: Request) {
   }
 
   try {
-    const { userId, newTier, newRole, newCompany } = await req.json();
+    const { userId, newTier, newRole, newCompany, newLogoBase64 } = await req.json();
     
     if (!userId) {
       return NextResponse.json({ error: "Falta userId" }, { status: 400 });
@@ -65,10 +65,20 @@ export async function PATCH(req: Request) {
       }
     }
 
+    if (newLogoBase64 !== undefined) {
+       const user = await prisma.user.findUnique({ where: { id: userId }, select: { companyId: true } });
+       if (user?.companyId) {
+          await prisma.company.update({
+             where: { id: user.companyId },
+             data: { logo: newLogoBase64 === null ? null : newLogoBase64 }
+          });
+       }
+    }
+
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: dataToUpdate,
-      select: { id: true, email: true, subscriptionTier: true, role: true, company: { select: { name: true } } }
+      select: { id: true, email: true, subscriptionTier: true, role: true, company: { select: { name: true, logo: true } } }
     });
 
     return NextResponse.json(updatedUser);
