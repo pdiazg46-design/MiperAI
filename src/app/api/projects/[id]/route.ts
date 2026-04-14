@@ -5,7 +5,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const dynamic = "force-dynamic";
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id;
@@ -15,7 +15,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Verificar propiedad
     const project = await prisma.project.findUnique({
