@@ -180,25 +180,63 @@ export default function Dashboard() {
         <section className={`${isSimulatorEnabled ? 'hidden' : 'hidden md:block'} relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 px-8 py-12 shadow-xl border border-blue-700/50`}>
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
           
-          <div className="relative z-10 max-w-2xl">
-            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-              Genera tu Matriz de Riesgo con IA
-            </h2>
-            <p className="mt-4 text-lg text-blue-100 font-light">
-              Describe la tarea y deja que el asistente configure los peligros, riesgos y jerarquía de controles de acuerdo a la normativa chilena.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-              <Link href="/wizard?mode=ai" className="flex items-center justify-center gap-2 bg-white text-blue-900 px-6 py-3 rounded-xl font-semibold shadow-lg hover:bg-slate-50 hover:scale-105 transition-all w-full sm:w-auto">
-                <PlusCircle className="w-5 h-5" /> Nueva Matriz Asistida
-              </Link>
-              <Link href="/wizard?mode=import" className="flex items-center justify-center gap-2 bg-blue-800/50 text-white border border-blue-700 px-6 py-3 rounded-xl font-semibold hover:bg-blue-800/80 transition-all backdrop-blur-sm w-full sm:w-auto">
-                <FolderSync className="w-5 h-5" /> Estandarizar Matriz Antigua
-              </Link>
+          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="max-w-2xl">
+              <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+                Genera tu Matriz de Riesgo con IA
+              </h2>
+              <p className="mt-4 text-lg text-blue-100 font-light">
+                Describe la tarea y deja que el asistente configure los peligros, riesgos y jerarquía de controles de acuerdo a la normativa chilena.
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                <Link href="/wizard?mode=ai" className="flex items-center justify-center gap-2 bg-white text-blue-900 px-6 py-3 rounded-xl font-semibold shadow-lg hover:bg-slate-50 hover:scale-105 transition-all w-full sm:w-auto">
+                  <PlusCircle className="w-5 h-5" /> Nueva Matriz Asistida
+                </Link>
+                <Link href="/wizard?mode=import" className="flex items-center justify-center gap-2 bg-blue-800/50 text-white border border-blue-700 px-6 py-3 rounded-xl font-semibold hover:bg-blue-800/80 transition-all backdrop-blur-sm w-full sm:w-auto">
+                  <FolderSync className="w-5 h-5" /> Estandarizar Matriz Antigua
+                </Link>
+              </div>
+              <div className="mt-6">
+                <Link href="/wizard?mode=manual" className="text-sm text-blue-200 hover:text-white underline decoration-blue-500/50 transition-colors">
+                  Prefiero empezar una matriz en blanco (Modo Manual) &rarr;
+                </Link>
+              </div>
             </div>
-            <div className="mt-6">
-              <Link href="/wizard?mode=manual" className="text-sm text-blue-200 hover:text-white underline decoration-blue-500/50 transition-colors">
-                Prefiero empezar una matriz en blanco (Modo Manual) &rarr;
-              </Link>
+
+            {/* Panel de Respaldo Normativo */}
+            <div className="hidden lg:block w-full max-w-[340px] xl:max-w-sm">
+              <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-2xl relative overflow-hidden group hover:bg-white/10 transition-colors">
+                <div className="absolute -right-4 -top-4 w-16 h-16 bg-blue-500/30 rounded-full blur-xl group-hover:bg-teal-400/30 transition-colors"></div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="w-4 h-4 text-blue-300" />
+                  <h3 className="text-white font-bold text-[11px] uppercase tracking-widest text-shadow-sm">Motor Normativo Inteligente</h3>
+                </div>
+                <p className="text-[11px] text-blue-100/70 mb-4 leading-relaxed font-light">
+                  Nuestra IA cruza tu matriz operando bajo el marco regulatorio del MINSAL y la Dirección del Trabajo:
+                </p>
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
+                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
+                    <span className="text-[11px] text-blue-50 font-bold tracking-tight">Ley 16.744 / DS 594 (SST)</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
+                    <div className="w-1.5 h-1.5 bg-blue-400 rounded-full shadow-[0_0_8px_rgba(96,165,250,0.8)]"></div>
+                    <span className="text-[11px] text-blue-50 font-bold tracking-tight">Ley 20.001 (Saco y Ergonomía)</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
+                    <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full shadow-[0_0_8px_rgba(129,140,248,0.8)]"></div>
+                    <span className="text-[11px] text-blue-50 font-bold tracking-tight">Ley 21.015 (Inclusión / Discapacidad)</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
+                    <div className="w-1.5 h-1.5 bg-rose-400 rounded-full shadow-[0_0_8px_rgba(251,113,133,0.8)]"></div>
+                    <span className="text-[11px] text-blue-50 font-bold tracking-tight">Art. 202 Código del Trabajo (Maternidad)</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
+                    <div className="w-1.5 h-1.5 bg-amber-400 rounded-full shadow-[0_0_8px_rgba(251,191,36,0.8)]"></div>
+                    <span className="text-[11px] text-blue-50 font-bold tracking-tight">D.S. 44 y Protocolos MINSAL (TMERT, PREXOR)</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
