@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronRight, CheckCircle2, FileDown, ShieldAlert, Loader2, ArrowLeft, Plus, Check, Upload, X, Trash2, Edit3, Save, ArrowUp, ArrowDown, PlusCircle } from 'lucide-react';
+import { ChevronRight, CheckCircle2, FileDown, ShieldAlert, Loader2, ArrowLeft, Plus, Check, Upload, X, Trash2, Edit3, Save, ArrowUp, ArrowDown, PlusCircle, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import { generateMatrixDocxBlob } from '@/lib/docx-generator/exportService';
 import { useRouter } from 'next/navigation';
@@ -546,6 +546,13 @@ export default function WizardPage() {
                 <option value="Forestal">Forestal y Maderero</option>
                 <option value="Otro">Otro sector</option>
               </select>
+            </div>
+            
+            <div className="mt-2 text-slate-500 bg-blue-50/70 p-3 rounded-lg border border-blue-100 flex items-start gap-2 shadow-inner">
+              <Lightbulb className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+              <p className="text-[10px] leading-relaxed">
+                <strong>Tip de Inteligencia:</strong> Mientras más completos y precisos sean estos nombres (ejs: Ubicaciones, detalles, maquinaria), <strong>mejor será el contexto</strong> que tomará la IA para extraer y predecir los riesgos correctos.
+              </p>
             </div>
           </div>
           <p className="text-xs text-slate-500 font-medium bg-slate-100 p-1.5 rounded-md inline-block">{accumulatedTasks.length} Maniobras evaluadas</p>
