@@ -45,9 +45,7 @@ export async function POST(req: Request) {
       Genera la Matriz MIPER (Identificación de Peligros y Evaluación de Riesgos) para esta tarea:
       Tarea: ${taskName}
       Contexto adicional: ${JSON.stringify(context)}
-      ${context?.enfFemenino === 'yes' ? '\n      REGLA TRABAJADORA FEMENINA (LEY 20.001): El usuario indicó presencia femenina en la cuadrilla. DEBES evaluar y establecer la reducción estricta de límites de carga manual a máximo 20kg y exigir sustitución o ayuda mecánica en caso de superarlo. Aplica ajustes antropométricos en los EPP.\n' : ''}
-      ${context?.enfGestante === 'yes' ? '\n      REGLA PROTECCIÓN A LA MATERNIDAD (ART. 202 CRÍTICO): El usuario indicó presencia de trabajadoras gestantes. OBLIGATORIAMENTE DEBES PROHIBIR O MODIFICAR riesgos de exposición a sustancias teratogénicas, radiación, trabajo nocturno prolongado, permanecer de pie o realizar esfuerzo físico. El control principal frente a estos riesgos críticos es la REUBICACIÓN temporal a labores compatibles/administrativas.\n' : ''}
-      ${context?.inclusion === 'yes' ? '\n      REGLA DE INCLUSIÓN Y DISCAPACIDAD (LEY 21.015 CRÍTICA): Como el usuario indicó presencia de personal con discapacidad (física, sensorial o cognitiva) en la cuadrilla, DEBES identificar y segregar la vulnerabilidad en vías de escape e incluir medidas de control de Accesibilidad Universal (alarmas estroboscópicas/vibratorias, señalética adaptada, rutas o apoyos biomecánicos precisos).\n' : ''}
+
       Identifica de manera EXHAUSTIVA todos los riesgos inherentes a la maniobra. 
       REGLA N°0: OBLIGATORIAMENTE DEBES ENCONTRAR UN MÍNIMO DE 6 RIESGOS. No te limites, si hay más, decláralos todos.
       
@@ -58,8 +56,14 @@ export async function POST(req: Request) {
       4. Factores Psicosociales (CEAL-SM / ISTAS 21): Si implica turnos nocturnos, trabajo en solitario o alta carga cognitiva, detállalo.
       
       REGLA CRÍTICA MATEMÁTICA EN MATRIZ 5x5: Tu respuesta cuantitativa DEBE ser perfecta en una escala de 5x5.
-      - Probabilidad va de 1 a 5 (1: Raro, 2: Poco probable, 3: Moderado, 4: Probable, 5: Casi seguro).
-      - Severidad va de 1 a 5 (1: Insignificante, 2: Menor, 3: Significativo, 4: Mayor, 5: Severo).
+      - Probabilidad: 1=Raro, 2=Poco probable, 3=Moderado, 4=Probable, 5=Casi seguro.
+      - Severidad: 1=Insignificante, 2=Menor, 3=Significativo, 4=Mayor, 5=Severo.
+
+      === INSTRUCCIONES DEMOGRÁFICAS ABSOLUTAS INQUEBRANTABLES ===
+      Tienen prioridad legal máxima sobre cualquier otra regla de prevención:
+      ${context?.enfFemenino === 'yes' ? '1. MUJERES EN CUADRILLA: Obligatorio añadir como riesgo principal el manejo manual de cargas referenciando la Ley 20.001 con el límite estricto de 20kg para mujeres, limitando fuerzas de tiro/arrastre.\n' : ''}
+      ${context?.enfGestante === 'yes' ? '2. GESTANTES (ART. 202): Obligatorio añadir explícitamente en la matriz la exposición a teratógenos, vibraciones o fuerza física, con el control de "[Administrativo] Reubicación OBLIGATORIA al amparo del Art. 202 del Código del Trabajo, transfiriendo a labores compatibles/administrativas libres de riesgo físico, químico y biológico".\n' : ''}
+      ${context?.inclusion === 'yes' ? '3. INCLUSIÓN (LEY 21.015): Obligatorio agregar un riesgo específico de vulnerabilidad en accesibilidad y evacuación en la tarea inicial, exigiendo "[Ingeniería] Alarmas visuales/vibratorias y ajustes biomecánicos precisos (Ley 21.015)".\n' : ''}
       El campo magnitudeRisk DEBE dar exactamente probability * severity (rango de 1 a 25).
       
       REGLA CRÍTICA N°5 (CONTROLES): OBLIGATORIAMENTE cada control debe comenzar con su categoría entre corchetes (Ej: [Ingeniería], [Administrativo], [EPP], [Sustitución]) SEGUIDO de la acción directa y específica para mitigarlo. Ejemplo: "[EPP] Uso de arnés de seguridad de cuerpo entero". ESTÁ ESTRICTAMENTE PROHIBIDO omitir los corchetes de la categoría y está prohibido responder solo la categoría sin la acción.
