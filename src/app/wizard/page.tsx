@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronRight, CheckCircle2, FileDown, ShieldAlert, Loader2, ArrowLeft, Plus, Check, Upload, X, Trash2, Edit3, Save, ArrowUp, ArrowDown, PlusCircle, Lightbulb } from 'lucide-react';
+import { ChevronRight, CheckCircle2, FileDown, ShieldAlert, Loader2, ArrowLeft, Plus, Check, Upload, X, Trash2, Edit3, Save, ArrowUp, ArrowDown, PlusCircle, Lightbulb, Users } from 'lucide-react';
 import Link from 'next/link';
 import { generateMatrixDocxBlob } from '@/lib/docx-generator/exportService';
 import { useRouter } from 'next/navigation';
@@ -566,40 +566,16 @@ export default function WizardPage() {
                 <option value="Otro">Otro sector</option>
               </select>
             </div>
-
-            <div className="pt-2 border-t border-slate-200/60 mt-1 flex flex-col gap-2">
-              <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-0.5">Composición de la Cuadrilla</label>
-              
-              <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-sm flex flex-col">
-                <span className="text-[10px] font-bold text-slate-700 mb-1 leading-tight">Personal Femenino (Ley 20.001)</span>
-                <div className="flex gap-1">
-                  <button onClick={() => setEnfFemenino('yes')} className={`flex-1 rounded py-1 text-[10px] font-bold transition-all ${enfFemenino === 'yes' ? 'bg-indigo-600 text-white shadow-inner' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Sí</button>
-                  <button onClick={() => setEnfFemenino('no')} className={`flex-1 rounded py-1 text-[10px] font-bold transition-all ${enfFemenino === 'no' ? 'bg-indigo-600 text-white shadow-inner' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>No</button>
-                </div>
-              </div>
-
-              <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-sm flex flex-col">
-                <span className="text-[10px] font-bold text-slate-700 mb-1 leading-tight">Gestantes (Art. 202 Teratogénesis)</span>
-                <div className="flex gap-1">
-                  <button onClick={() => setEnfGestante('yes')} className={`flex-1 rounded py-1 text-[10px] font-bold transition-all ${enfGestante === 'yes' ? 'bg-rose-500 text-white shadow-inner' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Sí</button>
-                  <button onClick={() => setEnfGestante('no')} className={`flex-1 rounded py-1 text-[10px] font-bold transition-all ${enfGestante === 'no' ? 'bg-rose-500 text-white shadow-inner' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>No</button>
-                </div>
-              </div>
-
-              <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-sm flex flex-col">
-                <span className="text-[10px] font-bold text-slate-700 mb-1 leading-tight">Discapacidad (Ley 21.015)</span>
-                <div className="flex gap-1">
-                  <button onClick={() => setInclusion('yes')} className={`flex-1 rounded py-1 text-[10px] font-bold transition-all ${inclusion === 'yes' ? 'bg-emerald-600 text-white shadow-inner' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Sí</button>
-                  <button onClick={() => setInclusion('no')} className={`flex-1 rounded py-1 text-[10px] font-bold transition-all ${inclusion === 'no' ? 'bg-emerald-600 text-white shadow-inner' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>No</button>
-                </div>
-              </div>
-            </div>
             
-            <div className="mt-1 text-slate-500 bg-blue-50/70 p-2 rounded-lg border border-blue-100 flex items-start gap-2 shadow-inner">
-              <Lightbulb className="w-3 h-3 text-amber-500 shrink-0 mt-0.5" />
-              <p className="text-[9px] leading-relaxed">
-                <strong>Tip:</strong> Agrega detalles y ubicaciones precisas para dar un <strong>mejor contexto</strong> a la Inteligencia Artificial.
-              </p>
+            {/* Demographics config has been moved to the horizontal top bar in main */}
+            <div>
+              <div className="bg-blue-50/50 p-2.5 rounded-lg border border-blue-100 flex gap-2 items-start shadow-sm mt-2">
+                <Lightbulb className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <p className="text-[10px] text-slate-600 leading-tight">
+                  <span className="font-bold text-slate-700 block mb-0.5">Tip de Uso:</span>
+                  El entorno demográfico ha sido movido hacia la barra horizontal principal.
+                </p>
+              </div>
             </div>
           </div>
           <p className="text-xs text-slate-500 font-medium bg-slate-100 p-1.5 rounded-md inline-block">{accumulatedTasks.length} Maniobras evaluadas</p>
@@ -661,6 +637,36 @@ export default function WizardPage() {
       {/* Main Wizard Area */}
       <main className="flex-1 order-1 md:order-2 overflow-y-auto w-full flex flex-col relative h-[60vh] md:h-screen">
         
+        {/* Barra de Ajustes Demográficos Globales (Siempre visible) */}
+        <div className="bg-slate-800 border-b border-slate-700 px-4 md:px-6 py-2.5 flex items-center gap-4 overflow-x-auto shrink-0 shadow-inner hide-scrollbar">
+          <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest shrink-0 flex items-center gap-1.5">
+            <Users className="w-3.5 h-3.5"/> Composición Cuadrilla:
+          </span>
+          
+          <div className="flex items-center gap-2 shrink-0 bg-slate-900/50 px-2 py-1.5 rounded-lg border border-slate-700">
+             <span className="text-[10px] font-bold text-slate-300">Femenino (20kg):</span>
+             <div className="flex gap-1">
+                <button onClick={() => setEnfFemenino('yes')} className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${enfFemenino === 'yes' ? 'bg-indigo-500 text-white shadow-sm' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'}`}>Sí</button>
+                <button onClick={() => setEnfFemenino('no')} className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${enfFemenino === 'no' ? 'bg-indigo-500 text-white shadow-sm' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'}`}>No</button>
+             </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0 bg-slate-900/50 px-2 py-1.5 rounded-lg border border-slate-700">
+             <span className="text-[10px] font-bold text-slate-300">Gestantes (Art. 202):</span>
+             <div className="flex gap-1">
+                <button onClick={() => setEnfGestante('yes')} className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${enfGestante === 'yes' ? 'bg-rose-500 text-white shadow-sm' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'}`}>Sí</button>
+                <button onClick={() => setEnfGestante('no')} className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${enfGestante === 'no' ? 'bg-rose-500 text-white shadow-sm' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'}`}>No</button>
+             </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0 bg-slate-900/50 px-2 py-1.5 rounded-lg border border-slate-700">
+             <span className="text-[10px] font-bold text-slate-300">Discapacidad (L.21.015):</span>
+             <div className="flex gap-1">
+                <button onClick={() => setInclusion('yes')} className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${inclusion === 'yes' ? 'bg-emerald-500 text-white shadow-sm' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'}`}>Sí</button>
+                <button onClick={() => setInclusion('no')} className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${inclusion === 'no' ? 'bg-emerald-500 text-white shadow-sm' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'}`}>No</button>
+             </div>
+          </div>
+        </div>
         {accumulatedTasks.length > 0 && (
           <div className="sticky top-0 z-[45] bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 py-4 xl:pr-[280px] flex flex-col xl:flex-row items-center justify-between gap-4 shadow-sm w-full">
             <div className="flex items-center gap-3 w-full xl:w-auto justify-center xl:justify-start">
@@ -994,31 +1000,6 @@ export default function WizardPage() {
                   </div>
                 </div>
 
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 mt-4">
-                  <p className="font-semibold text-slate-800 mb-2">2. ¿La cuadrilla involucra personal femenino (no gestante)?</p>
-                  <p className="text-[10px] text-slate-500 mb-3 leading-tight block">Aplica Ley del Saco (Límite 20kg) y biometría.</p>
-                  <div className="flex gap-2">
-                    <button onClick={() => setEnfFemenino('yes')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${enfFemenino === 'yes' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>Sí (Aplicar Enfoque)</button>
-                    <button onClick={() => setEnfFemenino('no')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${enfFemenino === 'no' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>No</button>
-                  </div>
-                </div>
-
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 mt-4">
-                  <p className="font-semibold text-slate-800 mb-2">3. ¿La cuadrilla involucra personas gestantes temporalmente?</p>
-                  <p className="text-[10px] text-slate-500 mb-3 leading-tight block">Aplica fuertes restricciones Art. 202 (Teratogénesis / Fuerzas).</p>
-                  <div className="flex gap-2">
-                    <button onClick={() => setEnfGestante('yes')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${enfGestante === 'yes' ? 'bg-rose-500 text-white border-rose-500 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>Sí (Aplicar Enfoque)</button>
-                    <button onClick={() => setEnfGestante('no')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${enfGestante === 'no' ? 'bg-rose-500 text-white border-rose-500 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>No</button>
-                  </div>
-                </div>
-
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 mt-4">
-                  <p className="font-semibold text-slate-800 mb-3">4. ¿La cuadrilla involucra personal con discapacidad (Ley 21.015)?</p>
-                  <div className="flex gap-2">
-                    <button onClick={() => setInclusion('yes')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${inclusion === 'yes' ? 'bg-emerald-600 text-white border-emerald-600 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>Sí (Aplicar Ajustes)</button>
-                    <button onClick={() => setInclusion('no')} className={`flex-1 border rounded-lg py-2 font-medium transition-all ${inclusion === 'no' ? 'bg-emerald-600 text-white border-emerald-600 shadow-md' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>No / No Aplica</button>
-                  </div>
-                </div>
             </div>
 
             <div className="flex gap-3">
