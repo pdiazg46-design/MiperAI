@@ -9,6 +9,7 @@ export default function Dashboard() {
   const { isSimulatorEnabled } = useDeviceSimulator();
   const { data: session } = useSession();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (session?.user) {
@@ -82,6 +83,36 @@ export default function Dashboard() {
     }
   };
 
+  const handleLogoClick = () => {
+    logoInputRef.current?.click();
+  };
+
+  const handleCompanyLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+     const file = e.target.files?.[0];
+     if (!file) return;
+     const reader = new FileReader();
+     reader.onloadend = async () => {
+        const base64 = reader.result as string;
+        try {
+           const res = await fetch('/api/user/logo', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ base64 })
+           });
+           if (res.ok) {
+              alert("Logo Institucional renovado. Refrescando página.");
+              window.location.reload();
+           } else {
+              const { error } = await res.json();
+              alert(error || "Fallo al subir logo.");
+           }
+        } catch (err) {
+           alert("Error de conexión");
+        }
+     };
+     reader.readAsDataURL(file);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100">
       <input 
@@ -117,8 +148,17 @@ export default function Dashboard() {
                  <Camera className="w-5 h-5 text-white" />
                </div>
             </div>
-            <div className="px-3 bg-white border border-slate-200 shadow-md rounded-xl flex items-center justify-center h-10 md:h-12 overflow-hidden">
-              <img src="/logo.png" alt="IT-S Logo" className="w-[80px] md:w-[100px] h-auto object-contain" />
+            <div 
+               onClick={handleLogoClick}
+               className="px-3 bg-white border border-slate-200 shadow-md rounded-xl flex items-center justify-center h-10 md:h-12 overflow-hidden cursor-pointer relative group"
+               title="Cambiar Logo Corporativo"
+            >
+              <input type="file" ref={logoInputRef} onChange={handleCompanyLogoUpload} accept="image/*" className="hidden" />
+              {/* Display dynamic session logo or default to IT-S */}
+              <img src={(session?.user as any)?.companyLogo || "/logo.png"} alt="SaaS Logo" className="max-w-[80px] md:max-w-[100px] max-h-8 md:max-h-10 object-contain" />
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                 <Camera className="w-4 h-4 text-white" />
+              </div>
             </div>
           </div>
         </div>

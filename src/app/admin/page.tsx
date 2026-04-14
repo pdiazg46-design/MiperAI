@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { ShieldAlert, Users, Crown, Loader2, Home, Gift, Zap, Briefcase, ImageIcon } from 'lucide-react';
