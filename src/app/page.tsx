@@ -204,36 +204,36 @@ export default function Dashboard() {
             </div>
 
             {/* Panel de Respaldo Normativo */}
-            <div className="hidden lg:block w-full max-w-[340px] xl:max-w-sm">
-              <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-2xl relative overflow-hidden group hover:bg-white/10 transition-colors">
+            <div className="hidden lg:block w-full max-w-[380px] xl:max-w-[420px]">
+              <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-2xl relative overflow-hidden group hover:bg-white/10 transition-colors">
                 <div className="absolute -right-4 -top-4 w-16 h-16 bg-blue-500/30 rounded-full blur-xl group-hover:bg-teal-400/30 transition-colors"></div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="w-4 h-4 text-blue-300" />
-                  <h3 className="text-white font-bold text-[11px] uppercase tracking-widest text-shadow-sm">Motor Normativo Inteligente</h3>
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles className="w-5 h-5 text-blue-300" />
+                  <h3 className="text-white font-bold text-xs uppercase tracking-widest text-shadow-sm">Motor Normativo Inteligente</h3>
                 </div>
-                <p className="text-[11px] text-blue-100/70 mb-4 leading-relaxed font-light">
+                <p className="text-[13px] text-blue-100/90 mb-5 leading-relaxed font-light">
                   Nuestra IA cruza tu matriz operando bajo el marco regulatorio del MINSAL y la Dirección del Trabajo:
                 </p>
-                <div className="flex flex-col gap-1.5">
-                  <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
-                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
-                    <span className="text-[11px] text-blue-50 font-bold tracking-tight">Ley 16.744 / DS 594 (SST)</span>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-3 bg-black/20 p-3 rounded-lg border border-white/5 hover:bg-black/30 transition-colors">
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.8)] shrink-0"></div>
+                    <span className="text-sm text-blue-50 font-bold tracking-tight">Ley 16.744 / DS 594 (Reglamento SST)</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
-                    <div className="w-1.5 h-1.5 bg-blue-400 rounded-full shadow-[0_0_8px_rgba(96,165,250,0.8)]"></div>
-                    <span className="text-[11px] text-blue-50 font-bold tracking-tight">Ley 20.001 (Saco y Ergonomía)</span>
+                  <div className="flex items-center gap-3 bg-black/20 p-3 rounded-lg border border-white/5 hover:bg-black/30 transition-colors">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full shadow-[0_0_8px_rgba(96,165,250,0.8)] shrink-0"></div>
+                    <span className="text-sm text-blue-50 font-bold tracking-tight">Ley 20.001 (Ley del Saco y Ergonomía)</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
-                    <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full shadow-[0_0_8px_rgba(129,140,248,0.8)]"></div>
-                    <span className="text-[11px] text-blue-50 font-bold tracking-tight">Ley 21.015 (Inclusión / Discapacidad)</span>
+                  <div className="flex items-center gap-3 bg-black/20 p-3 rounded-lg border border-white/5 hover:bg-black/30 transition-colors">
+                    <div className="w-2 h-2 bg-indigo-400 rounded-full shadow-[0_0_8px_rgba(129,140,248,0.8)] shrink-0"></div>
+                    <span className="text-sm text-blue-50 font-bold tracking-tight">Ley 21.015 (Inclusión y Discapacidad)</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
-                    <div className="w-1.5 h-1.5 bg-rose-400 rounded-full shadow-[0_0_8px_rgba(251,113,133,0.8)]"></div>
-                    <span className="text-[11px] text-blue-50 font-bold tracking-tight">Art. 202 Código del Trabajo (Maternidad)</span>
+                  <div className="flex items-center gap-3 bg-black/20 p-3 rounded-lg border border-white/5 hover:bg-black/30 transition-colors">
+                    <div className="w-2 h-2 bg-rose-400 rounded-full shadow-[0_0_8px_rgba(251,113,133,0.8)] shrink-0"></div>
+                    <span className="text-sm text-blue-50 font-bold tracking-tight">Art. 202 Código del Trabajo (Maternidad)</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-black/20 p-2 rounded-lg border border-white/5">
-                    <div className="w-1.5 h-1.5 bg-amber-400 rounded-full shadow-[0_0_8px_rgba(251,191,36,0.8)]"></div>
-                    <span className="text-[11px] text-blue-50 font-bold tracking-tight">D.S. 44 y Protocolos MINSAL (TMERT, PREXOR)</span>
+                  <div className="flex items-center gap-3 bg-black/20 p-3 rounded-lg border border-white/5 hover:bg-black/30 transition-colors">
+                    <div className="w-2 h-2 bg-amber-400 rounded-full shadow-[0_0_8px_rgba(251,191,36,0.8)] shrink-0"></div>
+                    <span className="text-sm text-blue-50 font-bold tracking-tight">D.S. 44 y Protocolos MINSAL (TMERT, PREXOR)</span>
                   </div>
                 </div>
               </div>
