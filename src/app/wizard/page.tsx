@@ -80,8 +80,9 @@ export default function WizardPage() {
   const [appMode, setAppMode] = useState('ai');
   const [projectId, setProjectId] = useState<string | null>(null);
 
-  // Advertencia de cambios sin guardar al cerrar o recargar la pestaña
+  // Advertencia de cambios sin guardar al cerrar o recargar la pestaña o navegar Atrás
   useEffect(() => {
+    // Intercepción de Cierre (F5, Cerrar pestaña)
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (accumulatedTasks.length > 0) {
         e.preventDefault();
@@ -89,7 +90,28 @@ export default function WizardPage() {
       }
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+
+    // Intercepción del Botón Atrás del Navegador
+    const handlePopState = (e: PopStateEvent) => {
+      if (accumulatedTasks.length > 0) {
+        const confirmLeave = window.confirm("Tienes maniobras sin guardar en la nube. ¿Estás seguro de que deseas salir y perder tu progreso?");
+        if (!confirmLeave) {
+          window.history.pushState(null, '', window.location.href);
+        } else {
+          window.removeEventListener('beforeunload', handleBeforeUnload);
+          window.removeEventListener('popstate', handlePopState);
+          window.history.back();
+        }
+      }
+    };
+    
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('popstate', handlePopState);
+    };
   }, [accumulatedTasks.length]);
 
   useEffect(() => {
