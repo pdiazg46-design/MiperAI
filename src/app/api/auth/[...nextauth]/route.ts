@@ -36,7 +36,10 @@ export const authOptions = {
             throw new Error("Contraseña incorrecta");
           }
 
-          return user;
+          // Evitar que NextAuth serialice imágenes o logos Base64 gigantes en la cookie JWT
+          const safeUser = { ...user, image: null, company: { name: user.company?.name } };
+
+          return safeUser;
         } catch (error: any) {
           console.error("NextAuth authorize exception:", error);
           throw new Error(error?.message || "Error interno de base de datos o conexión (504/401)");
@@ -57,6 +60,8 @@ export const authOptions = {
         token.mustChangePassword = user.mustChangePassword;
         token.companyName = typeof user.company === 'object' && user.company !== null ? user.company.name : null;
         // token.companyLogo eliminado porque excede el límite de 4KB de la cookie JWT
+        delete token.picture;
+        delete token.image;
       }
       
       // Update session handling
