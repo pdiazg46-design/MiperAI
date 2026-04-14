@@ -135,6 +135,89 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
       }));
     }
 
+    // --- 3. Gráfico de Evolución General ---
+    // Agrupar fechas únicas
+    const dateMap = new Map<string, { ast: number, falta: number, cumplimiento: number }>();
+
+    if (project.astLogs) {
+      project.astLogs.forEach((log: any) => {
+          const d = new Date(log.createdAt).toLocaleDateString('en-CA'); // Formato YYYY-MM-DD para sort
+          if (!dateMap.has(d)) dateMap.set(d, { ast: 0, falta: 0, cumplimiento: 0 });
+          dateMap.get(d)!.ast += 1;
+      });
+    }
+
+    if (project.inspections) {
+      project.inspections.forEach((insp: any) => {
+          const d = new Date(insp.createdAt).toLocaleDateString('en-CA');
+          if (!dateMap.has(d)) dateMap.set(d, { ast: 0, falta: 0, cumplimiento: 0 });
+          if (insp.reportType === 'falta') dateMap.get(d)!.falta += 1;
+          else dateMap.get(d)!.cumplimiento += 1;
+      });
+    }
+
+    const sortedDates = Array.from(dateMap.keys()).sort();
+    
+    // Si hay datos para graficar, generamos la imagen llamando a QuickChart sin bloquear el render original
+    if (sortedDates.length > 0) {
+        children.push(
+          new Paragraph({
+            text: '3. Gráfico Estadístico de Evolución',
+            heading: HeadingLevel.HEADING_2,
+            spacing: { before: 400, after: 200 }
+          })
+        );
+
+        const labels = sortedDates.map(d => new Date(d + 'T12:00:00Z').toLocaleDateString('es-CL'));
+        const dataAst = sortedDates.map(d => dateMap.get(d)!.ast);
+        const dataFalta = sortedDates.map(d => dateMap.get(d)!.falta);
+        const dataCump = sortedDates.map(d => dateMap.get(d)!.cumplimiento);
+
+        const chartConfig = {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    { label: 'Charlas AST', data: dataAst, backgroundColor: '#3b82f6' },
+                    { label: 'Faltas Críticas', data: dataFalta, backgroundColor: '#ef4444' },
+                    { label: 'Cumplimientos', data: dataCump, backgroundColor: '#22c55e' }
+                ]
+            },
+            options: {
+                plugins: {
+                    title: { display: true, text: 'Consolidado de Actividades Generales por Día' }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                }
+            }
+        };
+
+        const url = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}&w=600&h=350&bkg=white`;
+        
+        try {
+            const chartRes = await fetch(url);
+            if (chartRes.ok) {
+                const arrayBuffer = await chartRes.arrayBuffer();
+                children.push(
+                    new Paragraph({
+                        alignment: AlignmentType.CENTER,
+                        spacing: { before: 200, after: 200 },
+                        children: [
+                            new ImageRun({
+                                data: new Uint8Array(arrayBuffer),
+                                transformation: { width: 500, height: 290 },
+                                type: 'png'
+                            })
+                        ]
+                    })
+                );
+            }
+        } catch (e) {
+            console.error("MiperAI Chart Error:", e);
+        }
+    }
+
     const doc = new Document({
       sections: [{
         properties: {},
