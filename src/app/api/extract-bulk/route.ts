@@ -23,7 +23,7 @@ const BulkMatrixSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const { procedimientoBase, industria } = await req.json();
+    const { procedimientoBase, industria, procedureName } = await req.json();
 
     if (!procedimientoBase || procedimientoBase.trim().length === 0) {
       return NextResponse.json({ error: "Falta proporcionar el texto del procedimiento base." }, { status: 400 });
@@ -31,7 +31,8 @@ export async function POST(req: Request) {
 
     const promptText = `
     Eres un experto en prevención de riesgos operacionales (Prevencionista Chileno Senior). Sector Industrial de enfoque: ${industria || 'General'}.
-    Analiza meticulosamente el siguiente "Procedimiento de Trabajo Seguro" o fragmento de contexto descriptivo:
+    Contexto Vital (Nombre de este Procedimiento dado por el Precionista/Directo): "${procedureName || 'Procedimiento'}". Tu análisis DEBE obligatoriamente abarcar todas las temáticas de este título.
+    Analiza meticulosamente el siguiente "Procedimiento de Trabajo Seguro" o fragmento de contexto descriptivo extraído del documento:
     
     ${procedimientoBase}
     

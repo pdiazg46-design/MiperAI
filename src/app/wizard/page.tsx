@@ -232,7 +232,7 @@ export default function WizardPage() {
       const res = await fetch('/api/extract-bulk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ procedimientoBase, industria }),
+        body: JSON.stringify({ procedimientoBase, industria, procedureName }),
       });
       
       const data = await res.json();
