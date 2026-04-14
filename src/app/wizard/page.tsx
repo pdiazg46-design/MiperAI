@@ -80,44 +80,7 @@ export default function WizardPage() {
   const [appMode, setAppMode] = useState('ai');
   const [projectId, setProjectId] = useState<string | null>(null);
 
-  // Advertencia de cambios sin guardar al cerrar o recargar la pestaña o navegar Atrás
-  useEffect(() => {
-    const hasUnsavedChanges = accumulatedTasks.length > 0 || projectName.trim() !== '' || procedureName.trim() !== '' || taskName.trim() !== '';
 
-    // Intercepción de Cierre (F5, Cerrar pestaña)
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges) {
-        e.preventDefault();
-        e.returnValue = '';
-      }
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    // Intercepción del Botón Atrás del Navegador
-    const handlePopState = (e: PopStateEvent) => {
-      if (hasUnsavedChanges) {
-        const confirmLeave = window.confirm("Tienes configuraciones o maniobras sin guardar. ¿Estás seguro de que deseas salir y perder tu progreso?");
-        if (!confirmLeave) {
-          window.history.pushState(null, '', window.location.href);
-        } else {
-          window.removeEventListener('beforeunload', handleBeforeUnload);
-          window.removeEventListener('popstate', handlePopState);
-          window.history.back();
-        }
-      }
-    };
-    
-    // Solo inyectar pushState si hay cambios reales, para no romper el Back button cuando recién entran
-    if (hasUnsavedChanges) {
-       window.history.pushState(null, '', window.location.href);
-       window.addEventListener('popstate', handlePopState);
-    }
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [accumulatedTasks.length, projectName, procedureName, taskName]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -176,6 +139,45 @@ export default function WizardPage() {
     riskLevel: 'MEDIO',
     controls: ''
   });
+
+  // Advertencia de cambios sin guardar al cerrar o recargar la pestaña o navegar Atrás
+  useEffect(() => {
+    const hasUnsavedChanges = accumulatedTasks.length > 0 || projectName.trim() !== '' || procedureName.trim() !== '' || taskName.trim() !== '';
+
+    // Intercepción de Cierre (F5, Cerrar pestaña)
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Intercepción del Botón Atrás del Navegador
+    const handlePopState = (e: PopStateEvent) => {
+      if (hasUnsavedChanges) {
+        const confirmLeave = window.confirm("Tienes configuraciones o maniobras sin guardar. ¿Estás seguro de que deseas salir y perder tu progreso?");
+        if (!confirmLeave) {
+          window.history.pushState(null, '', window.location.href);
+        } else {
+          window.removeEventListener('beforeunload', handleBeforeUnload);
+          window.removeEventListener('popstate', handlePopState);
+          window.history.back();
+        }
+      }
+    };
+    
+    // Solo inyectar pushState si hay cambios reales, para no romper el Back button cuando recién entran
+    if (hasUnsavedChanges) {
+       window.history.pushState(null, '', window.location.href);
+       window.addEventListener('popstate', handlePopState);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [accumulatedTasks.length, projectName, procedureName, taskName]);
 
   const handleAddManualTask = () => {
     if(!manualTask.taskName || !manualTask.hazard) return;
