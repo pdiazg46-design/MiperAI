@@ -1,14 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Clock, ShieldCheck, CheckSquare, Camera, Mic, MapPin, ClipboardCheck, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
 
-export default function CharlasReportView() {
-  const params = useParams();
+export default function CharlasReportView({ params }: { params: Promise<{ id: string }> }) {
+  const unwrappedParams = use(params);
   const router = useRouter();
-  const id = params?.id as string;
+  const id = unwrappedParams?.id;
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [expandedLogs, setExpandedLogs] = useState<Record<string, boolean>>({});

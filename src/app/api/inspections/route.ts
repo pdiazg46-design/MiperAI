@@ -10,6 +10,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Falta projectId para relacionar Inspección.' }, { status: 400 });
     }
 
+    const finalDescription = transcription ? transcription : "Registro manual de " + (reportType === 'falta' ? 'desviación' : 'cumplimiento') + " para la tarea: " + (data.taskName || 'General') + ".";
+
     const log = await prisma.inspectionLog.create({
       data: {
         projectId,
@@ -19,7 +21,7 @@ export async function POST(request: Request) {
         reportType: reportType || 'falta',
         extractedItems: JSON.stringify({
            isRelevant: true,
-           description: "Registro manual de " + (reportType === 'falta' ? 'desviación' : 'cumplimiento') + " para la tarea: " + (data.taskName || 'General') + ".",
+           description: finalDescription,
            rules: [],
            correctiveActions: []
         })
@@ -30,7 +32,7 @@ export async function POST(request: Request) {
       success: true, 
       logId: log.id,
       extractedData: {
-         description: "Registro manual guardado con éxito."
+         description: finalDescription
       }
     });
 

@@ -368,11 +368,11 @@ export default function InspeccionPage() {
                     <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
                  </div>
               </div>
-              <h2 className="text-2xl font-extrabold mt-8 text-white text-center">Clasificando Hallazgo...</h2>
+              <h2 className="text-2xl font-extrabold mt-8 text-white text-center">Guardando Registro...</h2>
               <div className="mt-4 flex flex-col items-center gap-2 text-sm font-medium text-slate-400">
-                 <p className="flex items-center gap-2 text-orange-400 animate-pulse"><Sparkles className="w-4 h-4"/> Interpretando fotografía en alta resolución</p>
-                 <p className="flex items-center gap-2 mt-2"><CheckCircle2 className="w-4 h-4 text-green-500 opacity-50"/> Transcripción completada</p>
-                 <p className="flex items-center gap-2 mt-1"><Loader2 className="w-4 h-4 opacity-50 animate-spin"/> Cruzando matrices de Ley 16.744</p>
+                 <p className="flex items-center gap-2 text-orange-400 animate-pulse"><Sparkles className="w-4 h-4"/> Procesando evidencia adjunta</p>
+                 <p className="flex items-center gap-2 mt-2"><CheckCircle2 className="w-4 h-4 text-green-500 opacity-50"/> Formateando comentario de campo</p>
+                 <p className="flex items-center gap-2 mt-1"><Loader2 className="w-4 h-4 opacity-50 animate-spin"/> Sincronizando con Base de Datos Cloud</p>
               </div>
            </div>
         )}

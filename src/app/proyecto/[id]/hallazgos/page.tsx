@@ -1,14 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState, use } from 'react';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft, Clock, MapPin, Zap, AlertTriangle, ShieldCheck, Camera, Mic, Info } from 'lucide-react';
 import Link from 'next/link';
 
-export default function InspeccionesReportView() {
-  const params = useParams();
+export default function InspeccionesReportView({ params }: { params: Promise<{ id: string }> }) {
+  const unwrappedParams = use(params);
   const router = useRouter();
-  const id = params?.id as string;
+  const id = unwrappedParams?.id;
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
