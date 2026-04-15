@@ -19,7 +19,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
     const project = await prisma.project.findUnique({
       where: { id },
-      include: { procedures: true }
+      include: { 
+        procedures: true,
+        astLogs: { orderBy: { createdAt: 'desc' } },
+        inspections: { orderBy: { createdAt: 'desc' } }
+      }
     });
 
     if (!project) {
